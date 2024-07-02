@@ -1,0 +1,4 @@
+# Ignorar variables de entorno del backend
+backend/.env
+backend/node_modules
+backend/database/seeders

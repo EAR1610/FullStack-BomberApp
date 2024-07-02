@@ -1,6 +1,8 @@
 import User from '#models/user';
 import { createUserValidator } from '#validators/user';
+import { cuid } from '@adonisjs/core/helpers';
 import type { HttpContext } from '@adonisjs/core/http'
+import app from '@adonisjs/core/services/app';
 
 export default class UsersController {
   /**
@@ -19,13 +21,16 @@ export default class UsersController {
   async create({}: HttpContext) {}
 
   /**#
-   * Handle form submission for the create action
+   * ? Handle form submission for the create action 🙂
    */
   async store({ request, auth }: HttpContext) {
     if( await auth.authenticate() ){
-      const data = request.only( ['username', 'fullName', 'email', 'password', 'address', 'photography', 'status'] );
+      const data = request.only( ['username', 'fullName', 'email', 'password', 'address', 'photography', 'status'] );            
       const payload = await createUserValidator.validate(data);
-      const user = new User()
+      await payload.photography.move(app.makePath('uploads/pictures'), {
+        name: `${cuid()}.${payload.photography.extname}`
+      });      
+      const user = new User();
 
       user.fill(payload);
       await user.save();

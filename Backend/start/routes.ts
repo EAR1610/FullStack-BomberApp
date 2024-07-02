@@ -7,31 +7,23 @@
 |
 */
 
+import AuthController from '#controllers/auth_controller';
 import UsersController from '#controllers/users_controller'
-import User from '#models/user'
+
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js';
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
-})
-
-router.post('generate-token/:id', async ({ params }) => {
-  const user = await User.findOrFail(params.id);
-  const token = await User.accessTokens.create(user);
-  
-  return {
-    type: 'bearer',
-    token: token.value!.release(),
-  }
-});
+/** 
+* ? Routes for the application: USERS 🧑‍💻
+*/
 router.resource('users', UsersController);
 
-router.post('authentications', async({ auth }) => {
-  //Authentication using the default guard
-  const user = auth.authenticate();
-
-  return user;
-})
-
+/** 
+* ? Routes for the application: AUTH 🔒 
+*/
+router.group(() => {
+  router.post('register', [AuthController, 'register']);
+  router.post('login', [AuthController, 'login']);
+  router.delete('logout', [AuthController, 'logout']).use(middleware.auth());
+  router.get('me', [AuthController, 'me']).as('auth.me');
+}).prefix('user');
