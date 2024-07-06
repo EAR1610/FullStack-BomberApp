@@ -7,7 +7,7 @@ import Role from './role.js'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 
-const AuthFinder = withAuthFinder( () => hash.use('scrypt'), {
+const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
@@ -45,13 +45,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
-
-  @beforeSave()
-  public static async hashPassword(user: User) {
-    if (user.$dirty.password) {
-      user.password = await hash.make(user.password)
-    }
-  }
 
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30days',

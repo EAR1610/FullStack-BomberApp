@@ -8,18 +8,23 @@ import app from "@adonisjs/core/services/app";
 
 export default class AuthController {
     async register({ request }: HttpContext) {
-        const payload = await request.validateUsing(registerValidator)                        
+        const payload = await request.validateUsing(registerValidator)
+        const fileName = `${cuid()}.${payload.photography.extname}`;
         await payload.photography.move(app.makePath('uploads/pictures'), {
-            name: `${cuid()}.${payload.photography.extname}`
-        });        
-        const user = await User.create(payload);
+            name: fileName
+        }); 
+        const user = new User();
+                
+        user.fill(payload);
+        user.photography = fileName;
+        await user.save();
     
         return User.accessTokens.create(user);
     }
 
     async login({ request }: HttpContext) {
-        const payload = await request.validateUsing(loginValidator);
-        const user = await User.verifyCredentials(payload.email, payload.password);
+        const { email, password } = await request.validateUsing(loginValidator);           
+        const user = await User.verifyCredentials(email, password);
         const token = await User.accessTokens.create(user);
         
         return {

@@ -16,10 +16,14 @@ import { middleware } from './kernel.js';
 /** 
 * ? Routes for the application: USERS 🧑‍💻
 */
-router.resource('users', UsersController);
+
+router.resource('users', UsersController).use("*",middleware.auth());
+router.group(() => {
+  router.post('change-password', [UsersController, 'changePassword'])
+}).prefix('users').use(middleware.auth());
 
 /** 
-* ? Routes for the application: AUTH 🔒 
+* ? Routes for the application: AUTH 🔒
 */
 router.group(() => {
   router.post('register', [AuthController, 'register']);

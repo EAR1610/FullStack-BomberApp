@@ -17,3 +17,11 @@ export const createUserValidator = vine.compile(
         status: vine.boolean()
     })
 )
+
+export const changePasswordValidator = vine.compile(
+    vine.object({
+        oldPassword: vine.string().minLength(8),
+        newPassword: vine.string().minLength(8),
+        confirmPassword: vine.string().minLength(8).sameAs('newPassword'),
+    })
+)
