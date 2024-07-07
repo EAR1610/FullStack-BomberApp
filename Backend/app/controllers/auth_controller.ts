@@ -8,7 +8,14 @@ import app from "@adonisjs/core/services/app";
 
 export default class AuthController {
     async register({ request }: HttpContext) {
-        const payload = await request.validateUsing(registerValidator)
+        const verifyEmail = request.only(['email'])
+        const payload = await request.validateUsing(registerValidator,
+            {
+                meta: {
+                    userEmail: verifyEmail.email
+                }
+            }
+        )
         const fileName = `${cuid()}.${payload.photography.extname}`;
         await payload.photography.move(app.makePath('uploads/pictures'), {
             name: fileName

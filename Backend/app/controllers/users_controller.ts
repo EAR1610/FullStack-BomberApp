@@ -15,10 +15,10 @@ export default class UsersController {
     const { oldPassword, newPassword } = await changePasswordValidator.validate(request.all());
     const user = auth.user!;
     
-    // ? Verify if the current password is correct
+    // ? Verify if the current password is correct 🗝 
     if( !(await hash.verify(user.password, oldPassword))) return response.badRequest({ message: 'La contraseña actual no coincide' });
   
-    // ? Update the password
+    // ? Update the password 🔄
     user.password = newPassword;
     await user.save();
     
@@ -40,17 +40,23 @@ export default class UsersController {
   async create({}: HttpContext) {}
 
   /**
-   * ? Handle form submission for the create action 
+   * ? Handle form submission for the create action
    */
-  async store({ request }: HttpContext) {    
-    const data = request.only( ['username', 'fullName', 'email', 'password', 'address', 'photography', 'status'] );            
-    const payload = await createUserValidator.validate(data);
+  async store({ request, auth }: HttpContext) {
+    const payload =  await request.validateUsing(createUserValidator,
+      {
+        meta: {
+            id: auth.user!.id
+        }
+    });
+    const fileName = `${cuid()}.${payload.photography.extname}`;
     await payload.photography.move(app.makePath('uploads/pictures'), {
-      name: `${cuid()}.${payload.photography.extname}`
+      name: fileName
     });      
     const user = new User();
 
     user.fill(payload);
+    user.photography = fileName;
     await user.save();
 
     return User.accessTokens.create(user);
