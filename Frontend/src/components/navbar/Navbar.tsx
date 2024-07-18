@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import "./navbar.scss";
+import { useContext, useEffect, useState } from "react";
+import "./Navbar.scss";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useNotificationStore } from "../../lib/notificationStore.tsx";
@@ -10,9 +10,7 @@ function Navbar() {
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
 
-  if (!authContext) {
-    throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  }
+  if (!authContext)throw new Error("useContext(AuthContext) must be used within an AuthProvider");
 
   const { currentToken } = authContext;
 
@@ -20,6 +18,15 @@ function Navbar() {
   const number = useNotificationStore((state) => state.number);
 
   if( currentToken ) fetch();
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [open]);
+
 
   return (
     <nav>
@@ -36,8 +43,8 @@ function Navbar() {
       <div className="right">
         {currentToken ? (
           <div className="user">
-            <img src={currentToken.currenToken || "/noavatar.jpg"} alt="" />
-            <span>{currentToken.username}</span>
+            {/* <img src={currentToken.currenToken || "/noavatar.jpg"} alt="" />
+            <span>{currentToken.username}</span> */}
             <Link to="/profile" className="profile">
               { number > 0 && <div className="notification">{number}</div> }
               <span>Profile</span>
@@ -51,12 +58,12 @@ function Navbar() {
         )}
         <div className="menuIcon">
           <img
-            src="/menu.png"
+            src="/vite.svg"
             alt=""
             onClick={() => setOpen((prev) => !prev)}
           />
         </div>
-        <div className={open ? "menu active" : "menu"}>
+        <div className={ open ? "menu active" : "menu" }>
           <a href="/">Inicio</a>
           <a href="/">Acerca de</a>
           <a href="/">Contacto</a>
