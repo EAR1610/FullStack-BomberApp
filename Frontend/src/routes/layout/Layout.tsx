@@ -1,17 +1,18 @@
-import "./Layout.scss";
-import Navbar from "../../components/navbar/Navbar";
+// import "./Layout.scss";
+// import Navbar from "../../components/navbar/Navbar";
 import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { AuthContextProps } from "../../interface/Auth";
+import NavbarC from "../../components/navbar/Navbar";
 
 function Layout() {
   return (
-    <div className="layout">
-      <div className="navbar">
-        <Navbar />
+    <div className="">
+      <div className="">
+        <NavbarC />
       </div>
-      <div className="content">
+      <div className="">
         <Outlet />
       </div>
     </div>
@@ -26,13 +27,14 @@ function RequireAuth() {
   const { currentToken } = authContext;
 
   if ( !currentToken ) return <Navigate to="/login" />;
+
   else {
     return (
-      <div className="layout">
-        <div className="navbar">
-          <Navbar />
+      <div className="">
+        <div className="">
+          <NavbarC />
         </div>
-        <div className="content">
+        <div className="">
           <Outlet />
         </div>
       </div>
