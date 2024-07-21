@@ -83,9 +83,9 @@ const Register = () => {
   };
 
   return (
-    <div className="w-screen h-screen overflow-y-auto p-12 bg-[#F6F6F6]">
+    <div className="w-screen h-screen overflow-y-auto p-12">
       <div className="w-full min-h-full h-max flex flex-col items-center justify-center gap-8">
-        <img src={logo} className="w-[134px] mb-5" />
+        <img src={logo} className="w-[134px] mb-5 rounded-md"/>
         <form onSubmit={ handleSubmit } className="w-[533px] max-w-[92vw] flex flex-col items-center justify-center bg-white p-8 rounded-lg">
           <h1 className="text-[#4A4A4A] font-semibold text-2xl py-6">
             Crea tu cuenta en <span className="text-[#db4149] ">BomberApp</span>

@@ -25,7 +25,7 @@ const Login = () => {
     setYear(currentYear);
   }, []);
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();    
     setError("");
 
@@ -45,12 +45,12 @@ const Login = () => {
   };
 
   return (
-    <div className="w-screen h-screen overflow-y-auto p-12 bg-[#F6F6F6]">
+    <div className="w-screen h-screen overflow-y-auto p-12">
       <div className="w-full min-h-full h-max flex flex-col items-center justify-center gap-8">
-        <img src={logo} className="w-[134px] mb-5" />
+        <img src={logo} className="w-[145px] mb-5 rounded-md" />
         <form onSubmit={ handleSubmit } className="w-[533px] max-w-[92vw] flex flex-col items-center justify-center bg-white p-8 rounded-lg">
           <h1 className="text-[#4A4A4A] font-semibold text-2xl py-6">
-            Inicia Sesión en <span className="text-[#db4149] ">BomberApp</span>
+            Inicia Sesión en <span className="text-[#db4149]">BomberApp</span>
           </h1>
           <div className="flex flex-col gap-3 w-full">
             <label htmlFor="email" className="w-full text-[#4A4A4A]">
@@ -89,7 +89,7 @@ const Login = () => {
             Iniciar sesión
           </button>
         </form>
-        <p className="text-[#666666] text-center">BomberApp { year }</p>
+        <p className="text-[#db4149] text-center">BomberApp { year }</p>
       </div>
     </div>
   )
