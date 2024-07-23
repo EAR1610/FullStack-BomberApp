@@ -4,12 +4,6 @@ import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class extends BaseSeeder {
   async run() {
-    const roleUser = await Role.findBy('name', 'user');
-    const roleAdmin = await Role.findBy('name', 'admin');
-    const roleBombero = await Role.findBy('name', 'bombero');
-
-    if( !roleUser || !roleAdmin || !roleBombero) throw new Error('Roles no encontrados');
-
     const users =  [
       {
         username: 'admin',
@@ -17,7 +11,7 @@ export default class extends BaseSeeder {
         email: 'admin@bomberapp.com',
         password: 'admin',
         address: 'Peten',
-        role: roleAdmin
+        roleId: 1
       },
       {
         username: 'user',
@@ -25,33 +19,29 @@ export default class extends BaseSeeder {
         email: 'user@bomberapp.com',
         password: 'user',
         address: 'Peten',        
-        role: roleUser
+        roleId: 2
       },
       {
         username: 'bombero',
         fullName: 'Bomber BomberApp',
         email: 'bombero@bomberapp.com',
         password: 'bombero',
-        address: 'Peten',        
-        role: roleBombero
+        address: 'Peten',
+        roleId: 3
       }
     ];
 
     for (const userData of users) {
       const user = new User();
+      
       user.username = userData.username;
       user.fullName = userData.fullName;
       user.address = userData.address;      
       user.email = userData.email;
       user.password = userData.password;
-      await user.save();
+      user.roleId = userData.roleId;
 
-      if(userData.role){
-        await user.related('roles').attach([userData.role.id]);
-        console.log(`El usuario ${user.email} con rol ${userData.role.name} ha sido creado con éxito`);
-      } else {
-        console.log(`El rol no se encuentra para el usuario ${user.email}`);
-      }
+      await user.save();
     }
   }
 }

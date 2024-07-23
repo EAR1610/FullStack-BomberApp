@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeSave, column, manyToMany } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, computed } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { compose } from '@adonisjs/core/helpers'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import hash from '@adonisjs/core/services/hash'
 import Role from './role.js'
-import type { ManyToMany } from '@adonisjs/lucid/types/relations'
-import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import Roles from '../Enums/Roles.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -15,6 +16,9 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare roleId: number
 
   @column()
   declare username: string
@@ -37,14 +41,24 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   public status: 'active' | 'inactive' | 'suspended' | undefined
 
-  @manyToMany(() => Role)
-  declare roles: ManyToMany<typeof Role>
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @computed()
+  public get isAdmin(){
+    return this.roleId === Roles.ADMIN
+  }
+
+  @computed()
+  public get isFirefighter(){
+   return this.roleId === Roles.FIREFIGHTER 
+  }
+
+  @belongsTo(() => Role)
+  public role: BelongsTo<typeof Role>
 
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30days',

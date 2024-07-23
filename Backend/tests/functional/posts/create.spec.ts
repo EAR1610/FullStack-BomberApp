@@ -6,8 +6,8 @@ import { fileURLToPath } from 'url';
 test.group('Login', () => {
   
   test('login user', async ({ assert }) => {
-    const email = 'alexander@dev.com';
-    const password = 'alexander';
+    const email = 'user@bomberapp.com';
+    const password = 'user';
     
     const client = new ApiClient();
     
@@ -18,7 +18,7 @@ test.group('Login', () => {
       password,
     });
     
-    assert.exists(response.body().token, 'Token no encontrado')
+    assert.exists(response.body().token, 'Token not found')
     assert.equal(response.body().type, 'bearer', 'The token type isnt bearer')
   });
 
@@ -47,6 +47,7 @@ test.group('Create-account', () => {
     const email = 'edixon@dev.com';
     const address = 'Calle 1, Casa 2, Barrio 3';
     const status = true;
+    const roleId = 3;
     
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -59,11 +60,12 @@ test.group('Create-account', () => {
     .field('email', email)
     .field('address', address)
     .field('status', status)
+    .field('roleId', roleId)
     .file('photography', join(__dirname,'Sukuna Fired.jpg'));
     
     assert.equal(response.status(), 200, 'The account should be created correctly');
   }); 
-
+  
   test('fail register user', async ({ assert, client }) => {
     const username = 'edixon';
     const password = 'edixonX16';
@@ -71,6 +73,7 @@ test.group('Create-account', () => {
     const email = 'edixon@dev.com';
     const address = 'Calle 1, Casa 2, Barrio 3';
     const status = true;
+    const roleId = 3;
     
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -83,6 +86,7 @@ test.group('Create-account', () => {
     .field('email', email)
     .field('address', address)
     .field('status', status)
+    .field('roleId', roleId)
     .file('photography', join(__dirname,'Sukuna Fired.jpg'));
 
     assert.equal(response.status(), 422, 'Email should already exist');
@@ -92,7 +96,7 @@ test.group('Create-account', () => {
 test.group('Logout', () =>{
 
   test('logout user', async ({ assert }) => {
-    const token = 'oat_MzY.ZlJsdFE2ZlNKdEhHNmJod1Z1RzNxbHh2d0dZYWllRms0RkJ1MmIyRTE1MDQ5MTgwNTc';
+    const token = 'oat_MTA.UzFUUVV4QV93ZVVqSEgyQUZDUGg2WW84dG0xZ2dkWkRlX0ZTdWVUMDIxMzE4ODY2MTY';
     const client = new ApiClient();
     
     const response = await client

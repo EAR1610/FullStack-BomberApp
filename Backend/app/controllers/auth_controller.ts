@@ -33,10 +33,17 @@ export default class AuthController {
         const { email, password } = await request.validateUsing(loginValidator);           
         const user = await User.verifyCredentials(email, password);
         const token = await User.accessTokens.create(user);
-        
+        const { username, photography, isAdmin, isFirefighter } = user;
+
         return {
           type: 'bearer',
           token: token.value!.release(),
+          user: {
+            username,
+            photography,
+            isAdmin,
+            isFirefighter
+          }     
         }
     }
 
