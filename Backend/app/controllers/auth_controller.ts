@@ -1,5 +1,3 @@
-// import type { HttpContext } from '@adonisjs/core/http'
-
 import User from "#models/user";
 import { loginValidator, registerValidator } from "#validators/auth";
 import { cuid } from "@adonisjs/core/helpers";

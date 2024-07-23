@@ -31,6 +31,7 @@ const SignUp: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const validTypes = ['image/jpeg', 'image/png'];
+
       if (!validTypes.includes(file.type)) {
         setError("Solo se permiten archivos JPG y PNG.");
         setPhotography(null);
@@ -61,7 +62,7 @@ const SignUp: React.FC = () => {
     formData.append('password', password);
     formData.append('address', address);
     formData.append('status', JSON.stringify(status));
-    formData.append('roleId', roleId)
+    formData.append('roleId', JSON.stringify(roleId));
     if (photography) formData.append('photography', photography);
   
     try {
@@ -466,6 +467,7 @@ const SignUp: React.FC = () => {
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
+                { error && <span>{ error }</span> }
 
                 {/* <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
                   <span>

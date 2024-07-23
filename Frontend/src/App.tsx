@@ -45,7 +45,7 @@ function App() {
       ]
     },
     {
-      path: '/',
+      path: '/bomberapp',
       element: <DefaultLayout />,
       children: [
         {
