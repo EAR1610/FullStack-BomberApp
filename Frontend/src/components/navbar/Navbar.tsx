@@ -15,6 +15,8 @@ function NavbarC() {
         <Navbar.Link href="/">
           Inicio
         </Navbar.Link>
+        <Navbar.Link href="/blog">Blog</Navbar.Link>
+        <Navbar.Link href="/emergency">Emergencia</Navbar.Link>
         <Navbar.Link href="/login">Iniciar sesión</Navbar.Link>
         <Navbar.Link href="/register">Crear cuenta</Navbar.Link>
       </Navbar.Collapse>

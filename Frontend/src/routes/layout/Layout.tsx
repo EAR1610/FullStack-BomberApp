@@ -26,7 +26,7 @@ function RequireAuth() {
     return <Navigate to="/login" />;
   } else {
     return (
-      <div className="w-full">
+      <div className="">
         <NavbarC />
         <Outlet />
       </div>

@@ -1,10 +1,45 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
+import apiRequest from '../../lib/apiRequest';
+import { AuthContext } from '../../context/AuthContext';
+import { AuthContextProps } from '../../interface/Auth';
 
 const SignIn: React.FC = () => {
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState("");
+
+  const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+
+  if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
+
+  const { updateToken } = authContext;
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
+    e.preventDefault();    
+    setError("");
+
+    try {
+      const res = await apiRequest.post("/login", {
+        email,
+        password,
+      });
+
+      updateToken(res.data);
+      navigate("/dashboard");
+
+    } catch (err:any) {
+      setError(err.response.data.message);
+    } finally {      
+    }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Sign In" />
@@ -19,8 +54,7 @@ const SignIn: React.FC = () => {
               </Link>
 
               <p className="2xl:px-20">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
+                Inicia sesión en BomberApp para disfrutar de los beneficios que te ofrece. 
               </p>
 
               <span className="mt-15 inline-block">
@@ -150,21 +184,22 @@ const SignIn: React.FC = () => {
 
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-              <span className="mb-1.5 block font-medium">Start for free</span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign In to TailAdmin
+                Inicia sesión en <span className='text-red-500'>BomberApp</span>
               </h2>
-
-              <form>
+              <form onSubmit={ handleSubmit }>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Email
+                    Correo Electrónico
                   </label>
                   <div className="relative">
                     <input
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="Introduce tu correo"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      required
+                      value={ email }
+                      onChange={ e => setEmail(e.target.value)}
                     />
 
                     <span className="absolute right-4 top-4">
@@ -189,13 +224,16 @@ const SignIn: React.FC = () => {
 
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Re-type Password
+                    Contraseña
                   </label>
                   <div className="relative">
                     <input
                       type="password"
-                      placeholder="6+ Characters, 1 Capital letter"
+                      placeholder="Escribe tu contraseña"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      required
+                      value={ password }
+                      onChange={ e => setPassword(e.target.value) }
                     />
 
                     <span className="absolute right-4 top-4">
@@ -221,16 +259,16 @@ const SignIn: React.FC = () => {
                     </span>
                   </div>
                 </div>
-
+                { error && <span>{ error }</span> }
                 <div className="mb-5">
                   <input
                     type="submit"
-                    value="Sign In"
+                    value="Iniciar sesión"
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
 
-                <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+                {/* <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
                   <span>
                     <svg
                       width="20"
@@ -265,15 +303,15 @@ const SignIn: React.FC = () => {
                     </svg>
                   </span>
                   Sign in with Google
-                </button>
+                </button> */}
 
                 <div className="mt-6 text-center">
                   <p>
-                    Don’t have any account?{' '}
-                    <Link to="/auth/signup" className="text-primary">
-                      Sign Up
+                   No tienes una cuenta?{' '}
+                    <Link to="/register" className="text-primary">
+                      Crea una cuenta
                     </Link>
-                  </p>
+                  </p>                  
                 </div>
               </form>
             </div>

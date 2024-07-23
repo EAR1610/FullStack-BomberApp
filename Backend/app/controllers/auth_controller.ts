@@ -24,9 +24,19 @@ export default class AuthController {
                 
         user.fill(payload);
         user.photography = fileName;
-        await user.save();
+        const { username, photography, isAdmin, isFirefighter } = await user.save();
+        const token = await User.accessTokens.create(user);
     
-        return User.accessTokens.create(user);
+        return {
+            type: 'bearer',
+            token: token.value!.release(),
+            user: {
+              username,
+              photography,
+              isAdmin,
+              isFirefighter
+            }
+        };
     }
 
     async login({ request }: HttpContext) {
