@@ -1,10 +1,70 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
+import { AuthContextProps } from '../../interface/Auth';
+import { AuthContext } from '../../context/AuthContext';
+import { apiRequest, apiRequestAuth } from '../../lib/apiRequest';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+
+  const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+  const navigate = useNavigate();
+  
+  if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");  
+  
+  const { currentToken, updateToken } = authContext;
+
+  useEffect(() => {
+    let imageObjectUrl:any;
+
+    const fetchUserImage = async () => {
+      try {
+        if (currentToken && currentToken.user && currentToken.user.photography) {
+          const response = await apiRequestAuth.get(`/profile/${currentToken.user.photography}`, {
+            headers: {
+              Authorization: `Bearer ${currentToken.token}`
+            },
+            responseType: 'blob'
+          });
+          const imageBlob = response.data;
+          imageObjectUrl = URL.createObjectURL(imageBlob);
+          setImageUrl(imageObjectUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching user image:', error);
+      }
+    };
+
+    fetchUserImage();
+
+    return () => {
+      if (imageObjectUrl) {
+        URL.revokeObjectURL(imageObjectUrl);
+      }
+    };
+  }, [currentToken]);
+  
+
+  const handleLogout = async () => {
+    try {
+      await apiRequest.delete("/logout", 
+        {
+          headers: {
+            Authorization: `Bearer ${currentToken.token}`
+          }
+        }
+      );
+      localStorage.removeItem('currentToken');
+      updateToken('');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw error;
+    }
+  };
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -21,7 +81,7 @@ const DropdownUser = () => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          <img src={ imageUrl ?? UserOne } alt="User" />
         </span>
 
         <svg
@@ -119,7 +179,9 @@ const DropdownUser = () => {
               </Link>
             </li>
           </ul>
-          <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+          <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+            onClick={ handleLogout }
+          >
             <svg
               className="fill-current"
               width="22"

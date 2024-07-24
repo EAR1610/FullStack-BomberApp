@@ -21,7 +21,8 @@ import EquipmentTypesController from '#controllers/equipment_types_controller';
 router.resource('users/equipment-type', EquipmentTypesController).use("*", middleware.auth());
 router.resource('users', UsersController).use("*",middleware.auth());
 router.group(() => {
-  router.post('change-password', [UsersController, 'changePassword'])
+  router.post('change-password', [UsersController, 'changePassword']);
+  router.get('/profile/:file', [UsersController, 'getProfile']);
 }).prefix('users').use(middleware.auth());
 
 /** 

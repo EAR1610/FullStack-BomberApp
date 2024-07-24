@@ -36,7 +36,7 @@ const Login = () => {
       });
 
       updateToken(res.data);
-      navigate("/dashboard");
+      navigate("/app/dashboard");
 
     } catch (err:any) {
       setError(err.response.data.message);

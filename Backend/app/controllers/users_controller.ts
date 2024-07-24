@@ -16,13 +16,23 @@ export default class UsersController {
     const user = auth.user!;
     
     // ? Verify if the current password is correct 🗝 
-    if( !(await hash.verify(user.password, oldPassword))) return response.badRequest({ message: 'La contraseña actual no coincide' });
+    if( !(await hash.verify(user.password, oldPassword)) ) return response.badRequest({ message: 'La contraseña actual no coincide' });
   
     // ? Update the password 🔄
     user.password = newPassword;
     await user.save();
     
     return response.ok({ message: 'Contraseña actualizada correctamente' });
+  }
+
+  /**
+   * 
+   * ? Get the user's image
+   */
+  async getProfile({ response, params }: HttpContext) {
+    const filePath = app.makePath(`uploads/pictures/${params.file}`);
+
+    response.download(filePath);
   }
 
   /**

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
-import apiRequest from '../../lib/apiRequest';
+import { apiRequest } from '../../lib/apiRequest';
 import { AuthContext } from '../../context/AuthContext';
 import { AuthContextProps } from '../../interface/Auth';
 
@@ -22,7 +22,7 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
-    e.preventDefault();    
+    e.preventDefault();
     setError("");
 
     try {
@@ -32,7 +32,7 @@ const SignIn: React.FC = () => {
       });
 
       updateToken(res.data);
-      navigate("/dashboard");
+      navigate("/app/dashboard");
 
     } catch (err:any) {
       setError(err.response.data.message);

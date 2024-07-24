@@ -5,4 +5,12 @@ const apiRequest = axios.create({
   withCredentials: true,
 });
 
-export default apiRequest;
+const apiRequestAuth = axios.create({
+  baseURL: "http://localhost:3333/users",
+  withCredentials: true,
+});
+
+export {
+  apiRequest,
+  apiRequestAuth
+};

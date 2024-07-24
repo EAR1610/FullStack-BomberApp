@@ -47,7 +47,6 @@ const Register = () => {
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();    
     setError("");
-    debugger;
 
     if ( 
       !username || !fullName || !email || 
@@ -74,7 +73,7 @@ const Register = () => {
       });
 
       updateToken( res.data )
-      navigate("/dashboard");
+      navigate("/app/dashboard");
 
     } catch (err:any) {
       setError(err.response.data.message);

@@ -5,7 +5,7 @@ import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
 import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
-import apiRequest from '../../lib/apiRequest';
+import { apiRequest } from '../../lib/apiRequest';
 
 const SignUp: React.FC = () => {
 
@@ -73,7 +73,7 @@ const SignUp: React.FC = () => {
       });
 
       updateToken( res.data )
-      navigate("/dashboard");
+      navigate("/app/dashboard");
 
     } catch (err:any) {
       setError(err.response.data.message);
