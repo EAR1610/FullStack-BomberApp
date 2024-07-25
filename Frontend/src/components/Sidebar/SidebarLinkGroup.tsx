@@ -5,6 +5,14 @@ interface SidebarLinkGroupProps {
   activeCondition: boolean;
 }
 
+/**
+ * Renders a sidebar link group component.
+ *
+ * @param {Object} props - The properties for the component.
+ * @param {ReactNode} props.children - The child elements to be rendered.
+ * @param {boolean} props.activeCondition - The active condition for the component.
+ * @return {JSX.Element} The rendered sidebar link group component.
+ */
 const SidebarLinkGroup = ({
   children,
   activeCondition,

@@ -6,6 +6,7 @@ import Logo from '../../images/logo/logo.svg';
 import { apiRequest } from '../../lib/apiRequest';
 import { AuthContext } from '../../context/AuthContext';
 import { AuthContextProps } from '../../interface/Auth';
+import { Alert } from 'flowbite-react';
 
 const SignIn: React.FC = () => {
   
@@ -35,8 +36,8 @@ const SignIn: React.FC = () => {
       navigate("/app/dashboard");
 
     } catch (err:any) {
-      setError(err.response.data.message);
-    } finally {      
+      setError('Credenciales incorrectas');
+    } finally {
     }
   };
 
@@ -259,7 +260,11 @@ const SignIn: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                { error && <span>{ error }</span> }
+                { error && (
+                  <Alert color={ 'failure' }>
+                      <span className='font-extrabold'>Atención:</span> { error }
+                  </Alert>
+                ) }
                 <div className="mb-5">
                   <input
                     type="submit"

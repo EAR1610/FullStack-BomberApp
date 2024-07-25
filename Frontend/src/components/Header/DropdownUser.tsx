@@ -6,6 +6,13 @@ import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 import { apiRequest, apiRequestAuth } from '../../lib/apiRequest';
 
+// +/**
+// + * Renders a dropdown user component.
+// + *
+// + * @return {JSX.Element} The rendered dropdown user component.
+// + */
+// + /*
+
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
@@ -13,16 +20,22 @@ const DropdownUser = () => {
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   const navigate = useNavigate();
   
-  if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");  
+  if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   
   const { currentToken, updateToken } = authContext;
 
   useEffect(() => {
     let imageObjectUrl:any;
 
+    /**
+     * Fetches the user's image from the server and sets the image URL state.
+     *
+     * @return {Promise<void>} A Promise that resolves when the image is fetched and the state is updated.
+    */
+
     const fetchUserImage = async () => {
       try {
-        if (currentToken && currentToken.user && currentToken.user.photography) {
+        if ( currentToken && currentToken.user && currentToken.user.photography ) {
           const response = await apiRequestAuth.get(`/profile/${currentToken.user.photography}`, {
             headers: {
               Authorization: `Bearer ${currentToken.token}`
@@ -74,14 +87,13 @@ const DropdownUser = () => {
         to="#"
       >
         <span className="hidden text-right lg:block">
-          <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+          <span className="block text-md font-medium text-black dark:text-white">
+            { currentToken?.user?.username } 
           </span>
-          <span className="block text-xs">UX Designer</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={ imageUrl ?? UserOne } alt="User" />
+          <img src={ imageUrl ? imageUrl : UserOne} alt="User" />
         </span>
 
         <svg
@@ -102,14 +114,14 @@ const DropdownUser = () => {
       </Link>
 
       {/* <!-- Dropdown Start --> */}
-      {dropdownOpen && (
+      { dropdownOpen && (
         <div
           className={`absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark`}
         >
           <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
             <li>
               <Link
-                to="/profile"
+                to="./profile"
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
                 <svg
@@ -129,10 +141,10 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                My Profile
+                Mi perfil
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 to="#"
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
@@ -152,10 +164,10 @@ const DropdownUser = () => {
                 </svg>
                 My Contacts
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
-                to="/settings"
+                to="./settings"
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
                 <svg
@@ -175,7 +187,7 @@ const DropdownUser = () => {
                     fill=""
                   />
                 </svg>
-                Account Settings
+                Configuraciones
               </Link>
             </li>
           </ul>
@@ -199,7 +211,7 @@ const DropdownUser = () => {
                 fill=""
               />
             </svg>
-            Log Out
+            Cerrar sesión
           </button>
         </div>
       )}
