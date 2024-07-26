@@ -3,21 +3,19 @@ import { createBrowserRouter, RouterProvider, RouteObject } from 'react-router-d
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import Calendar from './pages/Calendar';
 import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
-import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
-import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import { Layout } from './routes/layout/Layout';
 import HomePage from './routes/homePage/HomePage';
 import PageTitle from './components/PageTitle';
 import RequireAuth from './pages/Authentication/RequireAuth';
+import User from './pages/Users/User';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -57,17 +55,17 @@ function App() {
               path: 'dashboard',
               element: (
                 <>
-                  <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Dashboard | BomberApp" />
                   <ECommerce />
                 </>
               )
-            },
+            },            
             {
-              path: 'calendar',
+              path: 'users',
               element: (
                 <>
-                  <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                  <Calendar />
+                  <PageTitle title="User | BomberApp" />
+                  <User />
                 </>
               )
             },
@@ -75,7 +73,7 @@ function App() {
               path: 'profile',
               element: (
                 <>
-                  <PageTitle title="Profile | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Profile | BomberApp" />
                   <Profile />
                 </>
               )
@@ -84,7 +82,7 @@ function App() {
               path: 'forms/form-elements',
               element: (
                 <>
-                  <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Form Elements | BomberApp" />
                   <FormElements />
                 </>
               )
@@ -93,25 +91,16 @@ function App() {
               path: 'forms/form-layout',
               element: (
                 <>
-                  <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Form Layout | BomberApp" />
                   <FormLayout />
                 </>
               )
-            },
-            {
-              path: 'tables',
-              element: (
-                <>
-                  <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                  <Tables />
-                </>
-              )
-            },
+            },            
             {
               path: 'settings',
               element: (
                 <>
-                  <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Settings | BomberApp" />
                   <Settings />
                 </>
               )
@@ -120,7 +109,7 @@ function App() {
               path: 'chart',
               element: (
                 <>
-                  <PageTitle title="Basic Chart | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Basic Chart | BomberApp" />
                   <Chart />
                 </>
               )
@@ -129,20 +118,11 @@ function App() {
               path: 'ui/alerts',
               element: (
                 <>
-                  <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Alerts | BomberApp" />
                   <Alerts />
                 </>
               )
-            },
-            {
-              path: 'ui/buttons',
-              element: (
-                <>
-                  <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                  <Buttons />
-                </>
-              )
-            }
+            }          
           ]
         }
       ]
