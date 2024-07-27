@@ -1,214 +1,107 @@
-import { useMemo, useState } from "react";
-import {
-  ColumnDef,
-  getCoreRowModel,
-  useReactTable,
-  flexRender,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  getFilteredRowModel,
-} from "@tanstack/react-table";
-import { Button, Input } from "@kofile/gds-react";
-import {
-  SkipForward,
-  SkipBack,
-  ArrowFatLinesUp,
-  ArrowFatLinesDown,
-  MagnifyingGlass,
-  ArrowsDownUp,
-} from "@phosphor-icons/react";
-import { Cols, ReactTableProps } from "./type";
-import { EditableCell } from "./EditableCell";
+import { useState, useEffect } from 'react';
+import { classNames } from 'primereact/utils';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { MultiSelect } from 'primereact/multiselect';
+import { Tag } from 'primereact/tag';
+// import '../../index.css'
 
-const Table = <T,>({ data }: ReactTableProps<T>) => {
-  const [dataTable, setData] = useState<T[]>(data);
-
-  console.log(data);
-
-  const cols = useMemo<ColumnDef<T>[]>(
-    () => [
-      {
-        header: "USUARIO",
-        accessorKey: "username",
-      },
-      {
-        header: "NOMBRE COMPLETO",
-        size: 225,
-        accessorKey: "fullName",
-      },
-      {
-        header: "EMAIL",
-        accessorKey: "email",
-      },
-      {
-        header: "DIRECCIÓN",
-        accessorKey: "address",
-        // cell: EditableCell,
-      },
-      {
-        header: "ESTADO",
-        accessorKey: "status",
-      },
-    ],
-    []
-  );
-
-  //state to sort
-  const [sorting, setSorting] = useState<SortingState>([]);
-  //state to filter
-  const [filtering, setFiltering] = useState("");
-
-  const table = useReactTable({
-    data: dataTable,
-    columns: cols,
-    state: {
-      sorting,
-      globalFilter: filtering,
-    },
-    meta: {
-      updateData: (rowIndex: number, columnId: string, value: unknown) =>
-        setData((prev: T[]) =>
-          prev.map((row: T, index: number) =>
-            index === rowIndex ? { ...row, [columnId]: value } : row
-          )
-        ),
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onSortingChange: setSorting,
-    onGlobalFilterChange: setFiltering,
-    columnResizeMode: "onChange",
+const Table = ({ data }) => {
+  const [customers, setCustomers] = useState(null);
+  const [filters, setFilters] = useState({
+    username: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    fullName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    email: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    address: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
+  const [loading, setLoading] = useState(true);
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
 
-  console.log(table);
+  const [statuses] = useState(['Activo', 'Inactivo']);
+
+  const getSeverity = (status) => {
+    switch (status) {
+      case 'Inactivo':
+        return 'danger';
+      case 'Activo':
+        return 'success';
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    setCustomers(data);
+    setLoading(false);
+  }, [data]);
+
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+
+    _filters['global'].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  };
+
+  const renderHeader = () => {
+    return (
+      <div className="flex justify-content-end">
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Búsqueda"/>
+        </span>
+      </div>
+    );
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    return <Tag value={rowData.status} severity={getSeverity(rowData.status)} />;
+  };
+
+  const statusItemTemplate = (option) => {
+    return <Tag value={option} severity={getSeverity(option)} />;
+  };
+
+  const header = renderHeader();
 
   return (
-    <div>
-      <div className="flex mb-2">
-        {/* <Input altbackground={true}>
-          <Input.LeftIcon>
-            <MagnifyingGlass size={25} />
-          </Input.LeftIcon>
-          <Input.Input
-            placeholder="Search"
-            value={filtering}
-            onChange={(e: any) => setFiltering(e.target.value)}
+    <div className="card p-4 bg-gray-100 rounded-lg shadow-md">
+      <DataTable
+       className='bg-white rounded-md overflow-hidden'
+        value={customers}
+        paginator
+        rows={10}
+        dataKey="id"
+        filters={filters}
+        filterDisplay="row"
+        loading={loading}
+        globalFilterFields={['username', 'fullName', 'email', 'address', 'status']}
+        header={header}
+        emptyMessage="Usuario no encontrado."
+      >
+        <Column field="username" header="Usuario" filter filterPlaceholder="Busqueda por usuario" style={{ minWidth: '12rem' }}  />
+        <Column field="fullName" header="Nombre" filter filterPlaceholder="Busqueda por nombre" style={{ minWidth: '12rem' }} />
+        <Column field="email" header="Correo" filter filterPlaceholder="Busqueda por correo" style={{ minWidth: '12rem' }} />
+        <Column field="address" header="Dirección" filter filterPlaceholder="Busqueda por direccion" style={{ minWidth: '12rem' }} />
+        <Column field="status" header="Estado" filter filterElement={(options) => (
+          <Dropdown
+            value={options.value}
+            options={statuses}
+            onChange={(e) => options.filterApplyCallback(e.value)}
+            itemTemplate={statusItemTemplate}
+            placeholder="Seleccciona un estado"
+            showClear
+            style={{ minWidth: '12rem' }}
           />
-        </Input> */}
-      </div>
-      <table style={{ width: `${table.getCenterTotalSize()}` }}>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  colSpan={header.colSpan}
-                  style={{ position: "relative", width: `${header.getSize()}` }}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  {header.column.getCanSort() && (
-                    <ArrowsDownUp
-                      style={{ cursor: "pointer" }}
-                      size={20}
-                      onClick={header.column.getToggleSortingHandler()}
-                    />
-                  )}
-                  {
-                    {
-                      asc: <ArrowFatLinesUp size={20} />,
-                      desc: <ArrowFatLinesDown size={20} />,
-                    }[(header.column.getIsSorted() as string) ?? null]
-                  }
-                  {header.column.getCanResize() && (
-                    <div
-                      onDoubleClick={() => header.column.resetSize()}
-                      onMouseDown={header.getResizeHandler()}
-                      onTouchStart={header.getResizeHandler()}
-                      className={`resizer ${
-                        header.column.getIsResizing() ? "isResizing" : ""
-                      }`}
-                    ></div>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} style={{ width: cell.column.getSize() }}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          {table.getFooterGroups().map((footerGroup) => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map((footer) => (
-                <th key={footer.id}>
-                  {flexRender(
-                    footer.column.columnDef.footer,
-                    footer.getContext()
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
-      </table>
-      <div className="container mt-2">
-        <div className="row d-flex justify-content-between">
-          <Button
-            size="lg"
-            background="outlined"
-            variant="neutral"
-            className="col-2"
-            onClick={() => table.setPageIndex(0)}
-          >
-            Primera página
-          </Button>
-          <Button
-            size="lg"
-            background="outlined"
-            variant="neutral"
-            className="col-2"
-            onClick={() => table.previousPage()}
-          >
-            Página previa<SkipBack size={20} />
-          </Button>
-          <Button
-            size="lg"
-            background="outlined"
-            variant="neutral"
-            className="col-2"
-            onClick={() => table.nextPage()}
-          >
-            Next Page <SkipForward size={20} />
-          </Button>
-          <Button
-            size="lg"
-            background="outlined"
-            variant="neutral"
-            className="col-2"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          >
-            Última página
-          </Button>
-        </div>
-      </div>
+        )} body={statusBodyTemplate} style={{ minWidth: '12rem' }}/>
+      </DataTable>
     </div>
   );
 };

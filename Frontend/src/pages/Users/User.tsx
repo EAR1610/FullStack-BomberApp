@@ -2,10 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
 import { apiRequestAuth } from "../../lib/apiRequest";
-
-import {
-
-} from '@tanstack/react-table';
 import Table from "../../components/Table/Table";
 
 const User = () => {
@@ -38,8 +34,8 @@ const User = () => {
     getUsers();
   }, []);
 
-  return (
-    <Table data={users}/>
+  return (    
+      <Table data={users}/>
   );
 }
 
