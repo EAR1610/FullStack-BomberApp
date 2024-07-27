@@ -93,7 +93,13 @@ export default class UsersController {
   /**
    * ? Handle form submission for the edit action
    */
-  async update({}: HttpContext) {}
+  async update({ request, params, response}: HttpContext) {
+    const user = await User.find( params.id );
+    if( !user ) return response.notFound({ message: 'No se encontro el usuario' });
+    const data = request.all();
+    user?.merge(data);
+    return await user?.save();
+  }
 
   /**
    * ? Delete record
