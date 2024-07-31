@@ -1,17 +1,19 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
 import { apiRequestAuth } from "../../lib/apiRequest";
 import Table from "../../components/Table/Table";
+import { Toast } from 'primereact/toast';
 
 const User = () => {
 
   const [users, setUsers] = useState([]);
-  const [error, setError] = useState('');
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+
+  const toast = useRef(null);
 
   useEffect(() => {
    /**
@@ -28,14 +30,17 @@ const User = () => {
         });
         setUsers(users.data);
       } catch (error) {
-        setError("Ha ocurrido un error al obtener los usuarios");
+        toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
       }
     }
     getUsers();
   }, []);
 
   return (    
+    <>
+      <Toast ref={toast} />
       <Table data={users}/>
+    </>
   );
 }
 

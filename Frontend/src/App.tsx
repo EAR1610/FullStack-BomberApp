@@ -3,20 +3,27 @@ import { createBrowserRouter, RouterProvider, RouteObject } from 'react-router-d
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
-import Alerts from './pages/UiElements/Alerts';
 import DefaultLayout from './layout/DefaultLayout';
 import { Layout } from './routes/layout/Layout';
 import HomePage from './routes/homePage/HomePage';
-import PageTitle from './components/PageTitle';
 import RequireAuth from './pages/Authentication/RequireAuth';
 import User from './pages/Users/User';
+import Blog from './pages/Blog/Blog';
+import Emergency from './pages/Emergency/Emergency';
+import EmergencyWithAuth from './pages/Emergency/EmergencyWithAuth';
+import FireFighter from './pages/FireFighters/FireFighter';
+import Tools from './pages/Tool/Tools';
+import Ambulance from './pages/Ambulances/Ambulance';
+import BlogWithAuth from './pages/Blog/BlogWithAuth';
 
+/**
+ * Renders the main App component with routes and layout.
+ *
+ * @return {JSX.Element} The rendered App component.
+ */
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -40,12 +47,20 @@ function App() {
         {
           path: '/register',
           element: <SignUp />
-        }
+        },
+        {
+          path: '/blog',
+          element: <Blog />
+        },
+        {
+          path: '/emergency',
+          element: <EmergencyWithAuth />
+        },
       ]
     },
     {
       path: '/app',
-      element: <RequireAuth />, // Protege las rutas debajo de /app
+      element: <RequireAuth />, // Protect the routes under the /app route
       children: [
         {
           path: '',
@@ -55,7 +70,6 @@ function App() {
               path: 'dashboard',
               element: (
                 <>
-                  <PageTitle title="Dashboard | BomberApp" />
                   <ECommerce />
                 </>
               )
@@ -64,65 +78,66 @@ function App() {
               path: 'users',
               element: (
                 <>
-                  <PageTitle title="User | BomberApp" />
                   <User />
                 </>
               )
             },
             {
+              path: 'emergencies',
+              element: (
+                <>                 
+                  <Emergency />
+                </>
+              )
+            },
+            {
+              path: 'firefighters',
+              element: (
+                <>                 
+                  <FireFighter />
+                </>
+              )
+            },
+            {
+              path: 'tools',
+              element: (
+                <>                 
+                  <Tools />
+                </>
+              )
+            },
+            {
+              path: 'ambulances',
+              element: (
+                <>                 
+                  <Ambulance />
+                </>
+              )
+            },                     
+            {
+              path: 'blogs',
+              element: (
+                <>                 
+                  <BlogWithAuth />
+                </>
+              )
+            },                     
+            {
               path: 'profile',
               element: (
-                <>
-                  <PageTitle title="Profile | BomberApp" />
+                <>                 
                   <Profile />
                 </>
               )
-            },
-            {
-              path: 'forms/form-elements',
-              element: (
-                <>
-                  <PageTitle title="Form Elements | BomberApp" />
-                  <FormElements />
-                </>
-              )
-            },
-            {
-              path: 'forms/form-layout',
-              element: (
-                <>
-                  <PageTitle title="Form Layout | BomberApp" />
-                  <FormLayout />
-                </>
-              )
-            },            
+            },                     
             {
               path: 'settings',
               element: (
-                <>
-                  <PageTitle title="Settings | BomberApp" />
+                <>                 
                   <Settings />
                 </>
               )
-            },
-            {
-              path: 'chart',
-              element: (
-                <>
-                  <PageTitle title="Basic Chart | BomberApp" />
-                  <Chart />
-                </>
-              )
-            },
-            {
-              path: 'ui/alerts',
-              element: (
-                <>
-                  <PageTitle title="Alerts | BomberApp" />
-                  <Alerts />
-                </>
-              )
-            }          
+            }            
           ]
         }
       ]

@@ -20,7 +20,6 @@ function NavbarC() {
         <Navbar.Link href="/login">Iniciar sesión</Navbar.Link>
         <Navbar.Link href="/register">Crear cuenta</Navbar.Link>
       </Navbar.Collapse>
-        <DarkThemeToggle />
     </Navbar>
   );
 }

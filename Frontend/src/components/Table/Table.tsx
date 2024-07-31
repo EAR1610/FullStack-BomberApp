@@ -5,10 +5,8 @@ import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
-import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-import { Tag } from 'primereact/tag';
 import SignUp from '../../pages/Authentication/SignUp';
 
 const Table = ({ data }:any) => {
@@ -25,38 +23,12 @@ const Table = ({ data }:any) => {
   const [loading, setLoading] = useState(true);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [visible, setVisible] = useState(false);
-  const [statuses] = useState(['Activo', 'Inactivo']);
-  const [roles] = useState(['Administrador', 'Usuario', 'Bombero']);
   const [selectedUser, setSelectedUser] = useState(null);
   
   useEffect(() => {
     setCustomers(data);
     setLoading(false);
   }, [data]);
-
-  const getSeverity = (status:any) => {
-    switch (status) {
-      case 'Inactivo':
-        return 'danger';
-      case 'Activo':
-        return 'success';
-      default:
-        return null;
-    }
-  };
-
-  const getRol = (rol:any) => {
-    switch (rol) {
-      case 'Administrador':
-        return 'success';
-      case 'Usuario':
-        return 'info';
-      case 'Bombero':
-        return 'warning';
-      default:
-        return null;
-    }
-  };
 
   const onGlobalFilterChange = (e:any) => {
     const value = e.target.value;
@@ -87,36 +59,34 @@ const Table = ({ data }:any) => {
     );
   };
 
-  const statusBodyTemplate = (rowData:any) => {
-    return <Tag value={rowData.status} severity={getSeverity(rowData.status)} />;
-  };
-  
-  const statusItemTemplate = (option:any) => {
-    return <Tag value={option} severity={getSeverity(option)} />;
-  };
-  
-  const rolesBodyTemplate = (rowData:any) => {
-    return <Tag value={rowData.rol} severity={ getRol(rowData.rol)} />;
-  };
-
-  const rolesItemTemplate = (option:any) => {
-    return <Tag value={option} severity={getRol(option)} />;
-  };
-
   const editUser = (rowData:any) => {
     setSelectedUser(rowData);
     setVisible(true);
   };
 
-const deleteUser = (rowData:any) => {
+  const deleteUser = (rowData:any) => {
   };
 
   const optionsBodyTemplate = (rowData:any) => {
     return (
-        <div className="flex space-x-2">
-            <Button label="Editar" icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editUser(rowData)} />
-            <Button label="Eliminar" icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => deleteUser(rowData)} />
-        </div>
+      <div className="flex items-center space-x-4">
+          <Button
+              size='small'
+              label="Editar"
+              icon="pi pi-pencil"
+              className="p-button-rounded p-button-success p-button-sm"
+              onClick={() => editUser(rowData)}
+              style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
+          />
+          <Button
+              size='small'
+              label="Eliminar"
+              icon="pi pi-trash"
+              className="p-button-rounded p-button-danger p-button-sm"
+              onClick={() => deleteUser(rowData)}
+              style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
+          />
+      </div>
   )};
 
   const header = renderHeader();
@@ -136,23 +106,11 @@ const deleteUser = (rowData:any) => {
         header={header}
         emptyMessage="Usuario no encontrado."
       >
-        <Column field="username" header="Usuario" filter filterPlaceholder="Busqueda por usuario" style={{ minWidth: '12rem' }}  />
-        <Column field="fullName" header="Nombre" filter filterPlaceholder="Busqueda por nombre" style={{ minWidth: '12rem' }} />
-        <Column field="email" header="Correo" filter filterPlaceholder="Busqueda por correo" style={{ minWidth: '12rem' }} />
-        <Column field="address" header="Dirección" filter filterPlaceholder="Busqueda por direccion" style={{ minWidth: '12rem' }} />
-        <Column field="address" header="Dirección" filter filterPlaceholder="Busqueda por direccion" style={{ minWidth: '12rem' }} />
-        <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
-        <Column field="rol" header="Rol" filter filterElement={(options) => (
-          <Dropdown
-            value={options.value}
-            options={roles}
-            onChange={(e) => options.filterApplyCallback(e.value)}
-            itemTemplate={rolesItemTemplate}
-            placeholder="Rol"
-            showClear
-            style={{ minWidth: '5rem' }}
-          />
-        )} body={rolesBodyTemplate} style={{ minWidth: '5rem' }}/>
+        <Column field="username" header="Usuario"  style={{ minWidth: '12rem' }}  />
+        <Column field="fullName" header="Nombre" style={{ minWidth: '12rem' }} />
+        <Column field="email" header="Correo" style={{ minWidth: '12rem' }} />
+        <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} />
+        <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
