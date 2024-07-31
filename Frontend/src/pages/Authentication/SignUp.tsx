@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
 import { AuthContextProps } from '../../interface/Auth';
@@ -12,7 +11,7 @@ import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
         
 
-const SignUp: React.FC = ({ data }:any) => {
+const SignUp: React.FC = ({ user, setVisible }:any) => {
   
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -30,7 +29,6 @@ const SignUp: React.FC = ({ data }:any) => {
   const [status, setStatus] = useState(true);
   const [error, setError] = useState("");
   const [roleId, setRoleId] = useState(3);
-  const [statusData, setStatusData] = useState('active');
 
   const header = <div className="font-bold mb-3">Escribe tu contraseña</div>;
   const footer = (
@@ -47,16 +45,17 @@ const SignUp: React.FC = ({ data }:any) => {
     );
 
   useEffect(() => {
-    if (data) {
-      setUsername(data.username || '');
-      setFullName(data.fullName || '');
-      setEmail(data.email || '');
-      setPassword(data.password || '');
-      setAddress(data.address || '');
-      setStatus(data.status || true);
-      setRoleId(data.roleId || 3);
+    if (user) {
+      setUsername(user.username || '');
+      setFullName(user.fullName || '');
+      setEmail(user.email || '');
+      setPhotography(user.photography || null);
+      setPassword(user.password || '');
+      setAddress(user.address || '');
+      setStatus(user.status || true);
+      setRoleId(user.roleId || 3);
     }
-  }, [data]);
+  }, [user]);
 
   const roles = [
     { id: 1, name: "Administrador" },
@@ -108,21 +107,25 @@ const SignUp: React.FC = ({ data }:any) => {
     setError("");
     
     const formData = new FormData();
-    if(data){
+    if(user){
+
       if ( 
         !username || !fullName || !email  || !address
       ) {
         setError("Todos los campos son obligatorios.");
         return;
+
       } else {        
         formData.append('username', username);
         formData.append('fullName', fullName);
         formData.append('email', email);
         formData.append('address', address);
         formData.append('roleId', JSON.stringify(roleId));
-        if (photography) formData.append('photography', photography);
-      }    
+        if ( typeof(photography) !== "string") formData.append('photography', photography);
+      } 
+
     } else{
+
       if ( 
         !username || !fullName || !email || 
         !password || !address || !photography 
@@ -139,17 +142,19 @@ const SignUp: React.FC = ({ data }:any) => {
         formData.append('roleId', JSON.stringify(roleId));
         if (photography) formData.append('photography', photography);
       }
+
     }  
 
     try {
-      if (data) {
-        await apiRequestAuth.put(`/${data.id}`, formData, {
+
+      if (user) {
+        await apiRequestAuth.put(`/${user.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${currentToken?.token}`
           },
         });
-        showAlert('info', 'Info', 'Usuario Actualizado!');
+        setVisible(false);        
 
       } else {
         const res =await apiRequest.post("/register", formData, {
@@ -174,16 +179,17 @@ const SignUp: React.FC = ({ data }:any) => {
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
       <Toast ref={toast} />
         <div className="flex flex-wrap items-center">
-          <div className="hidden w-full xl:block xl:w-1/2">
-            <div className="py-17.5 px-26 text-center">
+            
+          <div className={`${currentToken ? 'hidden' : 'hidden w-full xl:block xl:w-1/2'}`}>
+            <div className="py-17.5 px-26 text-center">              
               <Link className="mb-5.5 inline-block" to="/">
                 <img className="hidden dark:block" src={Logo} alt="Logo" />
                 <img className="dark:hidden" src={LogoDark} alt="Logo" />
               </Link>
               <p className="2xl:px-20">
                 Crea un cuenta en BomberApp y empieza a disfrutar de lo que puedes aprender o ayudar
-              </p>
-
+              </p>            
+            
               <span className="mt-15 inline-block">
                 <svg
                   width="350"
@@ -308,10 +314,9 @@ const SignUp: React.FC = ({ data }:any) => {
               </span>
             </div>
           </div>
-
-          <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
+          <div className={`${currentToken ? 'w-full' : 'border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'}`}>
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-              <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+              <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
                 Crea tu cuenta en <span className='text-red-500'>BomberApp</span>
               </h2>
               <form onSubmit={ handleSubmit }>
@@ -428,7 +433,7 @@ const SignUp: React.FC = ({ data }:any) => {
                   </div>
                 </div>
 
-                { !data && (
+                { !user && (
                   <div className="mb-4">
                     <label htmlFor='password' className="mb-2.5 block font-medium text-black dark:text-white">
                       Contraseña
@@ -477,7 +482,7 @@ const SignUp: React.FC = ({ data }:any) => {
                     <input
                       id='address'
                       type="text"
-                      placeholder="Ingresa tu contraseña"
+                      placeholder="Ingresa tu dirección"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
                       value={ address }
@@ -565,7 +570,7 @@ const SignUp: React.FC = ({ data }:any) => {
                 <div className="mb-5">
                   <input
                     type="submit"
-                    value="Crear cuenta"
+                    value={`${ user ? 'Actualizar Usuario' : 'Crear cuenta'}`}
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>

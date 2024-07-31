@@ -34,7 +34,7 @@ const User = () => {
       }
     }
     getUsers();
-  }, []);
+  }, [users]);
 
   return (    
     <>

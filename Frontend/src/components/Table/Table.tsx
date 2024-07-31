@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -7,7 +7,11 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import 'primeicons/primeicons.css';      
+import { AuthContextProps } from '../../interface/Auth';
+import { AuthContext } from '../../context/AuthContext';
 import SignUp from '../../pages/Authentication/SignUp';
+import { apiRequestAuth } from '../../lib/apiRequest';
 
 const Table = ({ data }:any) => {
   const [customers, setCustomers] = useState(null);
@@ -24,6 +28,10 @@ const Table = ({ data }:any) => {
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [visible, setVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+  if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
+  const { currentToken } = authContext;  
   
   useEffect(() => {
     setCustomers(data);
@@ -49,22 +57,39 @@ const Table = ({ data }:any) => {
           </IconField>
           <IconField iconPosition="left" className='ml-2'>
               <InputIcon className="pi pi-search" />
-              <Button label="Crear nuevo usuario" icon="pi pi-check" loading={loading} onClick={() => setVisible(true)} className='' />
+              <Button label="Crear nuevo usuario" icon="pi pi-check" loading={loading} onClick={() => newUser()} className='' />
               <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                <SignUp />
+                style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
+                <SignUp user={selectedUser} setVisible={setVisible}/>
             </Dialog>
           </IconField>
       </div>
     );
   };
 
+  const newUser = () => {
+    setSelectedUser(null);
+    setVisible(true);
+  }
+
   const editUser = (rowData:any) => {
     setSelectedUser(rowData);
     setVisible(true);
   };
 
-  const deleteUser = (rowData:any) => {
+  const deleteUser = async (rowData:any) => {
+    const formData = new FormData();
+    formData.append('status', 'inactive');
+    try {
+      await apiRequestAuth.put(`/${rowData.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${currentToken?.token}`
+        },
+      });
+    } catch (error) {
+      
+    }
   };
 
   const optionsBodyTemplate = (rowData:any) => {
@@ -102,7 +127,7 @@ const Table = ({ data }:any) => {
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['username', 'fullName', 'email', 'address', 'status', 'rol']}
+        globalFilterFields={['username', 'fullName', 'email', 'address']}
         header={header}
         emptyMessage="Usuario no encontrado."
       >
@@ -114,7 +139,7 @@ const Table = ({ data }:any) => {
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <SignUp data={selectedUser} />
+        <SignUp user={selectedUser} setVisible={setVisible} />
       </Dialog>
     </div>
   );
