@@ -1,8 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-
-export default class Role extends BaseModel {
+export default class ToolType extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
@@ -10,10 +9,7 @@ export default class Role extends BaseModel {
   declare name: string
 
   @column()
-  declare description: string
-
-  @column()
-  declare status: 'active' | 'inactive' | 'suspended' | undefined
+  declare status: boolean
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

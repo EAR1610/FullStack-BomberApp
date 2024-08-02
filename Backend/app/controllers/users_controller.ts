@@ -39,9 +39,24 @@ export default class UsersController {
    * ? Display a list of resource
    */
   async index() {
-    const user = await User.all();
-
+    const user = await User.query().where('status', 'active');
     return user;    
+  }
+
+  /**
+   * ? Display a list of inactive users
+   */
+  async inactiveUsers() {
+    const user = await User.query().where('status', 'inactive');
+    return user;
+  }
+
+  /**
+   * ? Display a list of suspended users
+   */
+  async suspendedUsers() {
+    const user = await User.query().where('status', 'suspended');
+    return user;
   }
 
   /**

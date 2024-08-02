@@ -22,7 +22,7 @@ export const createUserValidator = vine.compile(
             extnames: ['jpg', 'png', 'jpeg']
         }),
         roleId: vine.number(),
-        status: vine.boolean()
+        status: vine.enum(['active', 'inactive', 'suspended']),
     })
 )
 

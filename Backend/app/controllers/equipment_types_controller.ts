@@ -7,8 +7,23 @@ export default class EquipmentTypesController {
    * ? Display a list of equipment of types
    */
   async index({}: HttpContext) {
-    const equipmentType =  await EquipmentType.all();
+    const equipmentType =  await EquipmentType.query().where('status', 'active');
+    return equipmentType;
+  }
 
+  /**
+   * ? Display a list of inactive equipment of types
+   */
+  async inactiveEquipmentTypes({}: HttpContext) {
+    const equipmentType =  await EquipmentType.query().where('status', 'inactive');
+    return equipmentType;
+  }
+
+  /**
+   * ? Display a list of suspended equipment of types
+  */
+  async suspendedEquipmentTypes({}: HttpContext) {
+    const equipmentType =  await EquipmentType.query().where('status', 'suspended');
     return equipmentType;
   }
 
@@ -24,6 +39,7 @@ export default class EquipmentTypesController {
     const payload = await request.validateUsing(createEquipmentTypeValidator);
     const equipment_type = new EquipmentType();
     equipment_type.fill(payload);
+    
     return await equipment_type.save();
   }
 

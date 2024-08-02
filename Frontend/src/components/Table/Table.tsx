@@ -97,7 +97,6 @@ const Table = ({ data }:any) => {
       <div className="flex items-center space-x-4">
           <Button
               size='small'
-              label="Editar"
               icon="pi pi-pencil"
               className="p-button-rounded p-button-success p-button-sm"
               onClick={() => editUser(rowData)}
@@ -105,7 +104,6 @@ const Table = ({ data }:any) => {
           />
           <Button
               size='small'
-              label="Eliminar"
               icon="pi pi-trash"
               className="p-button-rounded p-button-danger p-button-sm"
               onClick={() => deleteUser(rowData)}
@@ -131,7 +129,7 @@ const Table = ({ data }:any) => {
         header={header}
         emptyMessage="Usuario no encontrado."
       >
-        <Column field="username" header="Usuario"  style={{ minWidth: '12rem' }}  />
+        <Column field="username" header="Usuario"  style={{ minWidth: '8rem' }}  />
         <Column field="fullName" header="Nombre" style={{ minWidth: '12rem' }} />
         <Column field="email" header="Correo" style={{ minWidth: '12rem' }} />
         <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} />

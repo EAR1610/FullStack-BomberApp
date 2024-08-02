@@ -26,7 +26,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
   const [password, setPassword] = useState('');
   const [address, setAddress] = useState('');
   const [photography, setPhotography] = useState<File | null>(null);
-  const [status, setStatus] = useState(true);
+  const [status, setStatus] = useState('active');
   const [error, setError] = useState("");
   const [roleId, setRoleId] = useState(3);
 
@@ -52,7 +52,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       setPhotography(user.photography || null);
       setPassword(user.password || '');
       setAddress(user.address || '');
-      setStatus(user.status || true);
+      setStatus(user.status || 'active');
       setRoleId(user.roleId || 3);
     }
   }, [user]);
@@ -63,7 +63,13 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
     { id: 3, name: "Usuario" }
   ];
 
+  // const statusList = [
+  //   { id: 1, name: "Activo", value: 'active' },
+  //   { id: 2, name: "Inactivo", value: 'inactive' }
+  // ];
+
   const selectedRoleTemplate = (option:any, props:any) => {
+    console.log(option)
     if (option) {
         return (
             <div className="flex align-items-center">
@@ -73,7 +79,20 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
     }
 
     return <span>{props.placeholder}</span>;
-};
+  };
+
+  // const selectedStatusTemplate = (option:any, props:any) => {
+  //   console.log(option)
+  //   if (option) {
+  //     return (
+  //       <div className="flex align-items-center">
+  //         <span className="mr-2">{option.name}</span>
+  //       </div>
+  //     );
+  //   }
+  
+  //   return <span>{props.placeholder}</span>;
+  // };
 
   const roleOptionTemplate = (option:any) => {
       return (
@@ -83,9 +102,19 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       );
   };
 
+  // const statusOptionTemplate = (option:any) => {
+  //   return (
+  //     <div className="flex align-items-center">
+  //       <span className="mr-2">{option.name}</span>
+  //     </div>
+  //   );
+  // };
+
   const handleRoleChange = (e:any) => setRoleId(e.value.id);
+  // const handleStatusChange = (e:any) => setStatus(e.value);
     
-  const selectedRole = roles.find(role => role.id === roleId);
+  const selectedRole = roles.find(role => role.id === roleId); 
+  // const selectedStatus = statusList.find(statusL => statusL.value == status);
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -551,20 +580,36 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
                 </div>
 
                 { currentToken?.user?.isAdmin && (
-                  <div className="mb-4">
-                  <Dropdown
-                    value={selectedRole}
-                    onChange={handleRoleChange}
-                    options={roles}
-                    optionLabel="name"
-                    placeholder="Selecciona un rol"
-                    filter
-                    valueTemplate={selectedRoleTemplate}
-                    itemTemplate={roleOptionTemplate}
-                    className="w-full md:w-14rem"
-                    required
-                  />
-                  </div> 
+                  <>
+                    <div className="mb-4">
+                      <Dropdown
+                        value={selectedRole}
+                        onChange={handleRoleChange}
+                        options={roles}
+                        optionLabel="name"
+                        placeholder="Selecciona un rol"
+                        filter
+                        valueTemplate={selectedRoleTemplate}
+                        itemTemplate={roleOptionTemplate}
+                        className="w-full md:w-14rem"
+                        required
+                      />
+                    </div> 
+                    {/* <div className="mb-4">
+                      <Dropdown
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                        options={statusList}
+                        optionLabel="name"
+                        placeholder="Selecciona el estado"
+                        filter
+                        valueTemplate={selectedStatusTemplate}
+                        itemTemplate={statusOptionTemplate}
+                        className="w-full md:w-14rem"
+                        required
+                      />
+                    </div>  */}
+                  </>
                 )}
 
                 <div className="mb-5">
