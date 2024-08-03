@@ -9,7 +9,7 @@ export default class EquipmentType extends BaseModel {
   declare name: string
 
   @column()
-  declare status:boolean
+  declare status:'active' | 'inactive' | 'suspended' 
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

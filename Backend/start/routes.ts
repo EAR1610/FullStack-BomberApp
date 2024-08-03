@@ -14,6 +14,8 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js';
 import EquipmentTypesController from '#controllers/equipment_types_controller';
 import ToolTypesController from '#controllers/tool_types_controller';
+import OriginTypesController from '#controllers/origin_types_controller';
+import ToolsController from '#controllers/tools_controller';
 
 
 /**
@@ -24,6 +26,24 @@ router.group(() => {
   router.post('/inactive-equipment-types', [EquipmentTypesController, 'inactiveEquipmentTypes']);
   router.post('/suspended-equipment-types', [EquipmentTypesController, 'suspendedEquipmentTypes']);
 }).prefix('users/equipment-type').use(middleware.auth());
+
+/**
+ * ? Routes for the application: ORIGIN TYPES 🌍
+ */
+router.resource('users/origin-type', OriginTypesController).use("*", middleware.auth());
+router.group(() => {
+  router.post('/inactive-origin-types', [OriginTypesController, 'inactiveOriginTypes']);
+  router.post('/suspended-origin-types', [OriginTypesController, 'suspendedOriginTypes']);
+}).prefix('users/origin-type').use(middleware.auth());
+
+/**
+ * ? Routes for the application: TOOLS 🧰
+ */
+router.resource('users/tool', ToolsController).use("*", middleware.auth());
+router.group(() => {
+  router.post('/inactive-tools', [ToolsController, 'inactiveTools']);
+  router.post('/suspended-tools', [ToolsController, 'suspendedTools']);
+}).prefix('users/tool').use(middleware.auth());
 
 /**
  * ? Routes for the application: TOOL TYPES 🧰

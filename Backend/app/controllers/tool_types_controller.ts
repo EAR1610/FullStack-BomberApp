@@ -35,7 +35,7 @@ export default class ToolTypesController {
   async create({}: HttpContext) {}
 
   /**
-   * Handle form submission for the create action
+   * ? Handle form submission for the create action
    */
   async store({ request }: HttpContext) {
     const payload = await request.validateUsing(createToolTypeValidator);
@@ -58,7 +58,7 @@ export default class ToolTypesController {
   async edit({ params }: HttpContext) {}
 
   /**
-   * Handle form submission for the edit action
+   * ? Handle form submission for the edit action
    */
   async update({request, params, response }: HttpContext) {
 
