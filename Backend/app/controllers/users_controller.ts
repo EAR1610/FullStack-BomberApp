@@ -111,6 +111,14 @@ export default class UsersController {
   async update({ request, params, response}: HttpContext) {
     const user = await User.find( params.id );
     if( !user ) return response.notFound({ message: 'No se encontro el usuario' });
+    const file = request.file('photography');
+    if (file) {
+        await file.move(app.makePath('uploads/pictures'), {
+            name: `${cuid()}.${file.extname}`
+        });
+        
+        user.photography = file.fileName;
+    }
     const data = request.all();
     user?.merge(data);
     return await user?.save();

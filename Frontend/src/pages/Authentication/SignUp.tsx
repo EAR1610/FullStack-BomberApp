@@ -8,6 +8,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
+import axios from 'axios';
         
 const SignUp: React.FC = ({ user, setVisible }:any) => {
   
@@ -27,6 +28,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
   const [status, setStatus] = useState('active');
   const [error, setError] = useState("");
   const [roleId, setRoleId] = useState(3);
+  const [imagePreview, setImagePreview] = useState<null | string>(null);
 
   const header = <div className="font-bold mb-3">Escribe tu contraseña</div>;
   const footer = (
@@ -42,6 +44,23 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       </>
     );
 
+    const fetchUserImage = async (photography: string) => {
+      try {
+        const response = await apiRequestAuth.get(`/profile/${photography}`, {
+          headers: {
+            Authorization: `Bearer ${currentToken.token}`
+          },
+          responseType: 'blob'
+        });
+        const imageBlob = response.data;
+        const imageObjectUrl = URL.createObjectURL(imageBlob);
+        setImagePreview(imageObjectUrl);
+        console.log('Image URL:', imageObjectUrl);
+      } catch (error) {
+        console.error('Error fetching user image:', error);
+      }
+    };
+
   useEffect(() => {
     if (user) {
       setUsername(user.username || '');
@@ -52,6 +71,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       setAddress(user.address || '');
       setStatus(user.status || status);
       setRoleId(user.roleId || 3);
+      fetchUserImage(user.photography); 
     }
   }, [user]);
 
@@ -85,17 +105,26 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
   const selectedRole = roles.find(role => role.id === roleId); 
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const validTypes = ['image/jpeg', 'image/png'];
+    // if (e.target.files && e.target.files[0]) {
+    //   const file = e.target.files[0];
+    //   const validTypes = ['image/jpeg', 'image/png'];
       
-      if (!validTypes.includes(file.type)) {
-        setError("Solo se permiten archivos JPG y PNG.");
-        setPhotography(null);
-      } else {
-        setError("");
-        setPhotography(file);
-      }
+    //   if (!validTypes.includes(file.type)) {
+    //     setError("Solo se permiten archivos JPG y PNG.");
+    //     setPhotography(null);
+    //   } else {
+    //     setError("");
+    //     setPhotography(file);        
+    //   }
+    // }
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotography(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
   
@@ -119,6 +148,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         formData.append('email', email);
         formData.append('address', address);
         formData.append('roleId', JSON.stringify(roleId));
+        debugger
         if ( typeof(photography) !== "string") formData.append('photography', photography);
       } 
 
@@ -396,6 +426,11 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
                     Fotografía
                   </label>
                   <div className="relative">
+                    {imagePreview && (
+                      <div className="mb-4">
+                        <img src={imagePreview} alt="Preview" className="max-w-xs h-auto rounded-lg" />
+                      </div>
+                    )}
                   <input
                     id="photography"
                     type="file"
