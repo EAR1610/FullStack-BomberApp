@@ -5,6 +5,12 @@ import { HttpContext } from "@adonisjs/core/http";
 import app from "@adonisjs/core/services/app";
 
 export default class AuthController {
+    /**
+     * ? Asynchronously registers a user with the provided email and other information.
+     *
+     * @param {HttpContext} request - The HTTP context object containing the request data.
+     * @return {Promise<{ type: string, token: string, user: { username: string, photography: string, isAdmin: boolean, isFirefighter: boolean } }>} - A promise that resolves to an object containing the token type, token value, and user information.
+     */
     async register({ request }: HttpContext) {
         const verifyEmail = request.only(['email'])
         const payload = await request.validateUsing(registerValidator,
@@ -37,9 +43,20 @@ export default class AuthController {
         };
     }
 
-    async login({ request }: HttpContext) {
+
+     /**
+     * ? Asynchronously logs in a user with the provided email and password.
+     *
+     * @param {HttpContext} request - The HTTP context object containing the request data.
+     * @return {Promise<{ type: string, token: string, user: { username: string, photography: string, isAdmin: boolean, isFirefighter: boolean } }>} - A promise that resolves to an object containing the token type, token value, and user information.
+     * @throws {Object} - If the user's status is not 'active', an error object is returned.
+     */
+    async login({ request, response }: HttpContext) {
         const { email, password } = await request.validateUsing(loginValidator);           
         const user = await User.verifyCredentials(email, password);
+
+        if (user.status !== 'active') return response.status(401).send({ error: 'Tu cuenta no está activa.' });
+        
         const token = await User.accessTokens.create(user);
         const { username, photography, isAdmin, isFirefighter } = user;
 
@@ -56,9 +73,11 @@ export default class AuthController {
     }
 
     /**
-     * * For logout and me methods, we need to use the auth middleware (token and user validation) 🔄 
+     * ? Asynchronously logs out the authenticated user.
+     *
+     * @param {HttpContext} auth - The HTTP context object containing the authenticated user.
+     * @return {Promise<{ message: string }>} - A promise that resolves to an object with a success message.
      */
-
     async logout({ auth }: HttpContext) {
         const user = auth.user!;
         await User.accessTokens.delete(user, user.currentAccessToken.identifier);
@@ -66,6 +85,12 @@ export default class AuthController {
         return { message: 'success' }
     }
 
+    /**
+     * ? Asynchronously retrieves the authenticated user's information.
+     *
+     * @param {HttpContext} auth - The HTTP context object containing the authentication data.
+     * @return {Promise<{ user: User }>} - A promise that resolves to an object containing the authenticated user's information.
+     */
     async me({ auth }: HttpContext) {
         await auth.check();
 

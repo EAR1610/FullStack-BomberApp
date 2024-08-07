@@ -11,25 +11,25 @@ import { Toast } from 'primereact/toast';
 import 'primeicons/primeicons.css';      
 import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
-import SignUp from '../../pages/Authentication/SignUp';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import Tool from '../../pages/Tool/Tool';
 
-const Table = ({ data, setUsers }:any) => {
-  const [customers, setCustomers] = useState(null);
+const TableTools = ({ data }) => {
+
+  const [tools, setTools] = useState(null);
   const [filters, setFilters] = useState({
-    username: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    fullName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    email: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    address: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    rol: { value: null, matchMode: FilterMatchMode.EQUALS },
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    status: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    brand: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    model: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    serial_number: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [loading, setLoading] = useState(true);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [visible, setVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedTool, setSelectedTool] = useState(null);
 
   const toast = useRef(null);
 
@@ -38,11 +38,7 @@ const Table = ({ data, setUsers }:any) => {
   const { currentToken } = authContext;  
   
   useEffect(() => {
-    const transformedData = data.map((customer: any) => ({
-      ...customer,
-      rol: roleMap[customer.roleId]
-    }));
-    setCustomers(transformedData);
+    setTools(data);
     setLoading(false);
   }, [data]);
 
@@ -65,54 +61,44 @@ const Table = ({ data, setUsers }:any) => {
           </IconField>
           <IconField iconPosition="left" className='ml-2'>                
                 <InputIcon className="pi pi-search" />
-                <Button label="Crear nuevo usuario" icon="pi pi-check" loading={loading} onClick={() => newUser()} className='' />
-                <Button label="Usuarios Inactivos" icon="pi pi-eye" loading={loading} onClick={() => viewInactiveUsers()} className='ml-2' severity="danger" />
+                <Button label="Crear nueva herramienta" icon="pi pi-check" loading={loading} onClick={() => newTool()} className='' />
+                <Button label="Herramientas Inactivas" icon="pi pi-eye" loading={loading} onClick={() => viewInactiveTools()} className='ml-2' severity="danger" />
               <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
                 style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
-                <SignUp user={selectedUser} setVisible={setVisible}/>
+                <Tool tool={selectedTool} setVisible={setVisible}/>
             </Dialog>
           </IconField>
       </div>
     );
   };
 
-  const roleMap: { [key: number]: string } = {
-    1: 'Administrador',
-    2: 'Bombero',
-    3: 'Usuario'
-  };
-  
-  const roleBodyTemplate = (rowData: any) => {
-    return roleMap[rowData.roleId];
-  };
-
-  const newUser = () => {
-    setSelectedUser(null);
+  const newTool = () => {
+    setSelectedTool(null);
     setVisible(true);
   }
 
-  const viewInactiveUsers = async () =>{
+  const viewInactiveTools = async () => {
     try {
-      const users = await apiRequestAuth.post("/inactive-users",{},{
+      const tools = await apiRequestAuth.post("/inactive-tools",{},{
         headers: {
           Authorization: `Bearer ${currentToken?.token}`
         }
       });
-      setUsers(users.data);
+      setTools(tools.data);
     } catch (error) {
-      toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
+      toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener las herramientas' });
     }
   }
 
-  const editUser = (rowData:any) => {
-    setSelectedUser(rowData);
+  const editTool = (rowData:any) => {
+    setSelectedTool(rowData);
     setVisible(true);
   };
 
-  const deleteUser = async (rowData:any) => {    
-    setSelectedUser(rowData);
+  const deleteTool = async (rowData:any) => {    
+    setSelectedTool(rowData);
       confirmDialog({
-        message: '¿Desea Inactivar este usuario?',
+        message: '¿Desea Inactivar esta herramienta?',
         header: 'Confirma la Inactivación',
         icon: 'pi pi-info-circle',
         acceptClassName: 'p-button-danger',
@@ -122,19 +108,19 @@ const Table = ({ data, setUsers }:any) => {
   };
 
   const accept = async () => {
-    if (selectedUser) {
+    if (selectedTool) {
       const formData = new FormData();
       formData.append('status', 'inactive');
       try {
-        await apiRequestAuth.put(`/${selectedUser.id}`, formData, {
+        await apiRequestAuth.put(`/tool/${selectedTool.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${currentToken?.token}`
           },
         });
-        toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el usuario', life: 3000 });
+        toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado la herramienta', life: 3000 });
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     }
   };
@@ -150,14 +136,14 @@ const Table = ({ data, setUsers }:any) => {
               size='small'
               icon="pi pi-pencil"
               className="p-button-rounded p-button-success p-button-sm"
-              onClick={() => editUser(rowData)}
+              onClick={() => editTool(rowData)}
               style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
           />
           <Button
               size='small'
               icon="pi pi-trash"
               className="p-button-rounded p-button-danger p-button-sm"
-              onClick={() => deleteUser(rowData)}
+              onClick={() => deleteTool(rowData)}
               style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
           />
       </div>
@@ -171,29 +157,28 @@ const Table = ({ data, setUsers }:any) => {
       <ConfirmDialog />
       <DataTable
        className='bg-white rounded-md overflow-hidden'
-        value={customers}
+        value={tools}
         paginator
         rows={10}
         dataKey="id"
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['username', 'fullName', 'rol', 'address']}
+        globalFilterFields={['username', 'fullName', 'email', 'address']}
         header={header}
-        emptyMessage="Usuario no encontrado."
+        emptyMessage="Herramienta no encontrada."
       >
-        <Column field="username" header="Usuario"  style={{ minWidth: '8rem' }}  />
-        <Column field="fullName" header="Nombre" style={{ minWidth: '12rem' }} />
-        <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} />
-        <Column field="roleId" header="Rol" body={roleBodyTemplate} style={{ minWidth: '12rem' }} />
+        <Column field="name" header="Nombre"  style={{ minWidth: '8rem' }}  />
+        <Column field="brand" header="Marca" style={{ minWidth: '12rem' }} />
+        <Column field="model" header="Modelo" style={{ minWidth: '12rem' }} />
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <SignUp user={selectedUser} setVisible={setVisible} />
+        <Tool tool={selectedTool} setVisible={setVisible} />
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default Table;
+export default TableTools

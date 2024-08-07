@@ -60,12 +60,11 @@ export default class ToolsController {
    */
   async update({ request, params, response }: HttpContext) {
 
-    const payload = await request.validateUsing(createToolValidator);
+    // const payload = await request.validateUsing(createToolValidator);
     const tool = await Tool.find( params.id );
-
     if ( !tool ) return response.status(404).json({ message: 'No se ha encontrado la herramienta' });
-    tool?.merge(payload);
-
+    const data = request.all();
+    tool?.merge(data);
     return await tool?.save();
   }
 

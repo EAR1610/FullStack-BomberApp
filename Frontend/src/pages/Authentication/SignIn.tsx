@@ -8,7 +8,7 @@ import { Toast } from 'primereact/toast';
         
 
 /**
- * Renders the sign-in page with a form for the user to enter their email and password.
+ * ? Renders the sign-in page with a form for the user to enter their email and password.
  *
  * @return {JSX.Element} The sign-in page with a form for the user to enter their email and password.
  */
@@ -26,40 +26,43 @@ const SignIn: React.FC = () => {
 
   const toast = useRef(null);
 
-  // Define the handleSubmit function to handle form submission
+  // ? Define the handleSubmit function to handle form submission
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();
 
     try {
-      // Use the apiRequest function to send a POST request to the "/login" endpoint
+      // ? Use the apiRequest function to send a POST request to the "/login" endpoint
       const res = await apiRequest.post("/login", {
         email,
         password,
       });
-      showAlert("info", "Inicio de sesión exitosa");
+      showAlert("info", "Inicio de sesión exitosa", "Success");
       
-      // If the request was successful, update the token in the AuthContext
+      // ? If the request was successful, update the token in the AuthContext
       updateToken(res.data);
 
-      // Use setTimeout to delay the navigation
       setTimeout(() => {
         navigate("/app/dashboard");
-      }, 1000); // 1000 ms delay to allow the toast to be visible
+      }, 1000);
       
-    } catch (err:any) {
-      // If there was an error, set the error state variable to display an error message
-      showAlert("error", "Credenciales incorrectas");
+    } catch (err: any) {
+      // ? Check if the error response contains the specific inactive account message
+      if (err.response && err.response.status === 401 && err.response.data.error === 'Tu cuenta no está activa.') {
+        showAlert("error", "Tu cuenta no está activa. Por favor, contacta al administrador.", "Error");
+      } else {
+        showAlert("error", "Credenciales incorrectas", "Error");
+      }
     }    
   };
 
   /**
-   * Displays an alert with the specified type and message using the provided toast component.
+   * ? Displays an alert with the specified type and message using the provided toast component.
    *
    * @param {string} type - The type of alert to display (e.g. "info", "error").
    * @param {string} message - The message to display in the alert.
    * @return {void} This function does not return anything.
    */
-  const showAlert = ( type:string, message:string ) => toast.current.show({ severity: type, summary: 'Error', detail: message, life: 3000 });
+  const showAlert = ( type:string, message:string, summary: string ) => toast.current.show({ severity: type, summary: summary, detail: message, life: 3000 });
 
   return (
     <>

@@ -20,7 +20,7 @@ import Ambulance from './pages/Ambulances/Ambulance';
 import BlogWithAuth from './pages/Blog/BlogWithAuth';
 
 /**
- * Renders the main App component with routes and layout.
+ * ? Renders the main App component with routes and layout.
  *
  * @return {JSX.Element} The rendered App component.
  */
@@ -60,7 +60,7 @@ function App() {
     },
     {
       path: '/app',
-      element: <RequireAuth />, // Protect the routes under the /app route
+      element: <RequireAuth />, // ? Protect the routes under the /app route
       children: [
         {
           path: '',
