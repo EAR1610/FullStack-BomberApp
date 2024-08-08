@@ -14,8 +14,9 @@ import { AuthContext } from '../../context/AuthContext';
 import SignUp from '../../pages/Authentication/SignUp';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import ViewUser from '../../pages/Users/ViewUser';
 
-const Table = ({ data, setUsers, viewActiveUsers, setViewActiveUsers }:any) => {
+const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
   const [customers, setCustomers] = useState(null);
   const [filters, setFilters] = useState({
     username: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -29,6 +30,7 @@ const Table = ({ data, setUsers, viewActiveUsers, setViewActiveUsers }:any) => {
   const [loading, setLoading] = useState(true);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [visible, setVisible] = useState(false);
+  const [visibleUser, setVisibleUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const toast = useRef(null);
@@ -82,9 +84,7 @@ const Table = ({ data, setUsers, viewActiveUsers, setViewActiveUsers }:any) => {
     3: 'Usuario'
   };
   
-  const roleBodyTemplate = (rowData: any) => {
-    return roleMap[rowData.roleId];
-  };
+  const roleBodyTemplate = (rowData: any) => roleMap[rowData.roleId];
 
   const newUser = () => {
     setSelectedUser(null);
@@ -101,36 +101,50 @@ const Table = ({ data, setUsers, viewActiveUsers, setViewActiveUsers }:any) => {
   const deleteUser = async (rowData:any) => {    
     setSelectedUser(rowData);
       confirmDialog({
-        message: '¿Desea Inactivar este usuario?',
-        header: 'Confirma la Inactivación',
+        message: `${!viewActiveUsers ? '¿Desea activar este usuario?' : '¿Desea inactivar este usuario?'}`,
+        header: `${!viewActiveUsers ? 'Confirma la activación' : 'Confirma la inactivación'}`,
         icon: 'pi pi-info-circle',
-        acceptClassName: 'p-button-danger',
+        acceptClassName: `${!viewActiveUsers ? 'p-button-success' : 'p-button-danger'}`,
         accept,
         reject
       });    
   };
 
+  const showUser = (rowData:any) => {
+    setSelectedUser(rowData);
+    setVisibleUser(true); 
+  };
+
   const accept = async () => {
     if (selectedUser) {
       const formData = new FormData();
-      formData.append('status', 'inactive');
       try {
-        await apiRequestAuth.put(`/${selectedUser.id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${currentToken?.token}`
-          },
-        });
-        toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el usuario', life: 3000 });
+        if(!viewActiveUsers){
+          formData.append('status', 'active');
+          await apiRequestAuth.put(`/${selectedUser.id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${currentToken?.token}`
+            },
+          });
+          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el usuario', life: 3000 });
+        } else {
+          formData.append('status', 'inactive');
+          await apiRequestAuth.put(`/${selectedUser.id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${currentToken?.token}`
+            },
+          });
+          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el usuario', life: 3000 });
+        }
       } catch (error) {
         console.log(error);
       }
     }
   };
 
-  const reject = () => {
-    toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
-  };
+  const reject = () => toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
 
   const optionsBodyTemplate = (rowData:any) => {
     return (
@@ -144,8 +158,15 @@ const Table = ({ data, setUsers, viewActiveUsers, setViewActiveUsers }:any) => {
           />
           <Button
               size='small'
-              icon="pi pi-trash"
-              className="p-button-rounded p-button-danger p-button-sm"
+              icon="pi pi-eye"
+              className="p-button-rounded p-button-warning p-button-sm"
+              onClick={() => showUser(rowData)}
+              style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
+          />
+          <Button
+              size='small'
+              icon={viewActiveUsers ? 'pi pi-trash' : 'pi pi-check'}
+              className={viewActiveUsers ? 'p-button-rounded p-button-danger p-button-sm' : 'p-button-rounded p-button-info p-button-sm'}
               onClick={() => deleteUser(rowData)}
               style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
           />
@@ -180,6 +201,10 @@ const Table = ({ data, setUsers, viewActiveUsers, setViewActiveUsers }:any) => {
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SignUp user={selectedUser} setVisible={setVisible} />
+      </Dialog>
+      <Dialog header="Header" visible={visibleUser} onHide={() => setVisibleUser(false)}
+        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        <ViewUser user={selectedUser} token={currentToken?.token} />
       </Dialog>
     </div>
   );

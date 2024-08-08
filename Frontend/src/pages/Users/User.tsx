@@ -52,7 +52,7 @@ const User = () => {
   return (    
     <>
       <Toast ref={toast} />
-      <Table data={users} setUsers={setUsers} viewActiveUsers={viewActiveUsers} setViewActiveUsers={setViewActiveUsers} />
+      <Table data={users} viewActiveUsers={viewActiveUsers} setViewActiveUsers={setViewActiveUsers} />
     </>
   );
 }

@@ -55,7 +55,6 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         const imageBlob = response.data;
         const imageObjectUrl = URL.createObjectURL(imageBlob);
         setImagePreview(imageObjectUrl);
-        console.log('Image URL:', imageObjectUrl);
       } catch (error) {
         console.error('Error fetching user image:', error);
       }
@@ -105,18 +104,6 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
   const selectedRole = roles.find(role => role.id === roleId); 
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // if (e.target.files && e.target.files[0]) {
-    //   const file = e.target.files[0];
-    //   const validTypes = ['image/jpeg', 'image/png'];
-      
-    //   if (!validTypes.includes(file.type)) {
-    //     setError("Solo se permiten archivos JPG y PNG.");
-    //     setPhotography(null);
-    //   } else {
-    //     setError("");
-    //     setPhotography(file);        
-    //   }
-    // }
     const file = e.target.files?.[0];
     if (file) {
       setPhotography(file);
