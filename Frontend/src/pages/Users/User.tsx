@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 const User = () => {
 
   const [users, setUsers] = useState([]);
+  const [viewActiveUsers, setViewActiveUsers] = useState(true);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -23,23 +24,35 @@ const User = () => {
    */
     const getUsers = async () => {
       try {
-        const users = await apiRequestAuth.get("/",{
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`
-          }
-        });
-        setUsers(users.data);
+        let response;
+
+        if (viewActiveUsers) {
+          response = await apiRequestAuth.get("/",{
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`
+            }
+          });
+        } else {
+          response = await apiRequestAuth.post("/inactive-users",{},{
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`
+            }
+          });    
+        }
+        if(response) {
+          setUsers(response.data);
+        }
       } catch (error) {
         toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
       }
     }
     getUsers();
-  }, [users]);
+  }, [users, viewActiveUsers]);
 
   return (    
     <>
       <Toast ref={toast} />
-      <Table data={users} setUsers={setUsers}/>
+      <Table data={users} setUsers={setUsers} viewActiveUsers={viewActiveUsers} setViewActiveUsers={setViewActiveUsers} />
     </>
   );
 }

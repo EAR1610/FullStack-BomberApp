@@ -15,7 +15,7 @@ import SignUp from '../../pages/Authentication/SignUp';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
-const Table = ({ data, setUsers }:any) => {
+const Table = ({ data, setUsers, viewActiveUsers, setViewActiveUsers }:any) => {
   const [customers, setCustomers] = useState(null);
   const [filters, setFilters] = useState({
     username: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -66,7 +66,7 @@ const Table = ({ data, setUsers }:any) => {
           <IconField iconPosition="left" className='ml-2'>                
                 <InputIcon className="pi pi-search" />
                 <Button label="Crear nuevo usuario" icon="pi pi-check" loading={loading} onClick={() => newUser()} className='' />
-                <Button label="Usuarios Inactivos" icon="pi pi-eye" loading={loading} onClick={() => viewInactiveUsers()} className='ml-2' severity="danger" />
+                <Button label={viewActiveUsers ? 'Ver usuarios inactivos' : 'Ver usuarios activos'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveUsers()} className='ml-2' severity={viewActiveUsers ? 'danger' : 'success'} />
               <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
                 style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
                 <SignUp user={selectedUser} setVisible={setVisible}/>
@@ -91,18 +91,7 @@ const Table = ({ data, setUsers }:any) => {
     setVisible(true);
   }
 
-  const viewInactiveUsers = async () =>{
-    try {
-      const users = await apiRequestAuth.post("/inactive-users",{},{
-        headers: {
-          Authorization: `Bearer ${currentToken?.token}`
-        }
-      });
-      setUsers(users.data);
-    } catch (error) {
-      toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
-    }
-  }
+  const viewActiveOrInactiveUsers = async () => setViewActiveUsers(!viewActiveUsers);
 
   const editUser = (rowData:any) => {
     setSelectedUser(rowData);
