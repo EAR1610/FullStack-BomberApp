@@ -15,8 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import Tool from '../../pages/Tool/Tool';
 
-const TableTools = ({ data }) => {
-
+const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
   const [tools, setTools] = useState(null);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -29,7 +28,9 @@ const TableTools = ({ data }) => {
   const [loading, setLoading] = useState(true);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [visible, setVisible] = useState(false);
+  const [visibleTool, setVisibleTool] = useState(false);
   const [selectedTool, setSelectedTool] = useState(null);
+  const [toolTypes, setToolTypes] = useState([]);
 
   const toast = useRef(null);
 
@@ -38,6 +39,19 @@ const TableTools = ({ data }) => {
   const { currentToken } = authContext;  
   
   useEffect(() => {
+    const getToolTypes = async () => {
+      try {
+        const response = await apiRequestAuth.get("/tool-type", {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        })
+        setToolTypes(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getToolTypes()
     setTools(data);
     setLoading(false);
   }, [data]);
@@ -62,7 +76,7 @@ const TableTools = ({ data }) => {
           <IconField iconPosition="left" className='ml-2'>                
                 <InputIcon className="pi pi-search" />
                 <Button label="Crear nueva herramienta" icon="pi pi-check" loading={loading} onClick={() => newTool()} className='' />
-                <Button label="Herramientas Inactivas" icon="pi pi-eye" loading={loading} onClick={() => viewInactiveTools()} className='ml-2' severity="danger" />
+                <Button label={viewActiveTools ? 'Ver herramientas inactivas' : 'Ver herramientas activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveTools()} className='ml-2' severity={viewActiveTools ? 'danger' : 'success'} />
               <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
                 style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
                 <Tool tool={selectedTool} setVisible={setVisible}/>
@@ -77,18 +91,7 @@ const TableTools = ({ data }) => {
     setVisible(true);
   }
 
-  const viewInactiveTools = async () => {
-    try {
-      const tools = await apiRequestAuth.post("/inactive-tools",{},{
-        headers: {
-          Authorization: `Bearer ${currentToken?.token}`
-        }
-      });
-      setTools(tools.data);
-    } catch (error) {
-      toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener las herramientas' });
-    }
-  }
+  const viewActiveOrInactiveTools = () => setViewActiveTools(!viewActiveTools);
 
   const editTool = (rowData:any) => {
     setSelectedTool(rowData);
@@ -98,29 +101,45 @@ const TableTools = ({ data }) => {
   const deleteTool = async (rowData:any) => {    
     setSelectedTool(rowData);
       confirmDialog({
-        message: '¿Desea Inactivar esta herramienta?',
-        header: 'Confirma la Inactivación',
+        message: `${!viewActiveTools ? '¿Desea activar esta herramienta?' : '¿Desea inactivar esta herramienta?'}`,
+        header: `${!viewActiveTools ? 'Confirma la activación' : 'Confirma la inactivación'}`,
         icon: 'pi pi-info-circle',
-        acceptClassName: 'p-button-danger',
+        acceptClassName: `${!viewActiveTools ? 'p-button-success' : 'p-button-danger'}`,
         accept,
         reject
       });    
   };
 
+  const showTool = (rowData:any) => {
+    setSelectedTool(rowData);
+    setVisibleTool(true);
+  };
+
   const accept = async () => {
     if (selectedTool) {
       const formData = new FormData();
-      formData.append('status', 'inactive');
       try {
-        await apiRequestAuth.put(`/tool/${selectedTool.id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${currentToken?.token}`
-          },
-        });
-        toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado la herramienta', life: 3000 });
+        if(!viewActiveTools){
+          formData.append('status', 'active');
+          await apiRequestAuth.put(`/tool/${selectedTool.id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${currentToken?.token}`
+            },
+          });
+          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado la herramienta', life: 3000 });
+        } else {
+          formData.append('status', 'inactive');
+          await apiRequestAuth.put(`/tool/${selectedTool.id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${currentToken?.token}`
+            },
+          });
+          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado la herramienta', life: 3000 });
+        }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   };
@@ -141,8 +160,15 @@ const TableTools = ({ data }) => {
           />
           <Button
               size='small'
-              icon="pi pi-trash"
-              className="p-button-rounded p-button-danger p-button-sm"
+              icon="pi pi-eye"
+              className="p-button-rounded p-button-warning p-button-sm"
+              onClick={() => showTool(rowData)}
+              style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
+          />
+          <Button
+              size='small'
+              icon={viewActiveTools ? 'pi pi-trash' : 'pi pi-check'}
+              className={viewActiveTools ? 'p-button-rounded p-button-danger p-button-sm' : 'p-button-rounded p-button-info p-button-sm'}
               onClick={() => deleteTool(rowData)}
               style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
           />
@@ -164,7 +190,7 @@ const TableTools = ({ data }) => {
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['username', 'fullName', 'email', 'address']}
+        globalFilterFields={['name', 'brand', 'model']}
         header={header}
         emptyMessage="Herramienta no encontrada."
       >
@@ -176,6 +202,10 @@ const TableTools = ({ data }) => {
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <Tool tool={selectedTool} setVisible={setVisible} />
+      </Dialog>
+      <Dialog header="Header" visible={visibleTool} onHide={() => setVisibleTool(false)}
+        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        {/* <ViewTool tool={selectedTool} setVisible={setVisible} /> */}
       </Dialog>
     </div>
   )

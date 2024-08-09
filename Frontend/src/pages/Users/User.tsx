@@ -39,9 +39,7 @@ const User = () => {
             }
           });    
         }
-        if(response) {
-          setUsers(response.data);
-        }
+        if(response) setUsers(response.data);        
       } catch (error) {
         toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
       }

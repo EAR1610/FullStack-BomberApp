@@ -7,6 +7,7 @@ import { Toast } from 'primereact/toast';
 const Tools = () => {
 
   const [tools, setTools] = useState([]);
+  const [viewActiveTools, setViewActiveTools] = useState(true);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -16,29 +17,39 @@ const Tools = () => {
 
   useEffect(() => {
     /**
-    * ? Retrieves a list of users from the API using the current authentication token.
+    * ? Retrieves a list of tools from the API using the current authentication token.
     *
-    * @return {Promise<void>} - A promise that resolves when the users are retrieved successfully.
+    * @return {Promise<void>} - A promise that resolves when the tools are retrieved successfully.
     */
      const getTools = async () => {
+      debugger;
        try {
-         const tools = await apiRequestAuth.get("/tool",{
-           headers: {
-             Authorization: `Bearer ${currentToken?.token}`
-           }
-         });
-         setTools(tools.data);
+        let response;
+        if (viewActiveTools) {
+          response = await apiRequestAuth.get("/tool",{
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`
+            }
+          });
+        } else {
+          response = await apiRequestAuth.post("/tool/inactive-tools",{},{
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`
+            }
+          });
+        } 
+        if(response) setTools(response.data);        
        } catch (error) {
          toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener las herramientas' });
        }
      }
      getTools();
-   },[tools]);
+   },[tools, viewActiveTools]);
   
   return (
     <>
       <Toast ref={toast} />
-      <TableTools data={tools} />
+      <TableTools data={tools} viewActiveTools={viewActiveTools} setViewActiveTools={setViewActiveTools} />
     </>
   )
 }
