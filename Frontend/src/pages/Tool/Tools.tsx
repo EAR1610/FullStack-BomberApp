@@ -22,7 +22,6 @@ const Tools = () => {
     * @return {Promise<void>} - A promise that resolves when the tools are retrieved successfully.
     */
      const getTools = async () => {
-      debugger;
        try {
         let response;
         if (viewActiveTools) {

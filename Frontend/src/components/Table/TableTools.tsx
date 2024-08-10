@@ -14,6 +14,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import Tool from '../../pages/Tool/Tool';
+import ViewTool from '../../pages/Tool/ViewTool';
 
 const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
   const [tools, setTools] = useState(null);
@@ -30,7 +31,6 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
   const [visible, setVisible] = useState(false);
   const [visibleTool, setVisibleTool] = useState(false);
   const [selectedTool, setSelectedTool] = useState(null);
-  const [toolTypes, setToolTypes] = useState([]);
 
   const toast = useRef(null);
 
@@ -45,15 +45,25 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`
           }
-        })
-        setToolTypes(response.data);
+        });
+        const toolTypesData = response.data;
+
+        const toolsWithTypeName = data.map(tool => {
+          const toolType = toolTypesData.find(type => type.id === tool.toolTypeId);
+          return {
+            ...tool,
+            toolTypeName: toolType ? toolType.name : 'Unknown'
+          };
+        });
+  
+        setTools(toolsWithTypeName);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
-    }
-    getToolTypes()
-    setTools(data);
-    setLoading(false);
+    };
+
+    getToolTypes();
   }, [data]);
 
   const onGlobalFilterChange = (e:any) => {
@@ -190,11 +200,12 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['name', 'brand', 'model']}
+        globalFilterFields={['name', 'brand', 'model', 'toolTypeName']}
         header={header}
         emptyMessage="Herramienta no encontrada."
       >
         <Column field="name" header="Nombre"  style={{ minWidth: '8rem' }}  />
+        <Column field="toolTypeName" header="Tipo" style={{ minWidth: '12rem' }} />
         <Column field="brand" header="Marca" style={{ minWidth: '12rem' }} />
         <Column field="model" header="Modelo" style={{ minWidth: '12rem' }} />
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
@@ -205,7 +216,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
       </Dialog>
       <Dialog header="Header" visible={visibleTool} onHide={() => setVisibleTool(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        {/* <ViewTool tool={selectedTool} setVisible={setVisible} /> */}
+        <ViewTool tool={selectedTool} setVisible={setVisible} />
       </Dialog>
     </div>
   )

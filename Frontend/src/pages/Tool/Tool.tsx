@@ -3,6 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+import { Dropdown } from "primereact/dropdown"
 
 const Tool = ({ tool, setVisible}:any) => {
 
@@ -13,6 +14,10 @@ const Tool = ({ tool, setVisible}:any) => {
     const [dateOfPurchase, setDateOfPurchase] = useState('')
     const [status, setStatus] = useState('active')
     const [error, setError] = useState("");
+    const [selectedToolType, setSelectedToolType] = useState(null);
+    const [selectedOriginTool, setSelectedOriginTool] = useState(null);
+    const [toolTypes, setToolTypes] = useState([]);
+    const [originTools, setOriginTools] = useState([]);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -21,16 +26,59 @@ const Tool = ({ tool, setVisible}:any) => {
   const toast = useRef(null);
 
   useEffect(() => {
-    const formattedDate = getFormattedDate();
-    setDateOfPurchase(formattedDate);
-    if(tool){
-      setName(tool.name)
-      setBrand(tool.brand)
-      setModel(tool.model)
-      setSerialNumber(tool.serialNumber)
-      setStatus(tool.status)
+    const getToolType = async () => {
+      try {
+        const response = await apiRequestAuth.get("/tool-type", {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        });
+        setToolTypes(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }, [tool])
+
+    const getOriginTool = async () => {
+      try {
+        const response = await apiRequestAuth.get("/origin-type", {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        });
+        setOriginTools(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } 
+    getToolType();
+    getOriginTool();
+  }, []);
+
+  useEffect( () => {
+    const getTool = async () => {
+      const formattedDate = getFormattedDate();
+      setDateOfPurchase(formattedDate);
+      if(tool){
+        setName(tool.name)
+        setBrand(tool.brand)
+        setModel(tool.model)
+        setSerialNumber(tool.serialNumber)
+        setStatus(tool.status)
+        setSelectedToolType(()=> {
+          const toolType = toolTypes.find((type) => type.id === tool.toolTypeId);
+          return toolType;
+        });
+        setSelectedOriginTool(()=> {
+          const originTool = originTools.find((type) => type.id === tool.originTypeId);
+          return originTool;
+        });
+      }      
+    }
+    if (toolTypes.length > 0 && originTools.length > 0) {
+      getTool();
+    }
+  }, [toolTypes]);
   
 
   const getFormattedDate = () => {
@@ -41,8 +89,7 @@ const Tool = ({ tool, setVisible}:any) => {
     return `${year}-${month}-${day}`;
   };
 
-    const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => { 
-        debugger;   
+    const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {  
         e.preventDefault();    
         setError("");
         
@@ -62,8 +109,8 @@ const Tool = ({ tool, setVisible}:any) => {
             formData.append('model', model);
             formData.append('serialNumber', serialNumber);
             formData.append('dateOfPurchase', dateOfPurchase);
-            formData.append('toolTypeId', JSON.stringify(1));
-            formData.append('originTypeId', JSON.stringify(1));
+            formData.append('toolTypeId', JSON.stringify(selectedToolType?.id));
+            formData.append('originTypeId', JSON.stringify(selectedOriginTool?.id));
             formData.append('equipmentTypeId', JSON.stringify(1));
             if (status) formData.append('status', status);
           } 
@@ -90,26 +137,23 @@ const Tool = ({ tool, setVisible}:any) => {
         }  
     
         try {
-    
           if (tool) {
             await apiRequestAuth.put(`/tool/${tool.id}`, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`
-            },
-        });
-        setVisible(false);        
-        
-    } else {
-        const res =await apiRequestAuth.post("/tool", formData, {
-            headers: {
+              },
+            });
+            setVisible(false);                      
+          } else {
+            const res =await apiRequestAuth.post("/tool", formData, {
+              headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`
               },
             });
             showAlert('info', 'Info', 'Herramienta Creado!');
-          }
-          
+          }          
         } catch (err:any) {
           setError(err.response.data.message);
         }
@@ -192,6 +236,40 @@ const Tool = ({ tool, setVisible}:any) => {
                       value={ serialNumber }
                       onChange={ e => setSerialNumber( e.target.value ) }
                     />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                    Tipo de herramienta
+                  </label>
+                  <div className="relative">
+                  <Dropdown
+                    value={selectedToolType}
+                    options={toolTypes}
+                    onChange={(e) => setSelectedToolType(e.value)}
+                    optionLabel="name"  
+                    optionValue="id"
+                    placeholder="Seleccione un tipo de herramienta"
+                    className="w-full"
+                  />
+                  </div>
+                </div> 
+
+                <div className="mb-4">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                    Origen de la herramienta
+                  </label>
+                  <div className="relative">
+                  <Dropdown
+                    value={selectedOriginTool}
+                    options={originTools}
+                    onChange={(e) => setSelectedOriginTool(e.value)}
+                    optionLabel="name"  
+                    optionValue="id"
+                    placeholder="Seleccione el origen de la herramienta"
+                    className="w-full"
+                  />
                   </div>
                 </div>               
 
