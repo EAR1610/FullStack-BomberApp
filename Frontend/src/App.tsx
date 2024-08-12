@@ -18,6 +18,7 @@ import FireFighter from './pages/FireFighters/FireFighter';
 import Tools from './pages/Tool/Tools';
 import Ambulance from './pages/Ambulances/Ambulance';
 import BlogWithAuth from './pages/Blog/BlogWithAuth';
+import OriginTypes from './pages/OriginType/OriginTypes';
 
 /**
  * ? Renders the main App component with routes and layout.
@@ -103,6 +104,14 @@ function App() {
               element: (
                 <>                 
                   <Tools />
+                </>
+              )
+            },
+            {
+              path: 'origin-type',
+              element: (
+                <>                 
+                  <OriginTypes />
                 </>
               )
             },

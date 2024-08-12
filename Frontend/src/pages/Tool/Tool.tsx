@@ -146,7 +146,7 @@ const Tool = ({ tool, setVisible}:any) => {
             });
             setVisible(false);                      
           } else {
-            const res =await apiRequestAuth.post("/tool", formData, {
+            await apiRequestAuth.post("/tool", formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`
