@@ -4,7 +4,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 
-const OriginType = ({ originType, setVisible }: any) => {
+const ToolType = ({ toolType, setVisible }: any) => {
 
   const [name, setName] = useState('');
   const [status, setStatus] = useState('active')
@@ -17,11 +17,12 @@ const OriginType = ({ originType, setVisible }: any) => {
   const toast = useRef(null);
 
   useEffect(() => {
-    if(originType) {
-      setName(originType.name);
-      setStatus(originType.status);
+    if(toolType) {
+      setName(toolType.name)
+      setStatus(toolType.status)
     }
   }, []);
+  
 
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
     e.preventDefault();
@@ -37,20 +38,20 @@ const OriginType = ({ originType, setVisible }: any) => {
     }
 
     try {
-      if (originType) {
-        await apiRequestAuth.put(`/origin-type/${originType.id}`, formData, {
+      if (toolType) {
+        await apiRequestAuth.put(`/tool-type/${toolType.id}`, formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
         setVisible(false);
       } else {
-        await apiRequestAuth.post(`/origin-type`, formData, {
+        await apiRequestAuth.post(`/tool-type`, formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        showAlert('info', 'Info', 'Herramienta Creado!');
+        showAlert('info', 'Info', 'Registro Creado!');
         setVisible(false);
       }
     } catch (error) {
@@ -90,12 +91,11 @@ const OriginType = ({ originType, setVisible }: any) => {
               <div className="mb-5">
                 <input
                   type="submit"
-                  value={`${ originType ? 'Actualizar registro' : 'Crear registro'}`}
+                  value={`${ toolType ? 'Actualizar registro' : 'Crear registro'}`}
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                 />
               </div>
               { error && <span>{ error }</span> }
-
             </form>
           </div>
         </div>
@@ -104,4 +104,4 @@ const OriginType = ({ originType, setVisible }: any) => {
   )
 }
 
-export default OriginType
+export default ToolType

@@ -13,36 +13,36 @@ import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import OriginType from '../../pages/OriginType/OriginType';
-import ViewOriginType from '../../pages/OriginType/ViewOriginType';
+import ToolType from '../../pages/ToolType/ToolType';
+import ViewToolType from '../../pages/ToolType/ViewToolType';
 
-const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginTypes, loading } : any) => {
-    
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }        
-      });
-    const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [visible, setVisible] = useState(false);
-    const [visibleOriginType, setVisibleOriginType] = useState(false);
-    const [selectedOriginType, setSelectedOriginType] = useState(null);
+const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loading } :any) => {
+ 
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }        
+  });
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [visibleToolType, setVisibleToolType] = useState(false);
+  const [selectedToolType, setSelectedToolType] = useState(null);
 
-    const toast = useRef(null);
+  const toast = useRef(null);  
 
-    const authContext = useContext<AuthContextProps | undefined>(AuthContext);
-    if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-    const { currentToken } = authContext; 
+  const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+  if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
+  const { currentToken } = authContext;
 
-    const onGlobalFilterChange = (e:any) => {
-        const value = e.target.value;
-        let _filters = { ...filters };
+  const onGlobalFilterChange = (e:any) => {
+      const value = e.target.value;
+      let _filters = { ...filters };
 
-        _filters['global'].value = value;
+      _filters['global'].value = value;
 
-        setFilters(_filters);
-        setGlobalFilterValue(value);
-    };
+      setFilters(_filters);
+      setGlobalFilterValue(value);
+  };
 
   const renderHeader = () => {
     return (
@@ -53,8 +53,8 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
           </IconField>
           <IconField iconPosition="left" className='ml-2'>                
                 <InputIcon className="pi pi-search" />
-                <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newOriginType()} className='' />
-                <Button label={viewActiveOriginTypes ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveOriginTypes()} className='ml-2' severity={viewActiveOriginTypes ? 'danger' : 'success'} />
+                <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newToolType()} className='' />
+                <Button label={viewActiveToolsType ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveToolsType() } className='ml-2' severity={viewActiveToolsType ? 'danger' : 'success'} />
               <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
                 style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
                 {/* <OriginType originType={selectedOriginType} setVisible={setVisible}/> */}
@@ -64,44 +64,43 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
     );
   };
 
-
-  const newOriginType = () => {
+  const newToolType = () => {
     setVisible(true);
-    setSelectedOriginType(null);
-  };
+    setSelectedToolType(null);
+  }
 
-  const viewActiveOrInactiveOriginTypes = () => setViewActiveOriginTypes(!viewActiveOriginTypes);
+  const viewActiveOrInactiveToolsType = () => setViewActiveToolsType(!viewActiveToolsType);    
 
-  const editOriginType = (rowData: any) => {
+  const editToolsType = (toolType: any) => {
     setVisible(true);
-    setSelectedOriginType(rowData);
-  };
+    setSelectedToolType(toolType);
+  }
 
-  const deleteOriginType = async (rowData:any) => {    
-    setSelectedOriginType(rowData);
+  const deleteToolsType = async (rowData:any) => {    
+    setSelectedToolType(rowData);
       confirmDialog({
-        message: `${!viewActiveOriginTypes ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-        header: `${!viewActiveOriginTypes ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+        message: `${!viewActiveToolsType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+        header: `${!viewActiveToolsType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
         icon: 'pi pi-info-circle',
-        acceptClassName: `${!viewActiveOriginTypes ? 'p-button-success' : 'p-button-danger'}`,
+        acceptClassName: `${!viewActiveToolsType ? 'p-button-success' : 'p-button-danger'}`,
         accept,
         reject
       });    
   };
 
-  const showOriginType = (rowData:any) => {
-    setSelectedOriginType(rowData);
-    setVisibleOriginType(true);
-  };  
+  const showToolsType = (rowData:any) => {
+    setVisibleToolType(true);
+    setSelectedToolType(rowData);
+  }
 
   const accept = async () => {
-    if (selectedOriginType) {
+    if (selectedToolType) {
       const formData = new FormData();
       try {
-        if(!viewActiveOriginTypes){
-          formData.append('name', selectedOriginType.name);
+        if(!viewActiveToolsType){
+          formData.append('name', selectedToolType.name);
           formData.append('status', 'active');
-          await apiRequestAuth.put(`/origin-type/${selectedOriginType.id}`, formData, {
+          await apiRequestAuth.put(`/tool-type/${selectedToolType.id}`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${currentToken?.token}`
@@ -109,9 +108,9 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
           });
           toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el registro', life: 3000 });
         } else {
-          formData.append('name', selectedOriginType.name);
+          formData.append('name', selectedToolType.name);
           formData.append('status', 'inactive');
-          await apiRequestAuth.put(`/origin-type/${selectedOriginType.id}`, formData, {
+          await apiRequestAuth.put(`/tool-type/${selectedToolType.id}`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${currentToken?.token}`
@@ -123,11 +122,11 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
         console.log(error);
       }
     }
-  };
-
+  }; 
+  
   const reject = () => {
     toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
-  };
+  };  
 
   const optionsBodyTemplate = (rowData:any) => {
     return (
@@ -136,21 +135,21 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
               size='small'
               icon="pi pi-pencil"
               className="p-button-rounded p-button-success p-button-sm"
-              onClick={() => editOriginType(rowData)}
+              onClick={() => editToolsType(rowData)}
               style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
           />
           <Button
               size='small'
               icon="pi pi-eye"
               className="p-button-rounded p-button-warning p-button-sm"
-              onClick={() => showOriginType(rowData)}
+              onClick={() => showToolsType(rowData)}
               style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
           />
           <Button
               size='small'
-              icon={viewActiveOriginTypes ? 'pi pi-trash' : 'pi pi-check'}
-              className={viewActiveOriginTypes ? 'p-button-rounded p-button-danger p-button-sm' : 'p-button-rounded p-button-info p-button-sm'}
-              onClick={() => deleteOriginType(rowData)}
+              icon={viewActiveToolsType ? 'pi pi-trash' : 'pi pi-check'}
+              className={viewActiveToolsType ? 'p-button-rounded p-button-danger p-button-sm' : 'p-button-rounded p-button-info p-button-sm'}
+              onClick={() => deleteToolsType(rowData)}
               style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
           />
       </div>
@@ -181,14 +180,14 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <OriginType originType={selectedOriginType} setVisible={setVisible} />
+        <ToolType toolType={selectedToolType} setVisible={setVisible} />
       </Dialog>
-      <Dialog header="Header" visible={visibleOriginType} onHide={() => setVisibleOriginType(false)}
+      <Dialog header="Header" visible={visibleToolType} onHide={() => setVisibleToolType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <ViewOriginType originType={selectedOriginType} />
+        <ViewToolType toolType={selectedToolType} />
       </Dialog>
     </div>
   )
 }
 
-export default TableOriginTypes
+export default TableToolTypes
