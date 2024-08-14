@@ -21,7 +21,7 @@ const Tools = () => {
     *
     * @return {Promise<void>} - A promise that resolves when the tools are retrieved successfully.
     */
-     const getTools = async () => {
+     const getTools = async (): Promise<void> => {
        try {
         let response;
         if (viewActiveTools) {
@@ -37,7 +37,7 @@ const Tools = () => {
             }
           });
         } 
-        if(response) setTools(response.data);        
+        if(response) setTools(response.data);
        } catch (error) {
          toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener las herramientas' });
        }

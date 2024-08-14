@@ -5,7 +5,7 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 
-const Tool = ({ tool, setVisible}:any) => {
+const Tool = ({ tool, setVisible }:any) => {
 
     const [name, setName] = useState('')
     const [brand, setBrand] = useState('')
@@ -16,8 +16,10 @@ const Tool = ({ tool, setVisible}:any) => {
     const [error, setError] = useState("");
     const [selectedToolType, setSelectedToolType] = useState(null);
     const [selectedOriginTool, setSelectedOriginTool] = useState(null);
+    const [selectedEquipmentType, setSelectedEquipmentType] = useState(null);
     const [toolTypes, setToolTypes] = useState([]);
     const [originTools, setOriginTools] = useState([]);
+    const [equipmentTypes, setEquipmentTypes] = useState([]);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -50,7 +52,22 @@ const Tool = ({ tool, setVisible}:any) => {
       } catch (error) {
         console.log(error);
       }
-    } 
+    }
+
+    const getEquipmentType = async () => {
+      try {
+        const response = await apiRequestAuth.get(`/equipment-type/`, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        });
+        setEquipmentTypes(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getEquipmentType();
     getToolType();
     getOriginTool();
   }, []);
@@ -73,9 +90,13 @@ const Tool = ({ tool, setVisible}:any) => {
           const originTool = originTools.find((type) => type.id === tool.originTypeId);
           return originTool;
         });
+        setSelectedEquipmentType(()=> {
+          const equipmentType = equipmentTypes.find((type) => type.id === tool.equipmentTypeId);
+          return equipmentType;
+        });
       }      
     }
-    if (toolTypes.length > 0 && originTools.length > 0) {
+    if (toolTypes.length > 0 && originTools.length > 0 && equipmentTypes.length > 0) {
       getTool();
     }
   }, [toolTypes]);
@@ -111,7 +132,7 @@ const Tool = ({ tool, setVisible}:any) => {
             formData.append('dateOfPurchase', dateOfPurchase);
             formData.append('toolTypeId', JSON.stringify(selectedToolType?.id));
             formData.append('originTypeId', JSON.stringify(selectedOriginTool?.id));
-            formData.append('equipmentTypeId', JSON.stringify(1));
+            formData.append('equipmentTypeId', JSON.stringify(selectedEquipmentType?.id));
             if (status) formData.append('status', status);
           } 
     
@@ -129,14 +150,13 @@ const Tool = ({ tool, setVisible}:any) => {
             formData.append('serialNumber', serialNumber);
             formData.append('dateOfPurchase', dateOfPurchase);
             formData.append('status', status);
-            formData.append('toolTypeId', JSON.stringify(1));
-            formData.append('originTypeId', JSON.stringify(1));
-            formData.append('equipmentTypeId', JSON.stringify(1));
-          }
-    
+            formData.append('toolTypeId', JSON.stringify(selectedToolType?.id));
+            formData.append('originTypeId', JSON.stringify(selectedOriginTool?.id));
+            formData.append('equipmentTypeId', JSON.stringify(selectedEquipmentType?.id));
+          }  
         }  
     
-        try {
+        try {          
           if (tool) {
             await apiRequestAuth.put(`/tool/${tool.id}`, formData, {
               headers: {
@@ -144,7 +164,8 @@ const Tool = ({ tool, setVisible}:any) => {
                 Authorization: `Bearer ${currentToken?.token}`
               },
             });
-            setVisible(false);                      
+            setVisible(false);        
+
           } else {
             await apiRequestAuth.post("/tool", formData, {
               headers: {
@@ -152,14 +173,14 @@ const Tool = ({ tool, setVisible}:any) => {
                 Authorization: `Bearer ${currentToken?.token}`
               },
             });
-            showAlert('info', 'Info', 'Herramienta Creado!');
+            showAlert('info', 'Info', 'Registro Creado!');
           }          
         } catch (err:any) {
           setError(err.response.data.message);
         }
       };
 
-      const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
     
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
@@ -268,6 +289,23 @@ const Tool = ({ tool, setVisible}:any) => {
                     optionLabel="name"  
                     optionValue="id"
                     placeholder="Seleccione el origen de la herramienta"
+                    className="w-full"
+                  />
+                  </div>
+                </div>               
+
+                <div className="mb-4">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                    Tipo de equipo para la herramienta
+                  </label>
+                  <div className="relative">
+                  <Dropdown
+                    value={selectedEquipmentType}
+                    options={equipmentTypes}
+                    onChange={(e) => setSelectedEquipmentType(e.value)}
+                    optionLabel="name"
+                    optionValue="id"
+                    placeholder="Seleccione el tipo de equipo de la herramienta"
                     className="w-full"
                   />
                   </div>

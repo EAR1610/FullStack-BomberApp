@@ -55,7 +55,6 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
             toolTypeName: toolType ? toolType.name : 'Unknown'
           };
         });
-  
         setTools(toolsWithTypeName);
         setLoading(false);
       } catch (error) {
@@ -104,6 +103,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
   const viewActiveOrInactiveTools = () => setViewActiveTools(!viewActiveTools);
 
   const editTool = (rowData:any) => {
+    console.log(rowData);
     setSelectedTool(rowData);
     setVisible(true);
   };
@@ -154,9 +154,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
     }
   };
 
-  const reject = () => {
-    toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
-  };
+  const reject = () => toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });  
 
   const optionsBodyTemplate = (rowData:any) => {
     return (

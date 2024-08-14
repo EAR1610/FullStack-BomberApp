@@ -46,7 +46,10 @@ export default class OriginTypesController {
   /**
    * ? Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params }: HttpContext) {
+    const originType = await OriginType.find(params.id);
+    return originType;
+  }
 
   /**
    * ? Edit individual record
