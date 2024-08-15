@@ -41,12 +41,11 @@ export default class ToolTypesController {
     const payload = await request.validateUsing(createToolTypeValidator);
     const toolType = new ToolType();
     toolType.fill(payload);
-
     return await toolType.save();
   }
 
   /**
-   * Show individual record
+   * ? Show individual record
    */
   async show({ params }: HttpContext) {
     return await ToolType.find( params.id );
@@ -61,13 +60,10 @@ export default class ToolTypesController {
    * ? Handle form submission for the edit action
    */
   async update({request, params, response }: HttpContext) {
-
     const payload = await request.validateUsing(createToolTypeValidator);
     const toolType = await ToolType.find( params.id );
-
     if ( !toolType ) return response.status(404).json({ message: 'No se ha encontrado el tipo de herramienta' });
     toolType?.merge(payload);
-
     return await toolType?.save();
   }
 

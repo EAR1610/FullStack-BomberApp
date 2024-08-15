@@ -16,7 +16,29 @@ import EquipmentTypesController from '#controllers/equipment_types_controller';
 import ToolTypesController from '#controllers/tool_types_controller';
 import OriginTypesController from '#controllers/origin_types_controller';
 import ToolsController from '#controllers/tools_controller';
+import VehicleTypesController from '#controllers/vehicle_types_controller';
+import VehiclesController from '#controllers/vehicles_controller';
 
+
+/**
+ * ? Routes for the application: VEHICLES 🚗
+ * 
+ */
+router.resource('users/vehicle', VehiclesController).use("*", middleware.auth());
+router.group(() => {
+  router.post('/inactive-vehicles', [VehiclesController, 'inactiveVehicles']);
+  router.post('/suspended-vehicles', [VehiclesController, 'suspendedVehicles']);
+}).prefix('users/vehicle').use(middleware.auth());
+
+/**
+ * ? Routes for the application: VEHICLE TYPES 🚗
+ */
+
+router.resource('users/vehicle-type', VehicleTypesController).use("*", middleware.auth());
+router.group(() => {
+  router.post('/inactive-vehicle-types', [VehicleTypesController, 'inactiveVehicleTypes']);
+  router.post('/suspended-vehicle-types', [VehicleTypesController, 'suspendedVehicleTypes']);
+}).prefix('users/vehicle-type').use(middleware.auth());
 
 /**
  * ? Routes for the application: EQUIPMENT TYPES 📦
