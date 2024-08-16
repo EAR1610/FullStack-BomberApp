@@ -49,7 +49,7 @@ export const updateVehicleValidator = ( vehicleId:number ) =>
           const vehicle = await db
             .from('vehicles')
             .where('plate_number', value)
-            .whereNot('id', vehicleId) // Excluir el vehículo actual
+            .whereNot('id', vehicleId)
             .first()
           return !vehicle
         }),

@@ -18,7 +18,13 @@ import OriginTypesController from '#controllers/origin_types_controller';
 import ToolsController from '#controllers/tools_controller';
 import VehicleTypesController from '#controllers/vehicle_types_controller';
 import VehiclesController from '#controllers/vehicles_controller';
+import FirefighterShiftsController from '#controllers/firefighter_shifts_controller';
 
+router.resource('users/firefighter-shift', FirefighterShiftsController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/inactive-firefighter-shifts', [FirefighterShiftsController, 'inactiveFirefighterShifts']);
+  router.post('/suspended-firefighter-shifts', [FirefighterShiftsController, 'suspendedFirefighterShifts']);
+}).prefix('users/firefighter-shift').use(middleware.auth());
 
 /**
  * ? Routes for the application: VEHICLES 🚗
