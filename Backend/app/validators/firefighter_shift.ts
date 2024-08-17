@@ -7,6 +7,7 @@ export const createFirefighterShiftValidator = vine.compile(
     description: vine.string().nullable(),
     shiftStart: vine.date(),
     shiftEnd: vine.date(),
+    firefighterId: vine.number(),
     status: vine.enum(['active', 'inactive', 'suspended']),
   })
 )

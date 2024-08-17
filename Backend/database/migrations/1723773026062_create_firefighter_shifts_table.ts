@@ -6,6 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.integer('firefighter_id').unsigned().references('id').inTable('firefighters')
       table.string('name', 255).notNullable()
       table.string('description', 255).nullable()
       table.datetime('shift_start').notNullable()

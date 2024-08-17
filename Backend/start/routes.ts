@@ -22,7 +22,7 @@ import FirefighterShiftsController from '#controllers/firefighter_shifts_control
 import FirefightersController from '#controllers/firefighters_controller';
 
 /**
- * ? Routes for the application: FIREFIGHTERS SHIFTS 🔥👨‍🚒 👩‍🚒 : 🕗 
+ * ? Routes for the application: FIREFIGHTERS SHIFTS 🔥👨‍🚒 👩‍🚒 🕗 
  */
 router.resource('users/firefighter-shift', FirefighterShiftsController).use('*', middleware.auth());
 router.group(() => {
