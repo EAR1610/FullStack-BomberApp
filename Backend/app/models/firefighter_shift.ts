@@ -1,9 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 
 export default class FirefighterShift extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare firefighterId: number
 
   @column()
   declare name: string
@@ -16,6 +19,8 @@ export default class FirefighterShift extends BaseModel {
 
   @column.dateTime()
   declare shiftEnd: DateTime
+
+  // @belongsTo()
 
   @column()
   declare status: 'active' | 'inactive' | 'suspended'

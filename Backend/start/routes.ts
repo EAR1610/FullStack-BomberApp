@@ -19,12 +19,25 @@ import ToolsController from '#controllers/tools_controller';
 import VehicleTypesController from '#controllers/vehicle_types_controller';
 import VehiclesController from '#controllers/vehicles_controller';
 import FirefighterShiftsController from '#controllers/firefighter_shifts_controller';
+import FirefightersController from '#controllers/firefighters_controller';
 
+/**
+ * ? Routes for the application: FIREFIGHTERS SHIFTS 🔥👨‍🚒 👩‍🚒 : 🕗 
+ */
 router.resource('users/firefighter-shift', FirefighterShiftsController).use('*', middleware.auth());
 router.group(() => {
   router.post('/inactive-firefighter-shifts', [FirefighterShiftsController, 'inactiveFirefighterShifts']);
   router.post('/suspended-firefighter-shifts', [FirefighterShiftsController, 'suspendedFirefighterShifts']);
 }).prefix('users/firefighter-shift').use(middleware.auth());
+
+/**
+ * ? Routes for the application: FIREFIGHTERS 🧑‍🚒 👩‍🚒 
+ */
+router.resource('users/firefighter', FirefightersController).use('*', middleware.auth());
+router.group(() => {
+  router.post('par-firefighters', [FirefightersController, 'parFighters']);
+  router.post('impar-firefighters', [FirefightersController, 'imparFighters']);
+}).prefix('users/firefighter').use(middleware.auth());
 
 /**
  * ? Routes for the application: VEHICLES 🚗
