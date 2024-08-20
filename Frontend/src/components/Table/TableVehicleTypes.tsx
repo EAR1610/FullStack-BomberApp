@@ -8,7 +8,7 @@ import { InputIcon } from 'primereact/inputicon';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
-import 'primeicons/primeicons.css';      
+import 'primeicons/primeicons.css';
 import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth } from '../../lib/apiRequest';

@@ -20,7 +20,7 @@ import BlogWithAuth from './pages/Blog/BlogWithAuth';
 import OriginTypes from './pages/OriginType/OriginTypes';
 import ToolsType from './pages/ToolType/ToolsType';
 import EquipmentsType from './pages/EquipmentType/EquipmentsType';
-import Vehicles from './pages/Vehicles/Vehicle';
+import Vehicles from './pages/Vehicles/Vehicles';
 import VehiclesType from './pages/VehicleType/VehiclesType';
 
 /**

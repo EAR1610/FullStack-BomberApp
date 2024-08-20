@@ -35,7 +35,7 @@ const Tool = ({ tool, setVisible }:any) => {
             Authorization: `Bearer ${currentToken?.token}`
           }
         });
-        setToolTypes(response.data);
+        if (response) setToolTypes(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -48,7 +48,7 @@ const Tool = ({ tool, setVisible }:any) => {
             Authorization: `Bearer ${currentToken?.token}`
           }
         });
-        setOriginTools(response.data);
+        if (response) setOriginTools(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -61,7 +61,7 @@ const Tool = ({ tool, setVisible }:any) => {
             Authorization: `Bearer ${currentToken?.token}`
           }
         });
-        setEquipmentTypes(response.data);
+        if (response) setEquipmentTypes(response.data);
       } catch (error) {
         console.log(error);
       }

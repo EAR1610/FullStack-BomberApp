@@ -5,17 +5,46 @@ import type { HttpContext } from '@adonisjs/core/http'
 export default class VehiclesController {
   /**
    * ? Display a list of resource
+   * ? This code snippet retrieves a list of active vehicles from the database, along with their associated vehicle type name, and returns the list.
    */
   async index({}: HttpContext) {
-    const vehicle = await Vehicle.query().where('status', 'active');
-    return vehicle
+    const vehicles = await Vehicle.query()
+    .whereHas('vehicleType', (query) => {
+      query.where('status', 'active');
+    })
+    .whereHas('originType', (query) => {
+      query.where('status', 'active');
+    })
+    .preload('vehicleType', (query) => {
+      query.select('name')
+    })
+    .preload('originType', (query) => {
+      query.select('name')
+    })
+    .where('status', 'active');
+
+    return vehicles
   }
 
   /**
    * ? Display a list of inactive resource
    */
   async inactiveVehicles({}: HttpContext) {
-    const vehicle = await Vehicle.query().where('status', 'inactive');
+    const vehicle = await Vehicle.query()
+     .whereHas('vehicleType', (query) => {
+      query.where('status', 'active');
+    })
+    .whereHas('originType', (query) => {
+      query.where('status', 'active');
+    })
+    .preload('vehicleType', (query) => {
+      query.select('name')
+    })
+    .preload('originType', (query) => {
+      query.select('name')
+    })
+    .where('status', 'inactive');
+    
     return vehicle
   }
 
@@ -23,7 +52,21 @@ export default class VehiclesController {
    * ? Display a list of suspended resource
    */
   async suspendedVehicles({}: HttpContext) {
-    const vehicle = await Vehicle.query().where('status', 'suspended');
+    const vehicle = await Vehicle.query()
+     .whereHas('vehicleType', (query) => {
+      query.where('status', 'active');
+    })
+    .whereHas('originType', (query) => {
+      query.where('status', 'active');
+    })
+    .preload('vehicleType', (query) => {
+      query.select('name')
+    })
+    .preload('originType', (query) => {
+      query.select('name')
+    })
+    .where('status', 'suspended');
+    
     return vehicle
   }
 

@@ -4,7 +4,14 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class FirefightersController {
   /**
-   * ? Display a list of resource
+   * 
+  * ? This code snippet is a method named `index` in a controller class. It retrieves a list of firefighters from the database and returns the list. 
+      Here's a breakdown of what it does:
+      1. It queries the `Firefighter` model to retrieve a list of firefighters.
+      2. It uses the `whereHas` method to filter the firefighters to only those that have a `user` with an `active` status.
+      3. It uses the `preload` method to eager-load the `user` relationship for each firefighter, selecting only the `id`, `roleId`, `username`, `fullName`, `email`, and `status` columns.
+      4. It maps over the list of firefighters, accessing the `isAdmin` and `isFirefighter` properties of each firefighter's `user` object (although these properties aren't used anywhere in the snippet).
+      5. It returns the list of firefighters.
    */
   async index({}: HttpContext) {
     const firefighters = await Firefighter.query()
