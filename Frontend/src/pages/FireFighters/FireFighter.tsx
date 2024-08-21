@@ -43,6 +43,11 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
   const [error, setError] = useState("");
   const [status, setStatus] = useState("active");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedShiftPreference, setSelectedShiftPreference] = useState(null);
+  const [shiftPreferences, setShiftPreferences] = useState([
+    { name: "Par", code: "Par" },
+    { name: "Impar", code: "Impar" },
+  ]);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -149,21 +154,12 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
                 <label htmlFor='shiftPreference' className="mb-2.5 block font-medium text-black dark:text-white">
                   Turno
                 </label>
-                <div className="relative">
-                  <input
-                    id='shiftPreference'
-                    type="text"
-                    placeholder="Ingresa el turno del bombero"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ shiftPreference }
-                    onChange={ e => setShiftPreference( e.target.value ) }
-                  />
-                </div>
-              </div>   
+                <Dropdown value={selectedShiftPreference} onChange={(e) => setSelectedShiftPreference(e.value)} options={shiftPreferences} optionLabel="name" 
+                placeholder="Selecciona el turno" className="w-full md:w-14rem" />
+              </div>
 
               <div className="mb-4 bg-blue-800 p-1 rounded-lg">
-                <label htmlFor='username' className="mb-2.5 block text-2xl text-white text-center">
+                <label htmlFor='username' className="block text-2xl text-white text-center">
                     Datos del usuario
                 </label>
               </div>
