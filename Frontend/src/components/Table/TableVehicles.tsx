@@ -99,7 +99,6 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
   }
 
   const accept = async () => {
-    debugger;
     if (selectedVehicle) {
       const formData = new FormData();
       formData.append('brand', selectedVehicle.brand);

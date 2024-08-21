@@ -14,7 +14,6 @@ import User from './pages/Users/User';
 import Blog from './pages/Blog/Blog';
 import Emergency from './pages/Emergency/Emergency';
 import EmergencyWithAuth from './pages/Emergency/EmergencyWithAuth';
-import FireFighter from './pages/FireFighters/FireFighter';
 import Tools from './pages/Tool/Tools';
 import BlogWithAuth from './pages/Blog/BlogWithAuth';
 import OriginTypes from './pages/OriginType/OriginTypes';
@@ -22,6 +21,7 @@ import ToolsType from './pages/ToolType/ToolsType';
 import EquipmentsType from './pages/EquipmentType/EquipmentsType';
 import Vehicles from './pages/Vehicles/Vehicles';
 import VehiclesType from './pages/VehicleType/VehiclesType';
+import FireFighters from './pages/FireFighters/FireFighters';
 
 /**
  * ? Renders the main App component with routes and layout.
@@ -98,7 +98,7 @@ function App() {
               path: 'firefighters',
               element: (
                 <>                 
-                  <FireFighter />
+                  <FireFighters />
                 </>
               )
             },
