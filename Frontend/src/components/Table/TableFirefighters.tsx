@@ -86,7 +86,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
                     <Button label={viewActiveFirefighters ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveFirefighters() } className='ml-2' severity={viewActiveFirefighters ? 'danger' : 'success'} />
                   <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
                     style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                    <FireFighter vehicle={selectedFirefighter} setVisible={setVisible} />
+                    <FireFighter firefighter={selectedFirefighter} setVisible={setVisible} />
                 </Dialog>
               </IconField>
           </div>

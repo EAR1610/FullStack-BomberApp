@@ -13,19 +13,19 @@ export default class extends BaseSeeder {
         roleId: 1
       },
       {
-        username: 'user',
-        fullName: 'User BomberApp',
-        email: 'user@bomberapp.com',
-        password: 'user',
-        address: 'Peten',        
-        roleId: 2
-      },
-      {
         username: 'bombero',
         fullName: 'Bomber BomberApp',
         email: 'bombero@bomberapp.com',
         password: 'bombero',
         address: 'Peten',
+        roleId: 2
+      },
+      {
+        username: 'user',
+        fullName: 'User BomberApp',
+        email: 'user@bomberapp.com',
+        password: 'user',
+        address: 'Peten',        
         roleId: 3
       }
     ];

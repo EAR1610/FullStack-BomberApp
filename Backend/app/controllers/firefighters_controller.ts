@@ -19,7 +19,7 @@ export default class FirefightersController {
         query.where('status', 'active')
       })
       .preload('user', (query) => {
-        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status')
+        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status', 'address')
       });
 
       return firefighters.map(firefighter => {        
