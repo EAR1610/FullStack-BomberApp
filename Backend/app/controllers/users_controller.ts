@@ -5,6 +5,7 @@ import hash from '@adonisjs/core/services/hash'
 import { cuid } from '@adonisjs/core/helpers';
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app';
+import Firefighter from '#models/firefighter';
 
 export default class UsersController {
 
@@ -65,7 +66,7 @@ export default class UsersController {
   async create({}: HttpContext) {}
 
   /**
-   * ? Handle form submission for the create action
+   * ? This code snippet handles the creation of a new user. It validates the form submission data using the `createUserValidator`, then saves the user's data, including their uploaded photography. If the user is a firefighter (roleId === 2), it also creates a new firefighter record associated with the user. Finally, it generates an access token for the newly created user and returns it.
    */
   async store({ request, auth }: HttpContext) {
     const payload =  await request.validateUsing(createUserValidator,
@@ -74,15 +75,34 @@ export default class UsersController {
             id: auth.user!.id
         }
     });
+
+    // * Extract only the fields relevant to the User model
+    const userPayload = {
+      username: payload.username,
+      fullName: payload.fullName,
+      email: payload.email,
+      password: payload.password,
+      address: payload.address,
+      roleId: payload.roleId,
+      status: payload.status,
+    }
+
     const fileName = `${cuid()}.${payload.photography.extname}`;
     await payload.photography.move(app.makePath('uploads/pictures'), {
       name: fileName
     });      
     const user = new User();
 
-    user.fill(payload);
+    user.fill(userPayload);
     user.photography = fileName;
     await user.save();
+
+    if (user.roleId === 2) {
+      await Firefighter.create({
+        userId: user.id,
+        shiftPreference: payload.shiftPreference || 'par',
+      })
+    }
 
     return User.accessTokens.create(user);
   }
@@ -108,10 +128,11 @@ export default class UsersController {
   /**
    * ? Handle form submission for the edit action
    */
-  async update({ request, params, response}: HttpContext) {
+  async update({ request, params, response }: HttpContext) {
     const user = await User.find( params.id );
     if( !user ) return response.notFound({ message: 'No se encontro el usuario' });
-    const file = request.file('photography');
+    const file = request.file('photography');    
+
     if (file) {
         await file.move(app.makePath('uploads/pictures'), {
             name: `${cuid()}.${file.extname}`
@@ -120,7 +141,39 @@ export default class UsersController {
         user.photography = file.fileName;
     }
     const data = request.all();
-    user?.merge(data);
+
+    // * Extract only the fields relevant to the User model
+    const userPayload = {
+      username: data.username,
+      fullName: data.fullName,
+      email: data.email,
+      password: data.password,
+      address: data.address,
+      roleId: data.roleId,
+      status: data.status,
+    }
+
+     // ? Handle the Firefighter relationship
+    if (user.roleId === 2) {
+      const firefighter = await Firefighter.findBy('userId', user.id)
+      
+      if (firefighter) {
+        firefighter.shiftPreference = data.shiftPreference || firefighter.shiftPreference
+        await firefighter.save()
+      } else {
+        await Firefighter.create({
+          userId: user.id,
+          shiftPreference: data.shiftPreference || 'par',
+        })
+      }
+    } else if (user.roleId !== 2 && data.roleId === 2) {     
+      await Firefighter.create({
+        userId: user.id,
+        shiftPreference: data.shiftPreference || 'par',
+      })
+    }
+
+    user?.merge(userPayload);
     return await user?.save();
   }
 

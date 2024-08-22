@@ -29,6 +29,11 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
   const [error, setError] = useState("");
   const [roleId, setRoleId] = useState(3);
   const [imagePreview, setImagePreview] = useState<null | string>(null);
+  const [selectedShiftPreference, setSelectedShiftPreference] = useState(null);
+  const [shiftPreferences, setShiftPreferences] = useState([
+    { name: "Par", code: "Par" },
+    { name: "Impar", code: "Impar" },
+  ]);
 
   const header = <div className="font-bold mb-3">Escribe tu contraseña</div>;
   const footer = (
@@ -48,7 +53,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       try {
         const response = await apiRequestAuth.get(`/profile/${photography}`, {
           headers: {
-            Authorization: `Bearer ${currentToken.token}`
+            Authorization: `Bearer ${currentToken?.token}`
           },
           responseType: 'blob'
         });
@@ -135,7 +140,6 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         formData.append('email', email);
         formData.append('address', address);
         formData.append('roleId', JSON.stringify(roleId));
-        debugger
         if ( typeof(photography) !== "string") formData.append('photography', photography);
       } 
 
@@ -143,7 +147,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
 
       if ( 
         !username || !fullName || !email || 
-        !password || !address || !photography 
+        !password || !address || !photography || selectedShiftPreference === null
       ) {
         setError("Todos los campos son obligatorios.");
         return;
@@ -161,13 +165,24 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
 
     try {
 
-      if (user) {
+      if ( user ) {
         await apiRequestAuth.put(`/${user.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${currentToken?.token}`
           },
         });
+
+        if (selectedShiftPreference !== null) {
+          const formData = new FormData();
+          formData.append('shiftPreference', selectedShiftPreference);
+          await apiRequestAuth.put(`/firefighter/${user.id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${currentToken?.token}`
+            }
+          })
+        }
         setVisible(false);        
 
       } else {
@@ -468,7 +483,16 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
                         className="w-full md:w-14rem"
                         required
                       />
-                    </div> 
+                    </div>
+                    { selectedRole?.name === 'Bombero' && (
+                      <div className="mb-4">
+                        <label htmlFor='shiftPreference' className="mb-2.5 block font-medium text-black dark:text-white">
+                          Turno
+                        </label>
+                        <Dropdown value={selectedShiftPreference} onChange={(e) => setSelectedShiftPreference(e.value)} options={shiftPreferences} optionLabel="name" 
+                        placeholder="Selecciona el turno" className="w-full md:w-14rem" />
+                      </div>                      
+                    )}
                   </>
                 )}
 
