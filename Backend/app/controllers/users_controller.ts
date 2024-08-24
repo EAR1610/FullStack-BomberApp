@@ -100,7 +100,7 @@ export default class UsersController {
     if (user.roleId === 2) {
       await Firefighter.create({
         userId: user.id,
-        shiftPreference: payload.shiftPreference || 'par',
+        shiftPreference: payload.shiftPreference || 'Par',
       })
     }
 
@@ -154,7 +154,7 @@ export default class UsersController {
     }
 
      // ? Handle the Firefighter relationship
-    if (user.roleId === 2) {
+    if (user.roleId === 2 || data.roleId === 2) {
       const firefighter = await Firefighter.findBy('userId', user.id)
       
       if (firefighter) {
@@ -163,13 +163,13 @@ export default class UsersController {
       } else {
         await Firefighter.create({
           userId: user.id,
-          shiftPreference: data.shiftPreference || 'par',
+          shiftPreference: data.shiftPreference || 'Par',
         })
       }
     } else if (user.roleId !== 2 && data.roleId === 2) {     
       await Firefighter.create({
         userId: user.id,
-        shiftPreference: data.shiftPreference || 'par',
+        shiftPreference: data.shiftPreference || 'Par',
       })
     }
 

@@ -25,5 +25,7 @@ export const loginValidator = vine.compile(
           extnames: ['jpg', 'png', 'jpeg']
         }),
         roleId: vine.number(),
+        shiftPreference: vine.enum(['Par', 'Impar']).nullable(),
+        status: vine.enum(['active', 'inactive', 'suspended']),
     })
   )

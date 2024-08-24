@@ -3,7 +3,8 @@ import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from 'primereact/toast';
-import TableFireFighters from "../../components/Table/TableFireFighters";
+import TableFirefighters from "../../components/Table/TableFirefighters";
+
 
 const FireFighters = () => {
     const [firefighters, setFirefighters] = useState([]);
@@ -48,7 +49,7 @@ const FireFighters = () => {
   return (
     <>
       <Toast ref={toast} />
-      <TableFireFighters data={firefighters} loading={loading} setViewActiveFirefighters={setViewActiveFirefighters} viewActiveFirefighters={viewActiveFirefighters} 
+      <TableFirefighters data={firefighters} loading={loading} setViewActiveFirefighters={setViewActiveFirefighters} viewActiveFirefighters={viewActiveFirefighters} 
       />
     </>
   )

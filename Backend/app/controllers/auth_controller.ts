@@ -1,3 +1,4 @@
+import Firefighter from "#models/firefighter";
 import User from "#models/user";
 import { loginValidator, registerValidator } from "#validators/auth";
 import { cuid } from "@adonisjs/core/helpers";
@@ -20,17 +21,36 @@ export default class AuthController {
                 }
             }
         )
+
+        // * Extract only the fields relevant to the User model
+        const userPayload = {
+            username: payload.username,
+            fullName: payload.fullName,
+            email: payload.email,
+            password: payload.password,
+            address: payload.address,
+            roleId: payload.roleId,
+            status: payload.status,
+        }
+
         const fileName = `${cuid()}.${payload.photography.extname}`;
         await payload.photography.move(app.makePath('uploads/pictures'), {
             name: fileName
         }); 
         const user = new User();
                 
-        user.fill(payload);
+        user.fill(userPayload);
         user.photography = fileName;
         const { username, photography, isAdmin, isFirefighter } = await user.save();
+
+        if (user.roleId === 2) {
+            await Firefighter.create({
+              userId: user.id,
+              shiftPreference: payload.shiftPreference || 'Par',
+            })
+        }
+
         const token = await User.accessTokens.create(user);
-    
         return {
             type: 'bearer',
             token: token.value!.release(),

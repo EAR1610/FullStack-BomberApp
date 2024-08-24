@@ -125,13 +125,10 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
     const accept = async () => {
       if (selectedFirefighter) {
         const formData = new FormData();
-        formData.append('userId', selectedFirefighter.userId);
-        formData.append('shiftPreference', selectedFirefighter.shiftPreference);        
-  
         try {
           if(!viewActiveFirefighters){
             formData.append('status', 'active');
-            await apiRequestAuth.put(`/vehicle/${selectedFirefighter.id}`, formData, {
+            await apiRequestAuth.put(`/${selectedFirefighter.user.id}`, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`
@@ -140,7 +137,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
             toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el registro', life: 3000 });
           } else {
             formData.append('status', 'inactive');
-            await apiRequestAuth.put(`/vehicle/${selectedFirefighter.id}`, formData, {
+            await apiRequestAuth.put(`/${selectedFirefighter.user.id}`, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`

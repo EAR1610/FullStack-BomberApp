@@ -8,7 +8,6 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
-import axios from 'axios';
         
 const SignUp: React.FC = ({ user, setVisible }:any) => {
   
@@ -71,7 +70,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       setFullName(user.fullName || '');
       setEmail(user.email || '');
       setPhotography(user.photography || null);
-      setPassword(user.password || '');
+      setPassword(user.password || ''); 
       setAddress(user.address || '');
       setStatus(user.status || status);
       setRoleId(user.roleId || 3);
@@ -123,10 +122,11 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {    
     e.preventDefault();    
     setError("");
+    debugger;
     
     const formData = new FormData();
 
-    if(user) {
+    if( user ) {
 
       if ( 
         !username || !fullName || !email  || !address
@@ -140,6 +140,8 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         formData.append('email', email);
         formData.append('address', address);
         formData.append('roleId', JSON.stringify(roleId));
+        formData.append('status', status);
+        formData.append('shiftPreference', selectedShiftPreference !== null ? selectedShiftPreference?.name : '');
         if ( typeof(photography) !== "string") formData.append('photography', photography);
       } 
 
@@ -147,7 +149,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
 
       if ( 
         !username || !fullName || !email || 
-        !password || !address || !photography || selectedShiftPreference === null
+        !password || !address || !photography
       ) {
         setError("Todos los campos son obligatorios.");
         return;
@@ -158,9 +160,10 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         formData.append('password', password);
         formData.append('address', address);
         formData.append('roleId', JSON.stringify(roleId));
+        formData.append('status', status);
+        formData.append('shiftPreference', selectedShiftPreference !== null ? selectedShiftPreference?.name : '');
         if (photography) formData.append('photography', photography);
       }
-
     }  
 
     try {
@@ -173,9 +176,9 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
           },
         });
 
-        if (selectedShiftPreference !== null) {
+        if ( selectedShiftPreference !== null && user.roleId === 2 ) {
           const formData = new FormData();
-          formData.append('shiftPreference', selectedShiftPreference);
+          formData.append('shiftPreference', selectedShiftPreference?.name);
           await apiRequestAuth.put(`/firefighter/${user.id}`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -191,14 +194,17 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        if(!currentToken){
+
+        if( !currentToken ){
           updateToken( res.data );
           navigate("/app/dashboard");          
         }
+
         showAlert('info', 'Info', 'Usuario Creado!');
       }
       
     } catch (err:any) {
+      console.log(err);
       setError(err.response.data.message);
     }
   };

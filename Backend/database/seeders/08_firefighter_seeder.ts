@@ -5,7 +5,7 @@ export default class extends BaseSeeder {
   async run() {
     let firefighter = new Firefighter();
     firefighter.userId = 2;
-    firefighter.shiftPreference = 'par';
+    firefighter.shiftPreference = 'Par';
     await firefighter.save();
   }
 }

@@ -11,7 +11,7 @@ export default class Firefighter extends BaseModel {
   declare userId: number
 
   @column()
-  declare shiftPreference: 'par' | 'impar'
+  declare shiftPreference: 'Par' | 'Impar'
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>

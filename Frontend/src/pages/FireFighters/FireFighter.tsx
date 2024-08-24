@@ -58,7 +58,7 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await apiRequestAuth.get(`/users/${firefighter.userId}`, {
+        const response = await apiRequestAuth.get(`/${firefighter.userId}`, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
@@ -72,6 +72,9 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
     const getFirefighter = async () => {      
       if (firefighter) {
         setShiftPreference(firefighter.shiftPreference);
+        setSelectedShiftPreference(
+          shiftPreferences.find(option => option.code === firefighter.shiftPreference)
+        );
         setUsername(firefighter.user.username);
         setFullName(firefighter.user.fullName);
         setEmail(firefighter.user.email);
@@ -84,6 +87,15 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
     getFirefighter();
   }, []);
 
+  /**
+   * Handles the form submission event.
+   *
+   * This function is called when the form is submitted. It prevents the default form submission behavior,
+   * checks if all required fields are filled, and then sends a request to the server to update or create a firefighter.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   * @return {Promise<void>} A promise that resolves when the request is completed.
+   */
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
     e.preventDefault();
     setError("");
@@ -95,7 +107,8 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
       setError("Todos los campos son obligatorios");
       return;
     } else {
-      formData.append('shiftPreference', shiftPreference);      
+      formData.append('shiftPreference', selectedShiftPreference?.code);
+      formData.append('userId', JSON.stringify(selectedUser?.id));
       formData.append('status', status);
     }
 
@@ -117,22 +130,20 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
         formDataUser.append('roleId', JSON.stringify(selectedUser.roleId));
         formDataUser.append('status', selectedUser.status);
 
-        await apiRequestAuth.put(`/users/${selectedUser.id}`, formDataUser, {
+        await apiRequestAuth.put(`/${selectedUser.id}`, formDataUser, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         })
-
-        setVisible(false);
-      } else {
+      } else {        
         await apiRequestAuth.post(`/firefighter`, formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
         showAlert('info', 'Info', 'Registro Creado!');
-        setVisible(false);
       }
+      setVisible(false);
     } catch (error) {
       console.log(error);
     }
@@ -154,7 +165,7 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
                 <label htmlFor='shiftPreference' className="mb-2.5 block font-medium text-black dark:text-white">
                   Turno
                 </label>
-                <Dropdown value={selectedShiftPreference} onChange={(e) => setSelectedShiftPreference(e.value)} options={shiftPreferences} optionLabel="name" 
+                <Dropdown value={selectedShiftPreference} onChange={(e) => setSelectedShiftPreference(e.value)} options={shiftPreferences} optionLabel="name"
                 placeholder="Selecciona el turno" className="w-full md:w-14rem" />
               </div>
 

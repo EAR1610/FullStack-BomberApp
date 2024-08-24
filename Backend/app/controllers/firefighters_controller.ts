@@ -29,6 +29,25 @@ export default class FirefightersController {
       });
   }
 
+  /*
+   * ? This code snippet is a method named `inactiveFirefighters` in a controller class. It retrieves a list of inactive firefighters from the database and returns the list.
+  */
+  async inactiveFirefighters({}: HttpContext) {
+    const firefighters = await Firefighter.query()
+      .whereHas('user', (query) => {
+        query.where('status', 'inactive')
+      })
+      .preload('user', (query) => {
+        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status', 'address')
+      });
+
+      return firefighters.map(firefighter => {        
+        firefighter.user.isAdmin 
+        firefighter.user.isFirefighter
+        return firefighter
+      });
+  }
+
   /**
    * ? Display list of par firefighters
    */
@@ -37,7 +56,7 @@ export default class FirefightersController {
       .whereHas('user', (query) => {
         query.where('status', 'active')
       })
-      .where('shiftPreference', 'par')
+      .where('shiftPreference', 'Par')
       .preload('user', (query) => {
         query.select('id', 'roleId', 'username', 'fullName', 'email', 'status')
       });
@@ -57,7 +76,7 @@ export default class FirefightersController {
       .whereHas('user', (query) => {
         query.where('status', 'active')
       })
-      .where('shiftPreference', 'impar')
+      .where('shiftPreference', 'Impar')
       .preload('user', (query) => {
         query.select('id', 'roleId', 'username', 'fullName', 'email', 'status')
       });

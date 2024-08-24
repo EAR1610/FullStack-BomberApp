@@ -35,6 +35,7 @@ router.group(() => {
  */
 router.resource('users/firefighter', FirefightersController).use('*', middleware.auth());
 router.group(() => {
+  router.post('inactive-firefighters', [FirefightersController, 'inactiveFirefighters']);
   router.post('par-firefighters', [FirefightersController, 'parFighters']);
   router.post('impar-firefighters', [FirefightersController, 'imparFighters']);
 }).prefix('users/firefighter').use(middleware.auth());

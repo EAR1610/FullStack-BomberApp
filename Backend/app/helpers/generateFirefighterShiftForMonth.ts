@@ -9,7 +9,7 @@ async function generateShiftsForMonth(month:number, year:number) {
     for (let day = 1; day <= numberOfDays; day++) {
         const date = DateTime.local(year, month, day);
         const isEvenDay = day % 2 === 0;
-        const shiftPreference = isEvenDay ? 'par' : 'impar';
+        const shiftPreference = isEvenDay ? 'Par' : 'Impar';
 
         for (const firefighter of firefighters) {
             if(firefighter.shiftPreference === shiftPreference) {
