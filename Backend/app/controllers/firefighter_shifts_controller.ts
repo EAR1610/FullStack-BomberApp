@@ -37,10 +37,10 @@ export default class FirefighterShiftsController {
    * ? Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const { firefighterId, month, year } = request.only(['firefighterId', 'month', 'year'])
+    const { firefighterId, month, year } = request.only(['firefighterId', 'month', 'year']);
 
-    if (!firefighterId || !month || !year) return response.badRequest({ message: 'El Identificador del bombero, mes y año son obligatorios' });
-
+    if (!firefighterId || !month || !year) return response.badRequest({ message: 'El Identificador del bombero, mes y año son obligatorios' });  
+    
     try {
       await generateShiftsForMonthForFirefighter(parseInt(firefighterId), parseInt(month), parseInt(year));
       return response.ok({ message: 'Los turnos se han generado correctamente' })

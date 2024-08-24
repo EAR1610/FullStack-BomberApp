@@ -22,6 +22,7 @@ import EquipmentsType from './pages/EquipmentType/EquipmentsType';
 import Vehicles from './pages/Vehicles/Vehicles';
 import VehiclesType from './pages/VehicleType/VehiclesType';
 import FireFighters from './pages/FireFighters/FireFighters';
+import EmergenciesType from './pages/EmergencyType/EmergenciesType';
 
 /**
  * ? Renders the main App component with routes and layout.
@@ -147,6 +148,14 @@ function App() {
               element: (
                 <>                 
                   <VehiclesType />
+                </>
+              )
+            },                     
+            {
+              path: 'emergencies-type',
+              element: (
+                <>                 
+                  <EmergenciesType />
                 </>
               )
             },                     

@@ -186,8 +186,8 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
             />
             <Button
                 size='small'
-                icon={'pi pi-trash'}
-                className={'p-button-rounded p-button-danger p-button-sm'}
+                icon={'pi pi-calendar-plus'}
+                className={'p-button-rounded p-button-help p-button-sm'}
                 onClick={() => setFirefighterShift(rowData)}
                 style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
             />

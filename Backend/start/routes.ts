@@ -20,6 +20,12 @@ import VehicleTypesController from '#controllers/vehicle_types_controller';
 import VehiclesController from '#controllers/vehicles_controller';
 import FirefighterShiftsController from '#controllers/firefighter_shifts_controller';
 import FirefightersController from '#controllers/firefighters_controller';
+import EmergencyTypesController from '#controllers/emergency_types_controller';
+
+router.resource('users/emergency-type', EmergencyTypesController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/inactive-emergency-types', [EmergencyTypesController, 'inactiveEmergencyTypes']);
+}).prefix('users/emergency-type').use(middleware.auth());
 
 /**
  * ? Routes for the application: FIREFIGHTERS SHIFTS 🔥👨‍🚒 👩‍🚒 🕗 
