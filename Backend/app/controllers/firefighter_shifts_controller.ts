@@ -1,6 +1,7 @@
 import FirefighterShift from '#models/firefighter_shift';
 import { createFirefighterShiftValidator, transformValidator } from '#validators/firefighter_shift';
 import type { HttpContext } from '@adonisjs/core/http'
+import { generateShiftsForMonthForFirefighter } from '../helpers/generateFirefighterShiftForMonth.js';
 
 export default class FirefighterShiftsController {
   /**
@@ -35,20 +36,28 @@ export default class FirefighterShiftsController {
   /**
    * ? Handle form submission for the create action
    */
-  async store({ request }: HttpContext) {
-    const payload = await request.validateUsing(createFirefighterShiftValidator)
-    const transformedPayload = transformValidator(payload)
-    const firefighterShift = new FirefighterShift()
-    firefighterShift.fill(transformedPayload)
+  async store({ request, response }: HttpContext) {
+    const { firefighterId, month, year } = request.only(['firefighterId', 'month', 'year'])
 
-    return await firefighterShift.save()
+    if (!firefighterId || !month || !year) return response.badRequest({ message: 'El Identificador del bombero, mes y año son obligatorios' });
+
+    try {
+      await generateShiftsForMonthForFirefighter(parseInt(firefighterId), parseInt(month), parseInt(year));
+      return response.ok({ message: 'Los turnos se han generado correctamente' })
+    } catch (error) {
+      return response.status(404).json({ message: 'Ha ocurrido un error al momento de generar los turnos' });
+    }
   }
 
   /**
    * ? Show individual record
    */
-  async show({ params }: HttpContext) {
-    return await FirefighterShift.find( params.id );
+  async show({ params, response }: HttpContext) {
+    const firefighterShifts = await FirefighterShift.query()
+          .where('firefighterId', params.id);
+    
+    if (!firefighterShifts) return response.status(404).json({ message: 'No se ha encontrado el turno de bombero' })
+    return firefighterShifts
   }
 
   /**

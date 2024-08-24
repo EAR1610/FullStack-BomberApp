@@ -15,6 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import FireFighter from '../../pages/FireFighters/FireFighter';
 import ViewFireFighter from '../../pages/FireFighters/ViewFireFighter';
+import SetFirefighterShift from '../../pages/FireFighters/SetFirefighterShift';
 
 interface User {
     id: number;
@@ -55,6 +56,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       const [globalFilterValue, setGlobalFilterValue] = useState('');
       const [visible, setVisible] = useState(false);
       const [visibleFirefighter, setVisibleFirefighter] = useState(false);
+      const [visibleFirefighterShift, setvisibleFirefighterShift] = useState(false);
       const [selectedFirefighter, setSelectedFirefighter] = useState(null);
 
       const toast = useRef(null); 
@@ -117,6 +119,11 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
         });    
     };
 
+    const setFirefighterShift = async(firefighter: any) => {
+        setvisibleFirefighterShift(true);
+        setSelectedFirefighter(firefighter);
+    }
+
     const showFirefighter = (firefighter: any) => {
         setVisibleFirefighter(true);
         setSelectedFirefighter(firefighter);
@@ -177,6 +184,13 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
                 onClick={() => deleteFirefighters(rowData)}
                 style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
             />
+            <Button
+                size='small'
+                icon={'pi pi-trash'}
+                className={'p-button-rounded p-button-danger p-button-sm'}
+                onClick={() => setFirefighterShift(rowData)}
+                style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
+            />
         </div>
     )};
   
@@ -199,11 +213,11 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       header={header}
       emptyMessage="Registro no encontrado."
     >
-      <Column field="user.username" header="Usuario"  style={{ minWidth: '8rem' }}  align={'center'} />
-      <Column field="user.fullName" header="Nombre Completo"  style={{ minWidth: '8rem' }}  align={'center'} />
-      <Column field="user.email" header="Correo"  style={{ minWidth: '8rem' }}  align={'center'} />
-      <Column field="shiftPreference" header="Tipo Turno"  style={{ minWidth: '8rem' }}  align={'center'} />
-      <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '8rem' }} />
+      <Column field="user.username" header="Usuario"  style={{ minWidth: '4rem' }}  align={'center'} />
+      <Column field="user.fullName" header="Nombre Completo"  style={{ minWidth: '4rem' }}  align={'center'} />
+      <Column field="user.email" header="Correo"  style={{ minWidth: '4rem' }}  align={'center'} />
+      <Column field="shiftPreference" header="Tipo Turno"  style={{ minWidth: '4rem' }}  align={'center'} />
+      <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} />
     </DataTable>
     <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
@@ -212,6 +226,10 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
     <Dialog header="Header" visible={visibleFirefighter} onHide={() => setVisibleFirefighter(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <ViewFireFighter firefighter={selectedFirefighter} />
+    </Dialog>
+    <Dialog header="Header" visible={visibleFirefighterShift} onHide={() => setvisibleFirefighterShift(false)}
+      style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+      <SetFirefighterShift firefighter={selectedFirefighter} setVisible={setvisibleFirefighterShift} />
     </Dialog>
   </div>
   )

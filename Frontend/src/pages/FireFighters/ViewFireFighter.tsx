@@ -1,5 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
@@ -38,7 +37,6 @@ const ViewFireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVis
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [address, setAddress] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");

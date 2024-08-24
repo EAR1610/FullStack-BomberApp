@@ -2,6 +2,13 @@ import Firefighter from "#models/firefighter";
 import FirefighterShift from "#models/firefighter_shift";
 import { DateTime } from "luxon";
 
+/**
+ * * Generates shifts for firefighters for a given month.
+ *
+ * @param {number} month - The month for which to generate shifts.
+ * @param {number} year - The year for which to generate shifts.
+ * @return {Promise<void>} A promise that resolves when the shifts have been generated.
+ */
 async function generateShiftsForMonth(month:number, year:number) {
     const firefighters = await Firefighter.all();
     const numberOfDays = DateTime.local(year, month).daysInMonth;
@@ -27,4 +34,39 @@ async function generateShiftsForMonth(month:number, year:number) {
     }
 }
 
-export default generateShiftsForMonth
+/**
+ * * Generates shifts for a firefighter for a given month.
+ *
+ * @param {number} firefighterId - The ID of the firefighter.
+ * @param {number} month - The month for which to generate shifts.
+ * @param {number} year - The year for which to generate shifts.
+ * @return {Promise<void>} A promise that resolves when the shifts have been generated.
+ */
+async function generateShiftsForMonthForFirefighter(firefighterId: number, month: number, year: number) {    
+    const firefighter = await Firefighter.find(firefighterId);    
+    if (!firefighter) throw new Error('Firefighter not found');       
+    const numberOfDays = DateTime.local(year, month).daysInMonth;
+    if (numberOfDays === undefined) throw new Error(`Invalid month: ${month}`);    
+    const prefersEvenDays = firefighter.shiftPreference.toLowerCase() === 'par';
+
+    for (let day = 1; day <= numberOfDays; day++) {
+        const date = DateTime.local(year, month, day);
+        const isEvenDay = day % 2 === 0;        
+        if ((prefersEvenDays && !isEvenDay) || (!prefersEvenDays && isEvenDay)) continue;        
+        const shiftStart = date.set({ hour: 8, minute: 0 });
+        const shiftEnd = shiftStart.plus({ days: 1 }).set({ hour: 8, minute: 0 });
+        
+        await FirefighterShift.create({
+            firefighterId: firefighter.id,
+            shiftStart: shiftStart,
+            shiftEnd: shiftEnd,
+            name: `Turno ${prefersEvenDays ? 'Par' : 'Impar'}`,
+            description: `Turno de días ${prefersEvenDays ? 'Pares' : 'Impares'}`,
+        });
+    }
+}
+
+export {
+    generateShiftsForMonth,
+    generateShiftsForMonthForFirefighter
+}
