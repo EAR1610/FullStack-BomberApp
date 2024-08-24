@@ -21,6 +21,12 @@ import VehiclesController from '#controllers/vehicles_controller';
 import FirefighterShiftsController from '#controllers/firefighter_shifts_controller';
 import FirefightersController from '#controllers/firefighters_controller';
 import EmergencyTypesController from '#controllers/emergency_types_controller';
+import EmergenciesController from '#controllers/emergencies_controller';
+
+router.resource('users/emergencies', EmergenciesController).use('*', middleware.auth());
+router.group(() => {
+  
+}).prefix('users/emergencies').use(middleware.auth());
 
 router.resource('users/emergency-type', EmergencyTypesController).use('*', middleware.auth());
 router.group(() => {
