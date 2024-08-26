@@ -23,6 +23,7 @@ import Vehicles from './pages/Vehicles/Vehicles';
 import VehiclesType from './pages/VehicleType/VehiclesType';
 import FireFighters from './pages/FireFighters/FireFighters';
 import EmergenciesType from './pages/EmergencyType/EmergenciesType';
+import FirefigherShiftCalendar from './pages/FirefighterShiftCalendar/FirefigherShiftCalendar';
 
 /**
  * ? Renders the main App component with routes and layout.
@@ -100,6 +101,14 @@ function App() {
               element: (
                 <>                 
                   <FireFighters />
+                </>
+              )
+            },
+            {
+              path: 'firefighter-shift',
+              element: (
+                <>                 
+                  <FirefigherShiftCalendar />
                 </>
               )
             },

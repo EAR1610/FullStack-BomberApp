@@ -17,6 +17,11 @@ const ToolsType = () => {
   const toast = useRef(null);
 
   useEffect(() => {
+        /**
+     * ? Retrieves a list of tool types from the API using the current authentication token.
+     *
+     * @return {Promise<void>} - A promise that resolves when the tool types are retrieved successfully.
+     */
     const getToolsTypes = async () => {
       try {
         let response;

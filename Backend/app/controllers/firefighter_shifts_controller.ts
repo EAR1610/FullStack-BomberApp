@@ -47,8 +47,15 @@ export default class FirefighterShiftsController {
     } catch (error) {
         return response.status(400).json({ message: error.message });
     }
-}
+  }
 
+  async getShiftByFirefighterId({ params, response }: HttpContext) {
+    const firefighterShifts = await FirefighterShift.query()
+          .where('firefighterId', params.id)
+          .where('status', 'active');
+    if(!firefighterShifts) return response.status(404).json({ message: 'No se ha encontrado el turno de bombero' })
+    return firefighterShifts
+  }
 
   /**
    * ? Show individual record

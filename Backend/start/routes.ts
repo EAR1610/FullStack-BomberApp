@@ -44,6 +44,7 @@ router.resource('users/firefighter-shift', FirefighterShiftsController).use('*',
 router.group(() => {
   router.post('/inactive-firefighter-shifts', [FirefighterShiftsController, 'inactiveFirefighterShifts']);
   router.post('/suspended-firefighter-shifts', [FirefighterShiftsController, 'suspendedFirefighterShifts']);
+  router.post('/get-shift-by-firefighter/:id', [FirefighterShiftsController, 'getShiftByFirefighterId']);
 }).prefix('users/firefighter-shift').use(middleware.auth());
 
 /**
@@ -130,5 +131,5 @@ router.group(() => {
   router.post('register', [AuthController, 'register']);
   router.post('login', [AuthController, 'login']);
   router.delete('logout', [AuthController, 'logout']).use(middleware.auth());
-  router.get('me', [AuthController, 'me']).as('auth.me');
+  router.get('me', [AuthController, 'me']).use(middleware.auth());
 }).prefix('user');
