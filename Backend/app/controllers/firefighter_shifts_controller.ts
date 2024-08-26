@@ -39,15 +39,16 @@ export default class FirefighterShiftsController {
   async store({ request, response }: HttpContext) {
     const { firefighterId, month, year } = request.only(['firefighterId', 'month', 'year']);
 
-    if (!firefighterId || !month || !year) return response.badRequest({ message: 'El Identificador del bombero, mes y año son obligatorios' });  
-    
+    if (!firefighterId || !month || !year) response.badRequest({ message: 'El Identificador del bombero, mes y año son obligatorios' });
+
     try {
-      await generateShiftsForMonthForFirefighter(parseInt(firefighterId), parseInt(month), parseInt(year));
-      return response.ok({ message: 'Los turnos se han generado correctamente' })
+        await generateShiftsForMonthForFirefighter(parseInt(firefighterId), parseInt(month), parseInt(year));
+        return response.ok({ message: 'Los turnos se han generado correctamente' });
     } catch (error) {
-      return response.status(404).json({ message: 'Ha ocurrido un error al momento de generar los turnos' });
+        return response.status(400).json({ message: error.message });
     }
-  }
+}
+
 
   /**
    * ? Show individual record

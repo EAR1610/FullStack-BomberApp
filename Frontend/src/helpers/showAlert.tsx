@@ -1,5 +1,14 @@
-const showAlert = ( type:string, message:string ) => toast.current.show({ severity: type, summary: 'Error', detail: message, life: 3000 });
+import { Toast } from "primereact/toast";
+import { useRef } from "react";
 
-export {
-    showAlert
-}
+export const useToast = () => {
+  const toast = useRef<Toast>(null);
+
+  const showAlert = (severity: string, summary: string, detail: string) => {
+    toast.current.show({ severity, summary, detail, life: 3000 });
+  };
+
+  const ToastComponent = () => <Toast ref={toast} />;
+
+  return { showAlert, ToastComponent };
+};

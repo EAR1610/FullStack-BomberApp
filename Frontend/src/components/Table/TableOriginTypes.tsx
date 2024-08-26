@@ -54,11 +54,7 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
           <IconField iconPosition="left" className='ml-2'>                
                 <InputIcon className="pi pi-search" />
                 <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newOriginType()} className='' />
-                <Button label={viewActiveOriginTypes ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveOriginTypes()} className='ml-2' severity={viewActiveOriginTypes ? 'danger' : 'success'} />
-              <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
-                {/* <OriginType originType={selectedOriginType} setVisible={setVisible}/> */}
-            </Dialog>
+                <Button label={viewActiveOriginTypes ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveOriginTypes()} className='ml-2' severity={viewActiveOriginTypes ? 'danger' : 'success'} />             
           </IconField>
       </div>
     );
@@ -179,11 +175,11 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
         <Column field="status" header="Estado" style={{ minWidth: '12rem' }} />
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
-      <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
+      <Dialog header={selectedOriginType ? 'Actualizar el tipo de origen' : 'Creación del tipo de origen'} visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <OriginType originType={selectedOriginType} setVisible={setVisible} />
       </Dialog>
-      <Dialog header="Header" visible={visibleOriginType} onHide={() => setVisibleOriginType(false)}
+      <Dialog header="Visualización del tipo de origen" visible={visibleOriginType} onHide={() => setVisibleOriginType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewOriginType originType={selectedOriginType} />
       </Dialog>

@@ -42,20 +42,42 @@ async function generateShiftsForMonth(month:number, year:number) {
  * @param {number} year - The year for which to generate shifts.
  * @return {Promise<void>} A promise that resolves when the shifts have been generated.
  */
-async function generateShiftsForMonthForFirefighter(firefighterId: number, month: number, year: number) {    
-    const firefighter = await Firefighter.find(firefighterId);    
-    if (!firefighter) throw new Error('Firefighter not found');       
+async function generateShiftsForMonthForFirefighter(firefighterId: number, month: number, year: number) {
+    const firefighter = await Firefighter.find(firefighterId);
+    if (!firefighter) throw new Error('Firefighter not found');
+    
+    const existingShifts = await FirefighterShift.query()
+        .where('firefighterId', firefighterId)
+        .andWhereRaw('EXTRACT(MONTH FROM shift_start) = ?', [month])
+        .andWhereRaw('EXTRACT(YEAR FROM shift_start) = ?', [year])
+        .first();
+    
+    if (existingShifts) throw new Error('El bombero ya tiene turnos asignados para este mes');
+
+    const previousMonthDate = DateTime.local(year, month, 1).minus({ months: 1 });
+    const previousMonth = previousMonthDate.month;
+    const previousYear = previousMonthDate.year;
+
+    const lastMonthShifts = await FirefighterShift.query()
+        .where('firefighterId', firefighterId)
+        .andWhereRaw('EXTRACT(MONTH FROM shift_start) = ?', [previousMonth])
+        .andWhereRaw('EXTRACT(YEAR FROM shift_start) = ?', [previousYear])
+        .first();
+
+    let prefersEvenDays = firefighter.shiftPreference.toLowerCase() === 'par';
+
+    if (lastMonthShifts) prefersEvenDays = !prefersEvenDays;
     const numberOfDays = DateTime.local(year, month).daysInMonth;
     if (numberOfDays === undefined) throw new Error(`Invalid month: ${month}`);
-    const prefersEvenDays = firefighter.shiftPreference.toLowerCase() === 'par';
 
     for (let day = 1; day <= numberOfDays; day++) {
         const date = DateTime.local(year, month, day);
-        const isEvenDay = day % 2 === 0;        
-        if ((prefersEvenDays && !isEvenDay) || (!prefersEvenDays && isEvenDay)) continue;        
-        const shiftStart = date.set({ hour: 8, minute: 0 });
-        const shiftEnd = shiftStart.plus({ days: 1 }).set({ hour: 8, minute: 0 });
-        
+        const isEvenDay = day % 2 === 0;
+        if ((prefersEvenDays && !isEvenDay) || (!prefersEvenDays && isEvenDay)) continue;
+
+        const shiftStart = date.set({ hour: 8, minute: 0 }).toFormat('yyyy-MM-dd HH:mm:ss');
+        const shiftEnd = date.plus({ days: 1 }).set({ hour: 8, minute: 0 }).toFormat('yyyy-MM-dd HH:mm:ss');
+
         await FirefighterShift.create({
             firefighterId: firefighter.id,
             shiftStart: shiftStart,

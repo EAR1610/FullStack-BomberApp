@@ -3,12 +3,14 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+// import { useToast } from "../../helpers/showAlert"
 
 const ToolType = ({ toolType, setVisible }: any) => {
 
   const [name, setName] = useState('');
   const [status, setStatus] = useState('active')
   const [error, setError] = useState("");
+  // const { showAlert, ToastComponent } = useToast();
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -22,6 +24,18 @@ const ToolType = ({ toolType, setVisible }: any) => {
       setStatus(toolType.status)
     }
   }, []);
+
+  const handleErrorResponse = (error: any) => {
+    if (error.response && error.response.data && error.response.data.errors) {
+      const errorMessages = error.response.data.errors
+        .map((err: { message: string }) => err.message)
+        .join(', ');
+  
+      showAlert('error', 'Error', errorMessages);
+    } else {
+      showAlert('error', 'Error', 'Ocurrió un error inesperado');
+    }
+  };
   
 
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
@@ -33,7 +47,7 @@ const ToolType = ({ toolType, setVisible }: any) => {
       setError("Todos los campos son obligatorios");
       return;
     } else {
-      formData.append('name', name);
+      formData.append('name', name.trim());
       formData.append('status', status);
     }
 
@@ -44,7 +58,7 @@ const ToolType = ({ toolType, setVisible }: any) => {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        setVisible(false);
+        showAlert('info', 'Info', 'Registro Actualizado!');
       } else {
         await apiRequestAuth.post(`/tool-type`, formData, {
           headers: {
@@ -52,16 +66,22 @@ const ToolType = ({ toolType, setVisible }: any) => {
           },
         });
         showAlert('info', 'Info', 'Registro Creado!');
-        setVisible(false);
       }
+      setTimeout(() => {
+        setVisible(false);
+      }, 1500);
     } catch (error) {
-      console.log(error);
+      handleErrorResponse(error);
     }
   }
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
+  // const GlobalToast = () => <ToastComponent />;
+
   return (
+    <>
+    {/* <GlobalToast /> */}
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
     <Toast ref={toast} />
       <div className="flex flex-wrap items-center">            
@@ -79,7 +99,7 @@ const ToolType = ({ toolType, setVisible }: any) => {
                   <input
                     id='name'
                     type="text"
-                    placeholder="Ingresa el nombre de orígen"
+                    placeholder="Ingresa el nombre del tipo de herramienta"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     required
                     value={ name }
@@ -101,6 +121,7 @@ const ToolType = ({ toolType, setVisible }: any) => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

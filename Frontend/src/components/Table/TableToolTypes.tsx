@@ -55,10 +55,6 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
                 <InputIcon className="pi pi-search" />
                 <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newToolType()} className='' />
                 <Button label={viewActiveToolsType ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveToolsType() } className='ml-2' severity={viewActiveToolsType ? 'danger' : 'success'} />
-              <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
-                {/* <OriginType originType={selectedOriginType} setVisible={setVisible}/> */}
-            </Dialog>
           </IconField>
       </div>
     );
@@ -178,11 +174,11 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
         <Column field="status" header="Estado" style={{ minWidth: '12rem' }} />
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
-      <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
+      <Dialog header={selectedToolType ? 'Actualizar el tipo de herramienta' : 'Creación del tipo de herramienta'} visible={visible} onHide={() => setVisible(false)} 
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ToolType toolType={selectedToolType} setVisible={setVisible} />
       </Dialog>
-      <Dialog header="Header" visible={visibleToolType} onHide={() => setVisibleToolType(false)}
+      <Dialog header="Visualizando el tipo de herramienta" visible={visibleToolType} onHide={() => setVisibleToolType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewToolType toolType={selectedToolType} />
       </Dialog>

@@ -23,6 +23,18 @@ const OriginType = ({ originType, setVisible }: any) => {
     }
   }, []);
 
+  const handleErrorResponse = (error: any) => {
+    if (error.response && error.response.data && error.response.data.errors) {
+      const errorMessages = error.response.data.errors
+        .map((err: { message: string }) => err.message)
+        .join(', ');
+  
+      showAlert('error', 'Error', errorMessages);
+    } else {
+      showAlert('error', 'Error', 'Ocurrió un error inesperado');
+    }
+  };
+
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
     e.preventDefault();
     setError("");
@@ -43,18 +55,20 @@ const OriginType = ({ originType, setVisible }: any) => {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        setVisible(false);
+        showAlert('info', 'Info', 'Herramienta Actualizada!');        
       } else {
         await apiRequestAuth.post(`/origin-type`, formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        showAlert('info', 'Info', 'Herramienta Creado!');
+        showAlert('info', 'Info', 'Herramienta Creada!');
+      } 
+      setTimeout(() => {
         setVisible(false);
-      }
+      }, 1500);
     } catch (error) {
-      console.log(error);
+      handleErrorResponse(error);
     }
   }
 

@@ -3,6 +3,7 @@ import { Calendar } from 'primereact/calendar';
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { apiRequestAuth } from "../../lib/apiRequest";
+import { Toast } from "primereact/toast"
 
 interface User {
     id: number;
@@ -43,6 +44,15 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
   
     const toast = useRef(null);
 
+    const handleErrorResponse = (error: any) => {
+      if (error.response && error.response.data && error.response.data.message) {
+        const errorMessage = error.response.data.message;
+        showAlert('error', 'Error', errorMessage);
+      } else {
+        showAlert('error', 'Error', 'Ocurrió un error inesperado');
+      }
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError('');
@@ -68,14 +78,22 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
                     Authorization: `Bearer ${currentToken?.token}`,
                 },
             });
-            setVisible(false);
+            showAlert('info', 'Info', 'Turno registrado correctamente!');
+            setTimeout(() => {
+              setVisible(false);              
+            }, 1500);
         } catch (error) {
             console.log(error);
+            console.log(error.response);
+            handleErrorResponse(error);
         }
     }
 
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });  
+
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
+      <Toast ref={toast} />
       <div className="flex flex-wrap items-center">            
         <div className={`${currentToken ? 'w-full' : 'border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'}`}>
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
