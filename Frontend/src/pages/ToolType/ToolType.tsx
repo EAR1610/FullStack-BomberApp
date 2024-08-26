@@ -68,7 +68,7 @@ const ToolType = ({ toolType, setVisible }: any) => {
         <div className={`${currentToken ? 'w-full' : 'border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'}`}>
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
-              Creael registro de orígenes en <span className='text-red-500'>BomberApp</span>
+              Crea el registro del tipo de herramientas en <span className='text-red-500'>BomberApp</span>
             </h2>
             <form onSubmit={ handleSubmit }>
               <div className="mb-4">

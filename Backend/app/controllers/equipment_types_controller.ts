@@ -1,5 +1,5 @@
 import EquipmentType from '#models/equipment_type'
-import { createEquipmentTypeValidator } from '#validators/equipment_type';
+import { createEquipmentTypeValidator, updateEquipmentTypeValidator } from '#validators/equipment_type';
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class EquipmentTypesController {
@@ -63,7 +63,9 @@ export default class EquipmentTypesController {
    * ? Handle form submission for the edit action
    */
   async update({ request, params, response}: HttpContext) {
-    const payload = await request.validateUsing( createEquipmentTypeValidator);
+    const payload = await request.validateUsing( updateEquipmentTypeValidator, {
+      meta: { id: params.id }
+    });
     const equipment_type = await EquipmentType.find(params.id);
 
     if ( !equipment_type ) response.status(404).json({ message: 'No se ha encontrado el equipo' });

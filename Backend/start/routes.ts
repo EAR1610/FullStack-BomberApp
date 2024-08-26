@@ -22,6 +22,10 @@ import FirefighterShiftsController from '#controllers/firefighter_shifts_control
 import FirefightersController from '#controllers/firefighters_controller';
 import EmergencyTypesController from '#controllers/emergency_types_controller';
 import EmergenciesController from '#controllers/emergencies_controller';
+import FirefighterEmergenciesController from '#controllers/firefighter_emergencies_controller';
+
+
+router.resource('users/firefighter-emergency', FirefighterEmergenciesController).use('*', middleware.auth());
 
 router.resource('users/emergencies', EmergenciesController).use('*', middleware.auth());
 router.group(() => {
@@ -43,7 +47,7 @@ router.group(() => {
 }).prefix('users/firefighter-shift').use(middleware.auth());
 
 /**
- * ? Routes for the application: FIREFIGHTERS 🧑‍🚒 👩‍🚒 
+ * ? Routes for the application: FIREFIGHTERS 🧑‍🚒👩‍🚒
  */
 router.resource('users/firefighter', FirefightersController).use('*', middleware.auth());
 router.group(() => {

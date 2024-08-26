@@ -46,7 +46,7 @@ async function generateShiftsForMonthForFirefighter(firefighterId: number, month
     const firefighter = await Firefighter.find(firefighterId);    
     if (!firefighter) throw new Error('Firefighter not found');       
     const numberOfDays = DateTime.local(year, month).daysInMonth;
-    if (numberOfDays === undefined) throw new Error(`Invalid month: ${month}`);    
+    if (numberOfDays === undefined) throw new Error(`Invalid month: ${month}`);
     const prefersEvenDays = firefighter.shiftPreference.toLowerCase() === 'par';
 
     for (let day = 1; day <= numberOfDays; day++) {

@@ -1,5 +1,5 @@
 import VehicleType from '#models/vehicle_type';
-import { createVehicleTypeValidator } from '#validators/vehicle_type';
+import { createVehicleTypeValidator, updateVehicleTypeValidator } from '#validators/vehicle_type';
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class VehicleTypesController {
@@ -58,7 +58,9 @@ export default class VehicleTypesController {
    * ? Handle form submission for the edit action
    */
   async update({ params, request, response }: HttpContext) {
-    const payload = await request.validateUsing(createVehicleTypeValidator);
+    const payload = await request.validateUsing(updateVehicleTypeValidator, {
+      meta: { id: params.id }
+    });
     const vehicleType = await VehicleType.find( params.id );
     if ( !vehicleType ) return response.status(404).json({ message: 'No se ha encontrado el tipo de vehiculo' });
     vehicleType?.merge(payload);

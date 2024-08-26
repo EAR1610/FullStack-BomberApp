@@ -1,5 +1,5 @@
 import ToolType from '#models/tool_type';
-import { createToolTypeValidator } from '#validators/tool_type';
+import { createToolTypeValidator, updateToolTypeValidator } from '#validators/tool_type';
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ToolTypesController {
@@ -60,7 +60,9 @@ export default class ToolTypesController {
    * ? Handle form submission for the edit action
    */
   async update({request, params, response }: HttpContext) {
-    const payload = await request.validateUsing(createToolTypeValidator);
+    const payload = await request.validateUsing(updateToolTypeValidator, {
+      meta: { id: params.id }
+    });
     const toolType = await ToolType.find( params.id );
     if ( !toolType ) return response.status(404).json({ message: 'No se ha encontrado el tipo de herramienta' });
     toolType?.merge(payload);

@@ -1,5 +1,5 @@
 import OriginType from '#models/origin_type';
-import { createOriginTypeValidator } from '#validators/origin_type';
+import { createOriginTypeValidator, updateOriginTypeValidator } from '#validators/origin_type';
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class OriginTypesController {
@@ -60,7 +60,9 @@ export default class OriginTypesController {
    * ? Handle form submission for the edit action
    */
   async update({ request, params, response }: HttpContext) {
-    const payload = await request.validateUsing(createOriginTypeValidator);
+    const payload = await request.validateUsing(updateOriginTypeValidator, {
+      meta: { id: params.id }
+    });
     const originType = await OriginType.find(params.id);
 
     if ( !originType ) return response.status(404).json({ message: 'No se ha encontrado el tipo de origen' });
