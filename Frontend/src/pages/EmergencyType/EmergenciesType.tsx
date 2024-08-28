@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from 'primereact/toast';
 import TableEmergencyTypes from "../../components/Table/TableEmergencyTypes";
+import { useNavigate } from "react-router-dom";
 
 const EmergenciesType = () => {
 
@@ -14,10 +15,15 @@ const EmergenciesType = () => {
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+
+    const navigate = useNavigate();
   
     const toast = useRef(null);
 
     useEffect(() => {
+
+      if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+      
       const getEmergenciesTypes = async () => {
         try {
           let response;

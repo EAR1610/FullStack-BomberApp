@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartThree from '../../components/Charts/ChartThree';
 import ChartTwo from '../../components/Charts/ChartTwo';
 import ChatCard from '../../components/Chat/ChatCard';
 import MapOne from '../../components/Maps/MapOne';
+import { AuthContextProps } from '../../interface/Auth';
+import { AuthContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const ECommerce: React.FC = () => {
+
+  const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+  const navigate = useNavigate();
+  if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
+  const { currentToken } = authContext;
+
+  useEffect(() => {
+    if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+  }, []);
+  
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">

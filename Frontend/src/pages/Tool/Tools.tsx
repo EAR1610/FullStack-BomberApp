@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { apiRequestAuth } from "../../lib/apiRequest";
 import TableTools from "../../components/Table/TableTools";
 import { Toast } from 'primereact/toast';
+import { useNavigate } from "react-router-dom";
 const Tools = () => {
 
   const [tools, setTools] = useState([]);
@@ -13,9 +14,14 @@ const Tools = () => {
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
 
+  const navigate = useNavigate();
+
   const toast = useRef(null);
 
   useEffect(() => {
+
+    if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+    
     /**
     * ? Retrieves a list of tools from the API using the current authentication token.
     *

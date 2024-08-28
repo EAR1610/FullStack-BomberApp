@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from 'primereact/toast';
 import TableOriginTypes from "../../components/Table/TableOriginTypes";
+import { useNavigate } from "react-router-dom";
 
 const OriginTypes = () => {
 
@@ -15,9 +16,14 @@ const OriginTypes = () => {
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
 
+  const navigate = useNavigate();
+
   const toast = useRef(null);
 
   useEffect(() => {
+
+    if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+    
     const getOriginTypes = async () => {
       try {
         let response;

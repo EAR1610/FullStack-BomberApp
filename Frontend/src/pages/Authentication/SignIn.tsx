@@ -40,9 +40,16 @@ const SignIn: React.FC = () => {
       
       // ? If the request was successful, update the token in the AuthContext
       updateToken(res.data);
-
+      
+      // * Navigate to the appropriate page based on the user's role
       setTimeout(() => {
-        navigate("/app/dashboard");
+        if ( res.data.user.isAdmin ) {
+          navigate("/app/dashboard");          
+        } else if ( res.data.user.isFirefighter ) {
+          navigate("/app/firefighter-shift");
+        } else {
+          navigate("/app/emergencies");
+        }
       }, 1000);
       
     } catch (err: any) {

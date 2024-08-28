@@ -16,8 +16,6 @@ const FirefigherShiftCalendar = () => {
   const [events, setEvents] = useState<Events[]>([]);
   const { currentToken } = authContext;
 
-  console.log(currentToken);
-
   useEffect(() => {
     const getFirefighterShifts = async () => {
       try {
