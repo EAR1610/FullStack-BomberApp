@@ -2,34 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
-
-interface User {
-  id: number;
-  roleId: number;
-  username: string;
-  fullName: string;
-  password: string;
-  photography: File | null;
-  address: string;
-  email: string;
-  status: string;
-  isAdmin: boolean;
-  isFirefighter: boolean;
-}
-
-interface FirefighterI {
-  id: number;
-  userId: number;
-  shiftPreference: string;
-  createdAt: string;
-  updatedAt: string;
-  user: User;
-}
-
-interface TableFirefightersProps {
-  firefighter: FirefighterI;
-  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { TableFirefightersProps } from "../../helpers/Interfaces"
 
 const ViewFireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible} ) => {
 

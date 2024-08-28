@@ -4,34 +4,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from "primereact/toast"
-
-interface User {
-    id: number;
-    roleId: number;
-    username: string;
-    fullName: string;
-    password: string;
-    photography: File | null;
-    address: string;
-    email: string;
-    status: string;
-    isAdmin: boolean;
-    isFirefighter: boolean;
-  }
-  
-  interface FirefighterI {
-    id: number;
-    userId: number;
-    shiftPreference: string;
-    createdAt: string;
-    updatedAt: string;
-    user: User;
-  }
-  
-  interface TableFirefightersProps {
-    firefighter: FirefighterI;
-    setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  }
+import { TableFirefightersProps } from "../../helpers/Interfaces";
 
 const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, setVisible }:any) => {
     const [date, setDate] = useState(null);

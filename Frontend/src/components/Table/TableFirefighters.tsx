@@ -16,33 +16,9 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import FireFighter from '../../pages/FireFighters/FireFighter';
 import ViewFireFighter from '../../pages/FireFighters/ViewFireFighter';
 import SetFirefighterShift from '../../pages/FireFighters/SetFirefighterShift';
+import { TableFirefightersProps } from '../../helpers/Interfaces';
 
-interface User {
-    id: number;
-    roleId: number;
-    username: string;
-    fullName: string;
-    email: string;
-    status: string;
-    isAdmin: boolean;
-    isFirefighter: boolean;
-}
 
-interface FirefighterI {
-    id: number;
-    userId: number;
-    shiftPreference: string;
-    createdAt: string;
-    updatedAt: string;
-    user: User;
-}
-
-interface TableFirefightersProps {
-    data: FirefighterI[];
-    loading: boolean;
-    viewActiveFirefighters: boolean;
-    setViewActiveFirefighters: React.Dispatch<React.SetStateAction<boolean>>;
-}
 const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveFirefighters, setViewActiveFirefighters, loading }) => {
 
     const [filters, setFilters] = useState({
