@@ -16,10 +16,12 @@ const FirefigherShiftCalendar = () => {
   const [events, setEvents] = useState<Events[]>([]);
   const { currentToken } = authContext;
 
+  console.log(currentToken);
+
   useEffect(() => {
     const getFirefighterShifts = async () => {
       try {
-        const response = await apiRequestAuth.post(`/firefighter-shift/get-shift-by-firefighter/1`,{}, {
+        const response = await apiRequestAuth.post(`/firefighter-shift/get-shift-by-firefighter/${currentToken?.firefighter?.id}`,{}, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },

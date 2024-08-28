@@ -74,6 +74,7 @@ export default class AuthController {
     async login({ request, response }: HttpContext) {
         const { email, password } = await request.validateUsing(loginValidator);           
         const user = await User.verifyCredentials(email, password);
+        const firefighter = await Firefighter.findBy('id', user.id);
 
         if (user.status !== 'active') return response.status(401).send({ error: 'Tu cuenta no está activa.' });
         
@@ -88,7 +89,8 @@ export default class AuthController {
             photography,
             isAdmin,
             isFirefighter
-          }     
+          },
+          firefighter
         }
     }
 

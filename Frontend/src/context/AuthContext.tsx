@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { AuthContextProps, AuthProviderProps } from "../interface/Auth";
+import { CurrentTokenI } from "../helpers/Interfaces";
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
@@ -9,13 +10,11 @@ export const AuthContext = createContext<AuthContextProps | undefined>(undefined
 */
 
 export const AuthContextProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [currentToken, setCurrentToken] = useState<string | null>(
+  const [currentToken, setCurrentToken] = useState<CurrentTokenI | null>(
     localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token")!) : null
   );
 
-  const updateToken = ( token: string ) => {
-    setCurrentToken( token );
-  };
+  const updateToken = ( token: CurrentTokenI ) => setCurrentToken( token );
 
   useEffect(() => {
     localStorage.setItem("token", JSON.stringify(currentToken));

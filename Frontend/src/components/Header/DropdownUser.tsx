@@ -19,9 +19,7 @@ const DropdownUser = () => {
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   const navigate = useNavigate();
-  
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  
   const { currentToken, updateToken } = authContext;
 
   useEffect(() => {

@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
+import { CurrentTokenI } from "../helpers/Interfaces";
 
 interface AuthContextProps {
-    currentToken: string | null;
-    updateToken: (data: string) => void;
+    currentToken: CurrentTokenI | null;
+    updateToken: (data: CurrentTokenI) => void;
 }
 
 interface AuthProviderProps {

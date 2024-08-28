@@ -25,6 +25,7 @@ import FireFighters from './pages/FireFighters/FireFighters';
 import EmergenciesType from './pages/EmergencyType/EmergenciesType';
 import FirefigherShiftCalendar from './pages/FirefighterShiftCalendar/FirefigherShiftCalendar';
 
+
 /**
  * ? Renders the main App component with routes and layout.
  *

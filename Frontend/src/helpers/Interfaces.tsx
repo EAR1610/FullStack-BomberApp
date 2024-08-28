@@ -11,6 +11,11 @@ export interface FirefighterShift {
     updatedAt: string;
 }
 
+export interface SidebarProps {
+  sidebarOpen: boolean;
+  setSidebarOpen: (arg: boolean) => void;
+}
+
 export interface Events {
     id: number;
     title: string;
@@ -41,6 +46,21 @@ export interface FirefighterI {
   createdAt: string;
   updatedAt: string;
   user: User;
+}
+
+export interface Firefighter {
+  id: number;
+  userId: number;
+  shiftPreference: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CurrentTokenI {
+  type: string;
+  token: string;
+  user: User;
+  firefighter: Firefighter | null;
 }
 
 export interface TableFirefightersProps {
