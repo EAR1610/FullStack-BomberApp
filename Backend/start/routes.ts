@@ -29,7 +29,10 @@ router.resource('users/firefighter-emergency', FirefighterEmergenciesController)
 
 router.resource('users/emergencies', EmergenciesController).use('*', middleware.auth());
 router.group(() => {
-  
+  router.post('/registered-emergencies', [EmergenciesController, 'registeredEmergencies']);
+  router.post('/in-process-emergencies', [EmergenciesController, 'inProcessEmergencies']);
+  router.post('/cancelled-emergencies', [EmergenciesController, 'canceledEmergencies']);
+  router.post('/rejected-emergencies', [EmergenciesController, 'rejectedEmergencies']);
 }).prefix('users/emergencies').use(middleware.auth());
 
 router.resource('users/emergency-type', EmergencyTypesController).use('*', middleware.auth());
