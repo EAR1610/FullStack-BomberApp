@@ -9,7 +9,12 @@ export default class EmergenciesController {
   async index({}: HttpContext) {
     const emergency = await Emergency.query().where('status', 'Atendida');
     return emergency
-  }  
+  }
+  
+  async myEmergencies({ params }: HttpContext) {
+    const emergency = await Emergency.query().where('user_id', params.id);
+    return emergency
+  }
 
   async registeredEmergencies({}: HttpContext) {
     const emergency = await Emergency.query().where('status', 'Registrada');

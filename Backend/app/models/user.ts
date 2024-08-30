@@ -57,6 +57,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
    return this.roleId === Roles.FIREFIGHTER 
   }
 
+  @computed()
+  public get isUser(){
+    return this.roleId === Roles.USER
+  }
+
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>
 

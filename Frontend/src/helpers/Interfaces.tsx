@@ -36,6 +36,7 @@ export interface User {
   status: string;
   isAdmin: boolean;
   isFirefighter: boolean;
+  isUser: boolean;
 }
 
 
@@ -70,4 +71,32 @@ export interface TableFirefightersProps {
   loading: boolean;
   viewActiveFirefighters: boolean;
   setViewActiveFirefighters: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface EmergencyType {
+  id: number;
+  name: string;
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Emergency {
+  id: number;
+  emergencyTypeId: number;
+  applicant: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  description: string | null;
+  status: 'Registrada' | 'En proceso' | 'Atendida' | 'Cancelada' | 'Rechazada';
+  emergencyType: EmergencyType;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
 }

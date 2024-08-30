@@ -79,16 +79,18 @@ export default class AuthController {
         if (user.status !== 'active') return response.status(401).send({ error: 'Tu cuenta no está activa.' });
         
         const token = await User.accessTokens.create(user);
-        const { username, photography, isAdmin, isFirefighter } = user;
+        const { id, username, photography, isAdmin, isFirefighter, isUser } = user;
 
         return {
           type: 'bearer',
           token: token.value!.release(),
           user: {
+            id,
             username,
             photography,
             isAdmin,
-            isFirefighter
+            isFirefighter,
+            isUser
           },
           firefighter
         }

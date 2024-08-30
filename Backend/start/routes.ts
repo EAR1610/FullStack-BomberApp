@@ -33,6 +33,7 @@ router.group(() => {
   router.post('/in-process-emergencies', [EmergenciesController, 'inProcessEmergencies']);
   router.post('/cancelled-emergencies', [EmergenciesController, 'canceledEmergencies']);
   router.post('/rejected-emergencies', [EmergenciesController, 'rejectedEmergencies']);
+  router.post('/my-emergencies/:id', [EmergenciesController, 'myEmergencies']);
 }).prefix('users/emergencies').use(middleware.auth());
 
 router.resource('users/emergency-type', EmergencyTypesController).use('*', middleware.auth());

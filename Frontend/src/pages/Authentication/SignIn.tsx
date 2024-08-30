@@ -48,7 +48,7 @@ const SignIn: React.FC = () => {
         } else if ( res.data.user.isFirefighter ) {
           navigate("/app/firefighter-shift");
         } else {
-          navigate("/app/emergencies");
+          navigate("/app/emergency-request");
         }
       }, 1000);
       

@@ -24,6 +24,8 @@ import VehiclesType from './pages/VehicleType/VehiclesType';
 import FireFighters from './pages/FireFighters/FireFighters';
 import EmergenciesType from './pages/EmergencyType/EmergenciesType';
 import FirefigherShiftCalendar from './pages/FirefighterShiftCalendar/FirefigherShiftCalendar';
+import EmergencyRequest from './pages/Emergency/EmergencyRequest';
+import MyEmergencies from './pages/Emergency/MyEmergencies';
 
 
 /**
@@ -94,6 +96,22 @@ function App() {
               element: (
                 <>                 
                   <Emergency />
+                </>
+              )
+            },
+            {
+              path: 'emergency-request',
+              element: (
+                <>                 
+                  <EmergencyRequest />
+                </>
+              )
+            },
+            {
+              path: 'my-emergencies',
+              element: (
+                <>                 
+                  <MyEmergencies />
                 </>
               )
             },

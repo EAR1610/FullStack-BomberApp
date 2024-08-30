@@ -7,12 +7,13 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('emergency_type_id').unsigned().references('id').inTable('emergency_types')
+      table.integer('user_id').unsigned().references('id').inTable('users').nullable()
       table.string('applicant', 255).nullable()
       table.string('address', 255).nullable()
-      table.string('latitude', 255).nullable()
-      table.string('longitude', 255).nullable()
+      table.double('latitude').nullable()
+      table.double('longitude').nullable()
       table.string('description', 255).nullable()      
-      table.enu('status', ['registrada', 'En proceso', 'Atendida', 'Cancelada', 'Rechazada']).defaultTo('registrada')
+      table.enu('status', ['Registrada', 'En proceso', 'Atendida', 'Cancelada', 'Rechazada']).defaultTo('Registrada')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
