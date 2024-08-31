@@ -23,6 +23,7 @@ const User = () => {
   useEffect(() => {
 
     if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+    if( currentToken?.user.isUser ) navigate('/app/emergency-request');
     
    /**
    * ? Retrieves a list of users from the API using the current authentication token.

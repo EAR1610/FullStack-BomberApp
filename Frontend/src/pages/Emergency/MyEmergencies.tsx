@@ -2,17 +2,24 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 import { AuthContextProps } from "../../interface/Auth";
+import { useNavigate } from 'react-router-dom';
 
 const MyEmergencies = () => {
   const [myEmergencies, setMyEmergencies] = useState([]);
   const [selectedEmergency, setSelectedEmergency] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const navigate = useNavigate();
+
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
 
   useEffect(() => {
+    
+    if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+    if( currentToken?.user.isAdmin ) navigate('/app/dashboard');
+
     const getMyEmergencies = async () => {
       try {
         const response = await apiRequestAuth.post(`/emergencies/my-emergencies/${currentToken?.user.id}`, {}, {
@@ -21,7 +28,6 @@ const MyEmergencies = () => {
           },
         });
         setMyEmergencies(response.data);
-        console.log(response.data);
       } catch (error) {
         console.log(error);
       }

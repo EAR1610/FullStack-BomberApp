@@ -24,6 +24,11 @@ export interface Events {
     description: string;  
 }
 
+export interface MapProps {
+  latitude: number;
+  longitude: number;
+}
+
 export interface User {
   id: number;
   roleId: number;

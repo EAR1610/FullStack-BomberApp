@@ -26,6 +26,8 @@ import EmergenciesType from './pages/EmergencyType/EmergenciesType';
 import FirefigherShiftCalendar from './pages/FirefighterShiftCalendar/FirefigherShiftCalendar';
 import EmergencyRequest from './pages/Emergency/EmergencyRequest';
 import MyEmergencies from './pages/Emergency/MyEmergencies';
+import 'leaflet/dist/leaflet.css';
+
 
 
 /**

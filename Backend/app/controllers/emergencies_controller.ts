@@ -7,7 +7,7 @@ export default class EmergenciesController {
    * * Display a list of resource
    */
   async index({}: HttpContext) {
-    const emergency = await Emergency.query().where('status', 'Atendida');
+    const emergency = await Emergency.query().where('status', 'Registrada');
     return emergency
   }
   
@@ -16,8 +16,8 @@ export default class EmergenciesController {
     return emergency
   }
 
-  async registeredEmergencies({}: HttpContext) {
-    const emergency = await Emergency.query().where('status', 'Registrada');
+  async attendedEmergencies({}: HttpContext) {
+    const emergency = await Emergency.query().where('status', 'Atendida');
     return emergency
   }
 

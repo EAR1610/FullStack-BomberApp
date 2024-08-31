@@ -48,40 +48,48 @@ const EmergencyRequest: React.FC<Emergency> = () => {
       
         if (navigator.geolocation) {
           const watchId = navigator.geolocation.watchPosition(async (position) => {
-            const { latitude, longitude } = position.coords;
-            setLatitude(latitude);
-            setLongitude(longitude);
-      
-            const formData = new FormData();
-            formData.append('emergencyTypeId', String(selectedEmergencyType?.id));
-            formData.append('applicant', applicant);
-            formData.append('address', address);
-            formData.append('latitude', String(latitude));
-            formData.append('longitude', String(longitude));
-            formData.append('description', description);
-            formData.append('status', status);
-            formData.append('userId', String(currentToken?.user.id));
-      
-            try {
-              await apiRequestAuth.post("/emergencies", formData, {
-                headers: {
-                  Authorization: `Bearer ${currentToken?.token}`,
-                },
-              });
-              showAlert('info', 'Info', '¡Emergencia registrada correctamente!');
-            } catch (error) {
-              console.log(error);
+              console.log(position);
+              const { latitude, longitude } = position.coords;
+              console.log("Latitude:", latitude, "Longitude:", longitude);
+              setLatitude(latitude);
+              setLongitude(longitude);
+        
+              const formData = new FormData();
+              formData.append('emergencyTypeId', String(selectedEmergencyType?.id));
+              formData.append('applicant', applicant);
+              formData.append('address', address);
+              formData.append('latitude', String(latitude));
+              formData.append('longitude', String(longitude));
+              formData.append('description', description);
+              formData.append('status', status);
+              formData.append('userId', String(currentToken?.user.id));
+        
+              try {
+                await apiRequestAuth.post("/emergencies", formData, {
+                  headers: {
+                    Authorization: `Bearer ${currentToken?.token}`,
+                  },
+                });
+                showAlert('info', 'Info', '¡Emergencia registrada correctamente!');
+              } catch (error) {
+                console.log(error);
+              }
+        
+              navigator.geolocation.clearWatch(watchId);
+              if( currentToken?.user.id ){
+                setTimeout(() => {
+                  navigate('/app/my-emergencies');
+                }, 1500);
+              }
+            }, (error) => {
+              console.error("Error obteniendo la ubicación:", error);
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 0
             }
-      
-            navigator.geolocation.clearWatch(watchId);
-            if( currentToken?.user.id ){
-              setTimeout(() => {
-                navigate('/app/my-emergencies');
-              }, 1500);
-            }
-          }, (error) => {
-            console.error("Error obteniendo la ubicación:", error);
-          });
+          );
         } else {
           console.log("Geolocation is not supported by this browser.");
         }
