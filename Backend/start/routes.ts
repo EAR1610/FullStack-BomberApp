@@ -23,7 +23,10 @@ import FirefightersController from '#controllers/firefighters_controller';
 import EmergencyTypesController from '#controllers/emergency_types_controller';
 import EmergenciesController from '#controllers/emergencies_controller';
 import FirefighterEmergenciesController from '#controllers/firefighter_emergencies_controller';
+import DetailEmergenciesController from '#controllers/detail_emergencies_controller';
 
+
+router.resource('users/detail-emergency', DetailEmergenciesController).use('*', middleware.auth());
 
 router.resource('users/firefighter-emergency', FirefighterEmergenciesController).use('*', middleware.auth());
 
@@ -59,6 +62,7 @@ router.group(() => {
   router.post('inactive-firefighters', [FirefightersController, 'inactiveFirefighters']);
   router.post('par-firefighters', [FirefightersController, 'parFighters']);
   router.post('impar-firefighters', [FirefightersController, 'imparFighters']);
+  router.post('show-firefighter-by-user/:id', [FirefightersController, 'showFirefighterByUserId']);
 }).prefix('users/firefighter').use(middleware.auth());
 
 /**

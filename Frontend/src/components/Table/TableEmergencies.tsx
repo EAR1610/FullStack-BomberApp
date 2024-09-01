@@ -33,7 +33,7 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
     
     useEffect(() => {
         setLoading(false);        
-    }, [])
+    }, []);
     
 
     const onGlobalFilterChange = (e:any) => {
@@ -66,11 +66,7 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
                     <Button label='En proceso' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(inProcessEmergency)} className='p-button-info ml-2' />
                     <Button label='Canceladas' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(cancelledEmergency)} className='p-button-warning ml-2' />
                     <Button label='Rechazadas' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(rejectedEmergency)} className='p-button-danger ml-2' />
-                    <Button label='Atendidas' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(attendedEmergency)} className='p-button-success ml-2' />
-                    {/* <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
-                        <SignUp user={selectedUser} setVisible={setVisible}/>
-                    </Dialog> */}
+                    <Button label='Atendidas' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(attendedEmergency)} className='p-button-success ml-2' />                    
               </IconField>
           </div>
         );
@@ -122,7 +118,7 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
       </DataTable>
       <Dialog header="Seguimiento de Emergencia" visible={viewEmergency} onHide={() => setViewEmergency(false)}
         style={{ width: '70vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <ViewEmergency emergency={selectedEmergency} />
+        <ViewEmergency emergency={selectedEmergency} setViewEmergency={ setViewEmergency } />
       </Dialog>
     </div>
   )

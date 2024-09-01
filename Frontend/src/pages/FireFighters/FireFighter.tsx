@@ -5,6 +5,7 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import { TableFirefightersProps, User } from "../../helpers/Interfaces"
+import { handleErrorResponse } from "../../helpers/functions"
 
 const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible} ) => {
 
@@ -13,7 +14,6 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
-  const [error, setError] = useState("");
   const [status, setStatus] = useState("active");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedShiftPreference, setSelectedShiftPreference] = useState(null);
@@ -60,6 +60,18 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
     getFirefighter();
   }, []);
 
+  // const handleErrorResponse = (error: any) => {
+  //   if (error.response && error.response.data && error.response.data.errors) {
+  //     const errorMessages = error.response.data.errors
+  //       .map((err: { message: string }) => err.message)
+  //       .join(', ');
+  
+  //     showAlert('error', 'Error', errorMessages);
+  //   } else {
+  //     showAlert('error', 'Error', 'Ocurrió un error inesperado');
+  //   }
+  // };
+
   /**
    * Handles the form submission event.
    *
@@ -71,7 +83,6 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
    */
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
     e.preventDefault();
-    setError("");
     const formData = new FormData();
 
     if( 
@@ -114,10 +125,14 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        showAlert('info', 'Info', 'Registro Creado!');
       }
-      setVisible(false);
+      showAlert('info', 'Info', 'Proceso completado!');
+      setTimeout(() => {
+        setVisible(false);        
+      }, 1500);
     } catch (error) {
+      const err = handleErrorResponse(error);
+      showAlert('error', 'Error', err);
       console.log(error);
     }
   }
@@ -139,7 +154,7 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
                   Turno
                 </label>
                 <Dropdown value={selectedShiftPreference} onChange={(e) => setSelectedShiftPreference(e.value)} options={shiftPreferences} optionLabel="name"
-                placeholder="Selecciona el turno" className="w-full md:w-14rem" />
+                placeholder="Selecciona el turno" className="w-full md:w-14rem" required/>
               </div>
 
               <div className="mb-4 bg-blue-800 p-1 rounded-lg">
@@ -206,7 +221,6 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                 />
               </div>
-              { error && <span>{ error }</span> }
             </form>
           </div>
         </div>

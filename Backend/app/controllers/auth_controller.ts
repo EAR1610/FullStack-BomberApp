@@ -74,7 +74,8 @@ export default class AuthController {
     async login({ request, response }: HttpContext) {
         const { email, password } = await request.validateUsing(loginValidator);           
         const user = await User.verifyCredentials(email, password);
-        const firefighter = await Firefighter.findBy('id', user.id);
+        const userId = user.$attributes.id;
+        const firefighter = await Firefighter.query().where('userId', userId).first();
 
         if (user.status !== 'active') return response.status(401).send({ error: 'Tu cuenta no está activa.' });
         

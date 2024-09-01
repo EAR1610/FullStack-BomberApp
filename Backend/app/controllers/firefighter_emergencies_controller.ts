@@ -4,17 +4,23 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class FirefighterEmergenciesController {
   /**
-   * Display a list of resource
+   * * Display a list of resource
    */
   async index({}: HttpContext) {
-    // const firefighter_emergency = await FirefighterEmergency.query()
-    // .whereHas('firefighter', (query) => {
-      
-    // })
-    // .preload('user', (query) => {
-    //   query.select('id', 'roleId', 'username', 'fullName', 'email', 'status')
-    // })
-    // return firefighter_emergency
+    const firefighter_emergency = await FirefighterEmergency.query()
+    .preload('firefighter', (query) => {
+      query.select('id', 'userId', 'shiftPreference')
+      .whereHas('user', (query) => {
+        query.where('status', 'active')
+      })
+      .preload('user', (query) => {
+        query.select('id', 'username', 'fullName', 'address')
+      })
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')      
+    })
+    return firefighter_emergency
   }
 
   /**
@@ -23,7 +29,7 @@ export default class FirefighterEmergenciesController {
   async create({}: HttpContext) {}
 
   /**
-   * Handle form submission for the create action
+   * ? Handle form submission for the create action
    */
   async store({ request }: HttpContext) {
     const payload = await request.validateUsing(createFirefighterEmergencyValidator);
@@ -33,7 +39,7 @@ export default class FirefighterEmergenciesController {
   }
 
   /**
-   * Show individual record
+   * * Show individual record
    */
   async show({ params }: HttpContext) {
     return await FirefighterEmergency.find( params.id );
@@ -45,7 +51,7 @@ export default class FirefighterEmergenciesController {
   async edit({ params }: HttpContext) {}
 
   /**
-   * Handle form submission for the edit action
+   * ? Handle form submission for the edit action
    */
   async update({ params, request }: HttpContext) {
     const payload = await request.validateUsing(createFirefighterEmergencyValidator);

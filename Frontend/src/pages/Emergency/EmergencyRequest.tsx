@@ -45,12 +45,9 @@ const EmergencyRequest: React.FC<Emergency> = () => {
     
     const handleConfirm = () => {
         setIsModalOpen(false);
-      
         if (navigator.geolocation) {
-          const watchId = navigator.geolocation.watchPosition(async (position) => {
-              console.log(position);
+          const watchId = navigator.geolocation.watchPosition(async (position) => {              
               const { latitude, longitude } = position.coords;
-              console.log("Latitude:", latitude, "Longitude:", longitude);
               setLatitude(latitude);
               setLongitude(longitude);
         
@@ -86,7 +83,7 @@ const EmergencyRequest: React.FC<Emergency> = () => {
             },
             {
               enableHighAccuracy: true,
-              timeout: 10000,
+              timeout: 30000,
               maximumAge: 0
             }
           );

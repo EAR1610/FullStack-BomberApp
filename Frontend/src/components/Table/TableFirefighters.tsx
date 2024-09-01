@@ -60,21 +60,11 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
               </IconField>
               <IconField iconPosition="left" className='ml-2'>                
                     <InputIcon className="pi pi-search" />
-                    <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newFirefighter()} className='' />
-                    <Button label={viewActiveFirefighters ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveFirefighters() } className='ml-2' severity={viewActiveFirefighters ? 'danger' : 'success'} />
-                  <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                    style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                    <FireFighter firefighter={selectedFirefighter} setVisible={setVisible} />
-                </Dialog>
+                    <Button label={viewActiveFirefighters ? 'Ver registros inactivos' : 'Ver registros activos'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveFirefighters() } className='ml-2' severity={viewActiveFirefighters ? 'danger' : 'success'} />                  
               </IconField>
           </div>
         );
       };
-      
-    const newFirefighter = () => {
-        setVisible(true);
-        setSelectedFirefighter(null);
-    }
 
     const viewActiveOrInactiveFirefighters = () => setViewActiveFirefighters(!viewActiveFirefighters);
 
@@ -195,15 +185,15 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       <Column field="shiftPreference" header="Tipo Turno"  style={{ minWidth: '4rem' }}  align={'center'} />
       <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} />
     </DataTable>
-    <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
+    <Dialog header={`${selectedFirefighter}` ? 'Actualizar Bombero' : 'Crear Bombero'} visible={visible} onHide={() => setVisible(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <FireFighter firefighter={selectedFirefighter} setVisible={setVisible} />
     </Dialog>
-    <Dialog header="Header" visible={visibleFirefighter} onHide={() => setVisibleFirefighter(false)}
+    <Dialog header='Información del bombero' visible={visibleFirefighter} onHide={() => setVisibleFirefighter(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <ViewFireFighter firefighter={selectedFirefighter} />
     </Dialog>
-    <Dialog header="Header" visible={visibleFirefighterShift} onHide={() => setvisibleFirefighterShift(false)}
+    <Dialog header='Asignar Turno' visible={visibleFirefighterShift} onHide={() => setvisibleFirefighterShift(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <SetFirefighterShift firefighter={selectedFirefighter} setVisible={setvisibleFirefighterShift} />
     </Dialog>

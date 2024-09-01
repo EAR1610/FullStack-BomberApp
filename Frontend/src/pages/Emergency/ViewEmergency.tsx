@@ -2,15 +2,74 @@ import{ useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+import { Dropdown } from "primereact/dropdown"
 import MapComponent from "../../components/Maps/MapComponent"
+import { apiRequestAuth } from "../../lib/apiRequest"
 
-const ViewEmergency = ({ emergency }: any) => {
+const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
 
+    const [firefighters, setFirefighters] = useState([]);
+    const [selectedFirefighter, setSelectedFirefighter] = useState(null);
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
     
     const toast = useRef(null);
+
+    useEffect(() => {
+      const getFirefighters = async () => {
+        try {
+          const response = await apiRequestAuth.get("/firefighter", {
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`,
+            },
+          })
+          if (response) setFirefighters(response.data)
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      getFirefighters()
+    }, []);
+
+    const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
+      e.preventDefault();
+      let formData = new FormData();
+      try {
+        formData.append('firefighterId', selectedFirefighter?.id);
+        formData.append('emergencyId', String(emergency.id));
+        await apiRequestAuth.post('/firefighter-emergency', formData, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`,
+          }
+        });
+        formData = new FormData();
+        formData.append('emergencyTypeId', String(emergency.emergencyTypeId));
+        formData.append('applicant', emergency.applicant);
+        formData.append('address', emergency.address);
+        formData.append('latitude', String(emergency.latitude));
+        formData.append('longitude', String(emergency.longitude));
+        formData.append('description', emergency.description);
+        formData.append('userId', emergency.userId);
+        formData.append('status', 'En proceso');
+
+        await apiRequestAuth.put(`/emergencies/${emergency.id}`, formData, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`,
+          }
+        })
+        showAlert('info', 'Info', 'Bombero registrado correctamente!');
+
+        setTimeout(() => {
+          setViewEmergency(false);
+        }, 1500);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
@@ -21,7 +80,7 @@ const ViewEmergency = ({ emergency }: any) => {
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
               Estas viendo una emergencia registrada en <span className='text-red-500'>BomberApp</span>
             </h2>
-            <form>
+            <form onSubmit={ handleSubmit }>
               <div className="mb-4">
                 <label htmlFor='applicant' className="mb-2.5 block font-medium text-black dark:text-white">
                   Solicitante
@@ -90,25 +149,31 @@ const ViewEmergency = ({ emergency }: any) => {
                 </div>
               </div>
 
-              <MapComponent latitude={emergency.latitude} longitude={emergency.longitude} />
-
-              {/* <div className="mb-4">
-                <label htmlFor='vehicle_number' className="mb-2.5 block font-medium text-black dark:text-white">
-                  No. Vehículo
+              <div className="mb-4">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                Bombero
                 </label>
                 <div className="relative">
-                  <input
-                    id='vehicle_number'
-                    type="number"
-                    min={0}
-                    placeholder="Ingresa el número de vehículo de la unidad"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ vehicleNumber }
-                    disabled                    
-                  />
+                <Dropdown
+                  value={ selectedFirefighter }
+                  options={ firefighters }
+                  onChange={ (e) => setSelectedFirefighter(e.value) }
+                  optionLabel="user.fullName"
+                  optionValue="id"
+                  placeholder="Seleccione el bombero para la emergencia"
+                  className="w-full"
+                  required
+                />
                 </div>
-              </div>*/}
+              </div>
+              <MapComponent latitude={emergency.latitude} longitude={emergency.longitude} />
+              <div className="mb-5 mt-5">
+                <input
+                  type="submit"
+                  value='Crear registro'
+                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                />
+              </div>            
             </form>
           </div>
         </div>

@@ -28,11 +28,13 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
   const [error, setError] = useState("");
   const [roleId, setRoleId] = useState(3);
   const [imagePreview, setImagePreview] = useState<null | string>(null);
+  const [selectedFirefighter, setSelectedFirefighter] = useState(null);
   const [selectedShiftPreference, setSelectedShiftPreference] = useState(null);
   const [shiftPreferences, setShiftPreferences] = useState([
     { name: "Par", code: "Par" },
     { name: "Impar", code: "Impar" },
   ]);
+  const [loading, setLoading] = useState(false);
 
   const header = <div className="font-bold mb-3">Escribe tu contraseña</div>;
   const footer = (
@@ -62,9 +64,8 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       } catch (error) {
         console.error('Error fetching user image:', error);
       }
-    };
-
-  useEffect(() => {
+    };    
+  useEffect(() => {    
     if (user) {
       setUsername(user.username || '');
       setFullName(user.fullName || '');
@@ -74,7 +75,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       setAddress(user.address || '');
       setStatus(user.status || status);
       setRoleId(user.roleId || 3);
-      fetchUserImage(user.photography); 
+      fetchUserImage(user.photography);
     }
   }, [user]);
 
@@ -118,11 +119,23 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleErrorResponse = (error: any) => {
+    console.log(error);
+    if (error.response && error.response.data && error.response.data.errors) {
+      const errorMessages = error.response.data.errors
+        .map((err: { message: string }) => err.message)
+        .join(', ');
+  
+      showAlert('error', 'Error', errorMessages);
+    } else {
+      showAlert('error', 'Error', 'Ocurrió un error inesperado');
+    }
+  };
   
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {    
     e.preventDefault();    
     setError("");
-    debugger;
     
     const formData = new FormData();
 
@@ -176,18 +189,19 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
           },
         });
 
-        if ( selectedShiftPreference !== null && user.roleId === 2 ) {
+        if ( selectedFirefighter && selectedShiftPreference !== null && user.roleId === 2 ) {
           const formData = new FormData();
+          formData.append('userId', user.id);
           formData.append('shiftPreference', selectedShiftPreference?.name);
-          await apiRequestAuth.put(`/firefighter/${user.id}`, formData, {
+
+          await apiRequestAuth.put(`/firefighter/${selectedFirefighter.id}`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${currentToken?.token}`
             }
           })
         }
-        setVisible(false);        
-
+        showAlert('info', 'Info', 'Usuario Actualizado!');    
       } else {
         const res =await apiRequest.post("/register", formData, {
           headers: {
@@ -201,11 +215,12 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         }
 
         showAlert('info', 'Info', 'Usuario Creado!');
-      }
-      
+      }      
+      setTimeout(() => {
+        setVisible(false);
+      }, 1500);
     } catch (err:any) {
-      console.log(err);
-      setError(err.response.data.message);
+      handleErrorResponse(err);
     }
   };
 
@@ -490,7 +505,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
                         required
                       />
                     </div>
-                    { selectedRole?.name === 'Bombero' && (
+                    { selectedRole?.name === 'Bombero' && !user && (
                       <div className="mb-4">
                         <label htmlFor='shiftPreference' className="mb-2.5 block font-medium text-black dark:text-white">
                           Turno

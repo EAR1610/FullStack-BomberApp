@@ -148,7 +148,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
 
   const optionsBodyTemplate = (rowData:any) => {
     return (
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2">
           <Button
               size='small'
               icon="pi pi-pencil"
@@ -192,13 +192,13 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
         header={header}
         emptyMessage="Usuario no encontrado."
       >
-        <Column field="username" header="Usuario"  style={{ minWidth: '8rem' }}  />
-        <Column field="fullName" header="Nombre" style={{ minWidth: '12rem' }} />
-        <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} />
-        <Column field="roleId" header="Rol" body={roleBodyTemplate} style={{ minWidth: '12rem' }} />
-        <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
+        <Column field="username" header="Usuario"  style={{ minWidth: '8rem' }}  align={'center'}/>
+        <Column field="fullName" header="Nombre" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="roleId" header="Rol" body={roleBodyTemplate} style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
-      <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
+      <Dialog header={`${selectedUser ? 'Editar usuario' : 'Crear nuevo usuario'}`} visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SignUp user={selectedUser} setVisible={setVisible} />
       </Dialog>

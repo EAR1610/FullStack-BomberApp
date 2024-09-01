@@ -110,6 +110,10 @@ export default class FirefightersController {
     return await Firefighter.find( params.id );
   }
 
+  async showFirefighterByUserId({ params }: HttpContext) {
+    return await Firefighter.query().where('user_id', params.id)
+  }
+
   /**
    * Edit individual record
    */

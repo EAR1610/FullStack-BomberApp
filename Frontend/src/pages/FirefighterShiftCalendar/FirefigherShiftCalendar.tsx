@@ -18,12 +18,14 @@ const FirefigherShiftCalendar = () => {
 
   useEffect(() => {
     const getFirefighterShifts = async () => {
+      console.log(currentToken);
       try {
         const response = await apiRequestAuth.post(`/firefighter-shift/get-shift-by-firefighter/${currentToken?.firefighter?.id}`,{}, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
-        })        
+        })
+        console.log(response)    
         if (response) {
           const transformedEvents = response.data.map((shift: FirefighterShift) => ({
             id: shift.id,
