@@ -31,6 +31,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
   const [visible, setVisible] = useState(false);
   const [visibleTool, setVisibleTool] = useState(false);
   const [selectedTool, setSelectedTool] = useState(null);
+  const [isInactiveTool, setIsInactiveTool] = useState(false);
 
   const toast = useRef(null);
 
@@ -64,6 +65,21 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
 
     getToolTypes();
   }, [data]);
+
+  useEffect(() => {
+    if( selectedTool && isInactiveTool ){
+      confirmDialog({
+        message: `${!viewActiveTools ? '¿Desea activar esta herramienta?' : '¿Desea inactivar esta herramienta?'}`,
+        header: `${!viewActiveTools ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+        icon: 'pi pi-info-circle',
+        acceptClassName: `${!viewActiveTools ? 'p-button-success' : 'p-button-danger'}`,
+        accept,
+        reject,
+        onHide: () => setIsInactiveTool(false)
+      });  
+    }
+  }, [selectedTool]);
+  
 
   const onGlobalFilterChange = (e:any) => {
     const value = e.target.value;
@@ -103,21 +119,13 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
   const viewActiveOrInactiveTools = () => setViewActiveTools(!viewActiveTools);
 
   const editTool = (rowData:any) => {
-    console.log(rowData);
     setSelectedTool(rowData);
     setVisible(true);
   };
 
   const deleteTool = async (rowData:any) => {    
     setSelectedTool(rowData);
-      confirmDialog({
-        message: `${!viewActiveTools ? '¿Desea activar esta herramienta?' : '¿Desea inactivar esta herramienta?'}`,
-        header: `${!viewActiveTools ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-        icon: 'pi pi-info-circle',
-        acceptClassName: `${!viewActiveTools ? 'p-button-success' : 'p-button-danger'}`,
-        accept,
-        reject
-      });    
+    setIsInactiveTool(true);
   };
 
   const showTool = (rowData:any) => {
@@ -202,10 +210,10 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
         header={header}
         emptyMessage="Herramienta no encontrada."
       >
-        <Column field="name" header="Nombre"  style={{ minWidth: '8rem' }}  />
-        <Column field="toolTypeName" header="Tipo" style={{ minWidth: '12rem' }} />
-        <Column field="brand" header="Marca" style={{ minWidth: '12rem' }} />
-        <Column field="model" header="Modelo" style={{ minWidth: '12rem' }} />
+        <Column field="name" header="Nombre"  style={{ minWidth: '8rem' }}  align={'center'}/>
+        <Column field="toolTypeName" header="Tipo" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="brand" header="Marca" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="model" header="Modelo" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}

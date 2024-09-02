@@ -15,6 +15,7 @@ import SignUp from '../../pages/Authentication/SignUp';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ViewUser from '../../pages/Users/ViewUser';
+import { handleErrorResponse } from '../../helpers/functions';
 
 const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
   const [customers, setCustomers] = useState(null);
@@ -32,6 +33,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
   const [visible, setVisible] = useState(false);
   const [visibleUser, setVisibleUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isInactiveUser, setIsInactiveUser] = useState(false);
 
   const toast = useRef(null);
 
@@ -47,6 +49,20 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
     setCustomers(transformedData);
     setLoading(false);
   }, [data]);
+
+  useEffect(() => {
+    if (selectedUser && isInactiveUser) {
+      confirmDialog({
+        message: `${!viewActiveUsers ? '¿Desea activar este usuario?' : '¿Desea inactivar este usuario?'}`,
+        header: `${!viewActiveUsers ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+        icon: 'pi pi-info-circle',
+        acceptClassName: `${!viewActiveUsers ? 'p-button-success' : 'p-button-danger'}`,
+        accept,
+        reject,
+        onHide: () => setIsInactiveUser(false)
+      });
+    }
+  }, [selectedUser]);
 
   const onGlobalFilterChange = (e:any) => {
     const value = e.target.value;
@@ -68,11 +84,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
           <IconField iconPosition="left" className='ml-2'>                
                 <InputIcon className="pi pi-search" />
                 <Button label="Crear nuevo usuario" icon="pi pi-check" loading={loading} onClick={() => newUser()} className='' />
-                <Button label={viewActiveUsers ? 'Ver usuarios inactivos' : 'Ver usuarios activos'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveUsers()} className='ml-2' severity={viewActiveUsers ? 'danger' : 'success'} />
-              <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
-                <SignUp user={selectedUser} setVisible={setVisible}/>
-            </Dialog>
+                <Button label={viewActiveUsers ? 'Ver usuarios inactivos' : 'Ver usuarios activos'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveUsers()} className='ml-2' severity={viewActiveUsers ? 'danger' : 'success'} />              
           </IconField>
       </div>
     );
@@ -98,53 +110,39 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
     setVisible(true);
   };
 
-  const deleteUser = async (rowData:any) => {    
+  const deleteUser = async (rowData:any) => {
     setSelectedUser(rowData);
-      confirmDialog({
-        message: `${!viewActiveUsers ? '¿Desea activar este usuario?' : '¿Desea inactivar este usuario?'}`,
-        header: `${!viewActiveUsers ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-        icon: 'pi pi-info-circle',
-        acceptClassName: `${!viewActiveUsers ? 'p-button-success' : 'p-button-danger'}`,
-        accept,
-        reject
-      });    
+    setIsInactiveUser(true);    
   };
 
   const showUser = (rowData:any) => {
     setSelectedUser(rowData);
-    setVisibleUser(true); 
-  };
+    setVisibleUser(true);
+  };  
 
   const accept = async () => {
     if (selectedUser) {
       const formData = new FormData();
       try {
-        if(!viewActiveUsers){
-          formData.append('status', 'active');
-          await apiRequestAuth.put(`/${selectedUser.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el usuario', life: 3000 });
-        } else {
-          formData.append('status', 'inactive');
-          await apiRequestAuth.put(`/${selectedUser.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el usuario', life: 3000 });
-        }
+        const status = !viewActiveUsers ? 'active' : 'inactive';
+        formData.append('status', status);
+  
+        await apiRequestAuth.put(`/${selectedUser?.id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${currentToken?.token}`,
+          },
+        });  
+        showAlert('info', 'Info', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario`);
       } catch (error) {
-        console.log(error);
+        handleErrorResponse(error);
       }
     }
   };
 
-  const reject = () => toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+    
+  const reject = () => showAlert('warn', 'Rechazado', 'Has rechazado el proceso');
 
   const optionsBodyTemplate = (rowData:any) => {
     return (
@@ -202,7 +200,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SignUp user={selectedUser} setVisible={setVisible} />
       </Dialog>
-      <Dialog header="Header" visible={visibleUser} onHide={() => setVisibleUser(false)}
+      <Dialog header='Observando el usuario' visible={visibleUser} onHide={() => setVisibleUser(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewUser user={selectedUser} token={currentToken?.token} />
       </Dialog>

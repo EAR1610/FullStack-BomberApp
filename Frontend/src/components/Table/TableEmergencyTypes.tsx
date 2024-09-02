@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -27,6 +27,7 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
       const [visible, setVisible] = useState(false);
       const [visibleEmergencyType, setVisibleEmergencyType] = useState(false);
       const [selectedEmergencyType, setSelectedEmergencyType] = useState(null);
+      const [isInactiveEmergencyType, setIsInactiveEmergencyType] = useState(false);
     
       const toast = useRef(null); 
       
@@ -64,6 +65,21 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
         );
       };
 
+      useEffect(() => {
+        if( selectedEmergencyType && isInactiveEmergencyType ){
+          confirmDialog({
+            message: `${!viewActiveEmergenciesType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+            header: `${!viewActiveEmergenciesType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+            icon: 'pi pi-info-circle',
+            acceptClassName: `${!viewActiveEmergenciesType ? 'p-button-success' : 'p-button-danger'}`,
+            accept,
+            reject,
+            onHide: () => setIsInactiveEmergencyType(false)
+          });
+        }
+      }, [selectedEmergencyType])
+      
+
       const newEmergencyType = () => {
         setVisible(true);
         setSelectedEmergencyType(null);
@@ -78,14 +94,7 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
 
       const deleteEmergenciesType = async (rowData:any) => {    
         setSelectedEmergencyType(rowData);
-          confirmDialog({
-            message: `${!viewActiveEmergenciesType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-            header: `${!viewActiveEmergenciesType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-            icon: 'pi pi-info-circle',
-            acceptClassName: `${!viewActiveEmergenciesType ? 'p-button-success' : 'p-button-danger'}`,
-            accept,
-            reject
-          });    
+        setIsInactiveEmergencyType(true);          
       };
       
     const showEmergenciesType = (vehicleType: any) => {
@@ -172,8 +181,8 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
         header={header}
         emptyMessage="Registro no encontrado."
       >
-        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  />
-        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} />
+        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
+        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}

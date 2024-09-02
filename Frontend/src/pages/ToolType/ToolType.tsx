@@ -3,14 +3,13 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+import { handleErrorResponse } from "../../helpers/functions"
 // import { useToast } from "../../helpers/showAlert"
 
 const ToolType = ({ toolType, setVisible }: any) => {
 
   const [name, setName] = useState('');
   const [status, setStatus] = useState('active')
-  const [error, setError] = useState("");
-  // const { showAlert, ToastComponent } = useToast();
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -23,28 +22,14 @@ const ToolType = ({ toolType, setVisible }: any) => {
       setName(toolType.name)
       setStatus(toolType.status)
     }
-  }, []);
-
-  const handleErrorResponse = (error: any) => {
-    if (error.response && error.response.data && error.response.data.errors) {
-      const errorMessages = error.response.data.errors
-        .map((err: { message: string }) => err.message)
-        .join(', ');
-  
-      showAlert('error', 'Error', errorMessages);
-    } else {
-      showAlert('error', 'Error', 'Ocurrió un error inesperado');
-    }
-  };
-  
+  }, []);  
 
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
     e.preventDefault();
-    setError("");
     const formData = new FormData();
 
     if( !name ){
-      setError("Todos los campos son obligatorios");
+      showAlert("warn", "Atención", "Todos los campos son obligatorios");
       return;
     } else {
       formData.append('name', name.trim());

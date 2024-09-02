@@ -1,12 +1,14 @@
 import axios from "axios";
+const localDevelopment = 'localhost';
+const remoteDevelopment = '82.197.65.247';
 
 const apiRequest = axios.create({
-  baseURL: "http://82.197.65.247:3333/user",
+  baseURL: `http://${localDevelopment}:3333/user`,
   withCredentials: true,
 });
 
 const apiRequestAuth = axios.create({
-  baseURL: "http://82.197.65.247:3333/users",
+  baseURL: `http://${localDevelopment}:3333/users`,
   withCredentials: true,
 });
 

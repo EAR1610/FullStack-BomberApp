@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -15,6 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import EquipmentType from '../../pages/EquipmentType/EquipmentType';
 import ViewEquipmentType from '../../pages/EquipmentType/ViewEquipmentType';
+import { handleErrorResponse } from '../../helpers/functions';
 
 const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEquipmentsType, loading }: any) => {
 
@@ -27,6 +28,7 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
     const [visible, setVisible] = useState(false);
     const [visibleEquipmentType, setVisibleEquipmentType] = useState(false);
     const [selectedEquipmentType, setSelectedEquipmentType] = useState(null);
+    const [isInactiveEquipmentType, setIsInactiveEquipmentType] = useState(false);
 
     const toast = useRef(null);  
 
@@ -43,6 +45,21 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      if( selectedEquipmentType && isInactiveEquipmentType ){
+        confirmDialog({
+          message: `${!viewActiveEquipmentsType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+          header: `${!setViewActiveEquipmentsType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+          icon: 'pi pi-info-circle',
+          acceptClassName: `${!setViewActiveEquipmentsType ? 'p-button-success' : 'p-button-danger'}`,
+          accept,
+          reject,
+          onHide: () => setIsInactiveEquipmentType(false),
+        });
+      }
+    }, [selectedEquipmentType])
+    
     
     const renderHeader = () => {
         return (
@@ -83,14 +100,7 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
 
     const deleteEquipmentType = async (rowData:any) => { 
         setSelectedEquipmentType(rowData);
-          confirmDialog({
-            message: `${!viewActiveEquipmentsType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-            header: `${!setViewActiveEquipmentsType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-            icon: 'pi pi-info-circle',
-            acceptClassName: `${!setViewActiveEquipmentsType ? 'p-button-success' : 'p-button-danger'}`,
-            accept,
-            reject
-          });    
+        setIsInactiveEquipmentType(true);              
       };
     
       const showEquipmentType = (rowData:any) => {
@@ -101,36 +111,30 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
       const accept = async () => {
         if (selectedEquipmentType) {
           const formData = new FormData();
-          debugger;
+          const status = !viewActiveEquipmentsType ? 'active' : 'inactive';
+          const message = !viewActiveEquipmentsType ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+      
           try {
-            if(!viewActiveEquipmentsType){
-              formData.append('name', selectedEquipmentType.name);
-              formData.append('status', 'active');
-              await apiRequestAuth.put(`/equipment-type/${selectedEquipmentType.id}`, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${currentToken?.token}`
-                },
-              });
-              toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el registro', life: 3000 });
-            } else {
-              formData.append('name', selectedEquipmentType.name);
-              formData.append('status', 'inactive');
-              await apiRequestAuth.put(`/equipment-type/${selectedEquipmentType.id}`, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${currentToken?.token}`
-                },
-              });
-              toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
-            }
+            formData.append('name', selectedEquipmentType.name);
+            formData.append('status', status);
+      
+            await apiRequestAuth.put(`/equipment-type/${selectedEquipmentType.id}`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${currentToken?.token}`,
+              },
+            });      
+
+            showAlert('info', 'Info', message);
           } catch (error) {
-            console.log(error);
+            handleErrorResponse(error);
           }
         }
-      }; 
+      }      
       
-      const reject = () => toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
+      const reject = () => showAlert('warn', 'Rechazado', 'Has rechazado el proceso');
+
+      const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
       
       const optionsBodyTemplate = (rowData:any) => {
         return (
@@ -178,8 +182,8 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
         header={header}
         emptyMessage="Registro no encontrado."
       >
-        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  />
-        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} />
+        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
+        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}

@@ -60,18 +60,6 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
     getFirefighter();
   }, []);
 
-  // const handleErrorResponse = (error: any) => {
-  //   if (error.response && error.response.data && error.response.data.errors) {
-  //     const errorMessages = error.response.data.errors
-  //       .map((err: { message: string }) => err.message)
-  //       .join(', ');
-  
-  //     showAlert('error', 'Error', errorMessages);
-  //   } else {
-  //     showAlert('error', 'Error', 'Ocurrió un error inesperado');
-  //   }
-  // };
-
   /**
    * Handles the form submission event.
    *
@@ -88,7 +76,7 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
     if( 
       !shiftPreference || !username || !email || !address ||  selectedUser === null 
     ) {
-      setError("Todos los campos son obligatorios");
+      showAlert("warn", "Atención","Todos los campos son obligatorios");
       return;
     } else {
       formData.append('shiftPreference', selectedShiftPreference?.code);

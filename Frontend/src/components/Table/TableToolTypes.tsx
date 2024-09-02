@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -15,6 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ToolType from '../../pages/ToolType/ToolType';
 import ViewToolType from '../../pages/ToolType/ViewToolType';
+import { handleErrorResponse } from '../../helpers/functions';
 
 const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loading } :any) => {
  
@@ -27,12 +28,27 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
   const [visible, setVisible] = useState(false);
   const [visibleToolType, setVisibleToolType] = useState(false);
   const [selectedToolType, setSelectedToolType] = useState(null);
+  const [isInactiveToolType, setIsInactiveToolType] = useState(false);
 
   const toast = useRef(null);  
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+
+  useEffect(() => {
+    if( selectedToolType && isInactiveToolType ) {
+      confirmDialog({
+        message: `${!viewActiveToolsType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+        header: `${!viewActiveToolsType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+        icon: 'pi pi-info-circle',
+        acceptClassName: `${!viewActiveToolsType ? 'p-button-success' : 'p-button-danger'}`,
+        accept,
+        reject,
+        onHide: () => setIsInactiveToolType(false)
+      });   
+    }
+  }, [selectedToolType]);  
 
   const onGlobalFilterChange = (e:any) => {
       const value = e.target.value;
@@ -74,56 +90,41 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
 
   const deleteToolsType = async (rowData:any) => {    
     setSelectedToolType(rowData);
-      confirmDialog({
-        message: `${!viewActiveToolsType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-        header: `${!viewActiveToolsType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-        icon: 'pi pi-info-circle',
-        acceptClassName: `${!viewActiveToolsType ? 'p-button-success' : 'p-button-danger'}`,
-        accept,
-        reject
-      });    
+    setIsInactiveToolType(true); 
   };
 
   const showToolsType = (rowData:any) => {
     setVisibleToolType(true);
     setSelectedToolType(rowData);
-  }
+  } 
+
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   const accept = async () => {
-    if (selectedToolType) {
-      const formData = new FormData();
-      try {
-        if(!viewActiveToolsType){
-          formData.append('name', selectedToolType.name);
-          formData.append('status', 'active');
-          await apiRequestAuth.put(`/tool-type/${selectedToolType.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el registro', life: 3000 });
-        } else {
-          formData.append('name', selectedToolType.name);
-          formData.append('status', 'inactive');
-          await apiRequestAuth.put(`/tool-type/${selectedToolType.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    if (!selectedToolType) return;
+  
+    const status = viewActiveToolsType ? 'inactive' : 'active';
+    const formData = new FormData();
+    formData.append('name', selectedToolType.name);
+    formData.append('status', status);
+
+    try {
+      await apiRequestAuth.put(`/tool-type/${selectedToolType.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+  
+      const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+      showAlert('info', 'Info', message);
+    } catch (error) {
+      handleErrorResponse(error);
     }
   }; 
   
-  const reject = () => {
-    toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
-  };  
-
+  const reject = () => showAlert('warn', 'Rechazado', 'Has rechazado el proceso');
+  
   const optionsBodyTemplate = (rowData:any) => {
     return (
       <div className="flex items-center space-x-4">
@@ -170,9 +171,9 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
         header={header}
         emptyMessage="Registro no encontrado."
       >
-        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  />
-        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} />
-        <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
+        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'} />
+        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
       <Dialog header={selectedToolType ? 'Actualizar el tipo de herramienta' : 'Creación del tipo de herramienta'} visible={visible} onHide={() => setVisible(false)} 
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

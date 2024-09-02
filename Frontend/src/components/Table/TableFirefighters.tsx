@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -34,6 +34,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       const [visibleFirefighter, setVisibleFirefighter] = useState(false);
       const [visibleFirefighterShift, setvisibleFirefighterShift] = useState(false);
       const [selectedFirefighter, setSelectedFirefighter] = useState(null);
+      const [isInactiveFirefighter, setIsInactiveFirefighter] = useState(false);
 
       const toast = useRef(null); 
 
@@ -66,6 +67,21 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
         );
       };
 
+    useEffect(() => {
+      if( selectedFirefighter && isInactiveFirefighter ) {
+        confirmDialog({
+          message: `${!viewActiveFirefighters ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+          header: `${!viewActiveFirefighters ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+          icon: 'pi pi-info-circle',
+          acceptClassName: `${!viewActiveFirefighters ? 'p-button-success' : 'p-button-danger'}`,
+          accept,
+          reject,
+          onHide: () => setIsInactiveFirefighter(false)
+        });
+      }
+    }, [selectedFirefighter])
+    
+
     const viewActiveOrInactiveFirefighters = () => setViewActiveFirefighters(!viewActiveFirefighters);
 
     const editFirefighters = (firefighter: any) => {
@@ -75,14 +91,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
 
     const deleteFirefighters = async (rowData:any) => {    
         setSelectedFirefighter(rowData);
-        confirmDialog({
-            message: `${!viewActiveFirefighters ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-            header: `${!viewActiveFirefighters ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-            icon: 'pi pi-info-circle',
-            acceptClassName: `${!viewActiveFirefighters ? 'p-button-success' : 'p-button-danger'}`,
-            accept,
-            reject
-        });    
+        setIsInactiveFirefighter(true);            
     };
 
     const setFirefighterShift = async(firefighter: any) => {

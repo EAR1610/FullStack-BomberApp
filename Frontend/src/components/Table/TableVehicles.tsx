@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -15,6 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ViewVehicle from '../../pages/Vehicles/ViewVehicle';
 import Vehicle from '../../pages/Vehicles/Vehicle';
+import { handleErrorResponse } from '../../helpers/functions';
 
 const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loading }: any) => {
     const [filters, setFilters] = useState({
@@ -32,6 +33,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       const [visible, setVisible] = useState(false);
       const [visibleVehicle, setVisibleVehicle] = useState(false);
       const [selectedVehicle, setSelectedVehicle] = useState(null);
+      const [isInactiveVehicle, setIsInactiveVehicle] = useState(false);
     
       const toast = useRef(null); 
 
@@ -48,6 +50,21 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      if( selectedVehicle && isInactiveVehicle ) {
+          confirmDialog({
+              message: `${!viewActiveVehicles ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+              header: `${!viewActiveVehicles ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+              icon: 'pi pi-info-circle',
+              acceptClassName: `${!viewActiveVehicles ? 'p-button-success' : 'p-button-danger'}`,
+              accept,
+              reject,
+              onHide: () => setIsInactiveVehicle(false)
+          });
+      }
+    }, [selectedVehicle])
+    
 
     const renderHeader = () => {
       return (
@@ -83,14 +100,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
 
     const deleteVehicles = async (rowData:any) => {    
       setSelectedVehicle(rowData);
-        confirmDialog({
-          message: `${!viewActiveVehicles ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-          header: `${!viewActiveVehicles ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-          icon: 'pi pi-info-circle',
-          acceptClassName: `${!viewActiveVehicles ? 'p-button-success' : 'p-button-danger'}`,
-          accept,
-          reject
-        });    
+      setIsInactiveVehicle(true);  
     };
     
   const showVehicles = (vehicleType: any) => {
@@ -99,49 +109,49 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
   }
 
   const accept = async () => {
-    debugger;
-    if (selectedVehicle) {
-      const formData = new FormData();
-      formData.append('brand', selectedVehicle.brand);
-      formData.append('model', selectedVehicle.model);
-      formData.append('line', selectedVehicle.line);
-      formData.append('vehicleNumber', String(selectedVehicle.vehicleNumber));
-      formData.append('gasolineType', selectedVehicle.gasolineType);
-      formData.append('plateNumber', selectedVehicle.plateNumber);
-      formData.append('dateOfPurchase', new Date(selectedVehicle.dateOfPurchase).toISOString().split('T')[0]);
-      formData.append('dateOfLeaving', '');
-      formData.append('reasonOfLeaving', String(null));
-      formData.append('remarks', String(null));
-      formData.append('vehicleTypeId', JSON.stringify(selectedVehicle.vehicleTypeId));
-      formData.append('originTypeId', JSON.stringify(selectedVehicle.originTypeId));
-
-      try {
-        if(!viewActiveVehicles){
-          formData.append('status', 'active');
-          await apiRequestAuth.put(`/vehicle/${selectedVehicle.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el registro', life: 3000 });
-        } else {
-          formData.append('status', 'inactive');
-          await apiRequestAuth.put(`/vehicle/${selectedVehicle.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    if (!selectedVehicle) return;
+  
+    const formData = new FormData();
+    const vehicleData = {
+      brand: selectedVehicle.brand,
+      model: selectedVehicle.model,
+      line: selectedVehicle.line,
+      vehicleNumber: String(selectedVehicle.vehicleNumber),
+      gasolineType: selectedVehicle.gasolineType,
+      plateNumber: selectedVehicle.plateNumber,
+      dateOfPurchase: new Date(selectedVehicle.dateOfPurchase).toISOString().split('T')[0],
+      dateOfLeaving: '',
+      reasonOfLeaving: String(null),
+      remarks: String(null),
+      vehicleTypeId: JSON.stringify(selectedVehicle.vehicleTypeId),
+      originTypeId: JSON.stringify(selectedVehicle.originTypeId),
+    };
+  
+    Object.keys(vehicleData).forEach((key) => {
+      formData.append(key, vehicleData[key]);
+    });
+  
+    try {
+      const status = viewActiveVehicles ? 'inactive' : 'active';
+      formData.append('status', status);
+  
+      await apiRequestAuth.put(`/vehicle/${selectedVehicle.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+  
+      const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';      
+      showAlert('info', 'Info', `${message}`);
+    } catch (error) {
+      handleErrorResponse(error);
     }
   }; 
 
-  const reject = () =>  toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
+  const reject = () => showAlert('warn', 'Rechazado', `Has rechazado el proceso`);
+
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   const optionsBodyTemplate = (rowData:any) => {
     return (

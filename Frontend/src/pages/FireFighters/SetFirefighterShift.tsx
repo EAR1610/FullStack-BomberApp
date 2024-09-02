@@ -5,34 +5,23 @@ import { AuthContextProps } from "../../interface/Auth"
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from "primereact/toast"
 import { TableFirefightersProps } from "../../helpers/Interfaces";
+import { handleErrorResponse } from "../../helpers/functions";
 
 const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, setVisible }:any) => {
     const [date, setDate] = useState(null);
-    const [error, setError] = useState('');
     const [status, setStatus] = useState('active');
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
   
-    const toast = useRef(null);
-
-    const handleErrorResponse = (error: any) => {
-      if (error.response && error.response.data && error.response.data.message) {
-        const errorMessage = error.response.data.message;
-        showAlert('error', 'Error', errorMessage);
-      } else {
-        showAlert('error', 'Error', 'Ocurrió un error inesperado');
-      }
-    };
+    const toast = useRef(null);    
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError('');
-        debugger;
 
         if (date === null) {
-          setError('Todos los campos son obligatorios');
+          showAlert('warn', 'Atención', 'Todos los campos son obligatorios');
           return;
         }
 
@@ -56,8 +45,6 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
               setVisible(false);              
             }, 1500);
         } catch (error) {
-            console.log(error);
-            console.log(error.response);
             handleErrorResponse(error);
         }
     }
@@ -84,7 +71,6 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                     />
                 </div>
-                { error && <span className="text-red-500 text-2xl mt-2">{ error }</span> }
             </form>
           </div>
         </div>

@@ -8,6 +8,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
+import { handleErrorResponse } from '../../helpers/functions';
         
 const SignUp: React.FC = ({ user, setVisible }:any) => {
   
@@ -25,7 +26,6 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
   const [address, setAddress] = useState('');
   const [photography, setPhotography] = useState<File | null>(null);
   const [status, setStatus] = useState('active');
-  const [error, setError] = useState("");
   const [roleId, setRoleId] = useState(3);
   const [imagePreview, setImagePreview] = useState<null | string>(null);
   const [selectedFirefighter, setSelectedFirefighter] = useState(null);
@@ -34,7 +34,6 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
     { name: "Par", code: "Par" },
     { name: "Impar", code: "Impar" },
   ]);
-  const [loading, setLoading] = useState(false);
 
   const header = <div className="font-bold mb-3">Escribe tu contraseña</div>;
   const footer = (
@@ -118,24 +117,10 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleErrorResponse = (error: any) => {
-    console.log(error);
-    if (error.response && error.response.data && error.response.data.errors) {
-      const errorMessages = error.response.data.errors
-        .map((err: { message: string }) => err.message)
-        .join(', ');
-  
-      showAlert('error', 'Error', errorMessages);
-    } else {
-      showAlert('error', 'Error', 'Ocurrió un error inesperado');
-    }
-  };
+  };  
   
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {    
-    e.preventDefault();    
-    setError("");
+    e.preventDefault();
     
     const formData = new FormData();
 
@@ -144,7 +129,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       if ( 
         !username || !fullName || !email  || !address
       ) {
-        setError("Todos los campos son obligatorios.");
+        showAlert('error', 'Error', 'Todos los campos son obligatorios');
         return;
 
       } else {        
@@ -164,7 +149,7 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         !username || !fullName || !email || 
         !password || !address || !photography
       ) {
-        setError("Todos los campos son obligatorios.");
+        showAlert('error', 'Error', 'Todos los campos son obligatorios');
         return;
       } else {
         formData.append('username', username);
@@ -376,8 +361,13 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           value={password} 
                           onChange={(e) => setPassword(e.target.value)} 
-                          header={header} 
+                          header={header}
                           footer={footer} 
+                          toggleMask
+                          feedback={true}
+                          weakLabel="Débil"
+                          mediumLabel="Media"
+                          strongLabel="Fuerte"
                        />
 
                       <span className="absolute right-4 top-4">
@@ -524,15 +514,16 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
-                { error && <span>{ error }</span> }
-                <div className="mt-6 text-center">
-                  <p>
-                    ¿Ya tienes una cuenta?{' '}
-                    <Link to="/login" className="text-primary">
-                      Inicia sesión
-                    </Link>
-                  </p>
-                </div>
+                { !currentToken && (
+                  <div className="mt-6 text-center">
+                    <p>
+                      ¿Ya tienes una cuenta?{' '}
+                      <Link to="/login" className="text-primary">
+                        Inicia sesión
+                      </Link>
+                    </p>
+                  </div>                  
+                )}
               </form>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -15,6 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import OriginType from '../../pages/OriginType/OriginType';
 import ViewOriginType from '../../pages/OriginType/ViewOriginType';
+import { handleErrorResponse } from '../../helpers/functions';
 
 const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginTypes, loading } : any) => {
     
@@ -27,6 +28,7 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
     const [visible, setVisible] = useState(false);
     const [visibleOriginType, setVisibleOriginType] = useState(false);
     const [selectedOriginType, setSelectedOriginType] = useState(null);
+    const [isInactiveOriginType, setIsInactiveOriginType] = useState(false);
 
     const toast = useRef(null);
 
@@ -35,14 +37,27 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
     const { currentToken } = authContext; 
 
     const onGlobalFilterChange = (e:any) => {
-        const value = e.target.value;
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
-        setGlobalFilterValue(value);
+      const value = e.target.value;
+      let _filters = { ...filters };
+      _filters['global'].value = value;
+      setFilters(_filters);
+      setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      if( selectedOriginType && isInactiveOriginType ){
+        confirmDialog({
+          message: `${!viewActiveOriginTypes ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+          header: `${!viewActiveOriginTypes ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+          icon: 'pi pi-info-circle',
+          acceptClassName: `${!viewActiveOriginTypes ? 'p-button-success' : 'p-button-danger'}`,
+          accept,
+          reject,
+          onHide: () => setIsInactiveOriginType(false)
+        });
+      }
+    }, [selectedOriginType]);
+    
 
   const renderHeader = () => {
     return (
@@ -60,7 +75,6 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
     );
   };
 
-
   const newOriginType = () => {
     setVisible(true);
     setSelectedOriginType(null);
@@ -75,20 +89,15 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
 
   const deleteOriginType = async (rowData:any) => {    
     setSelectedOriginType(rowData);
-      confirmDialog({
-        message: `${!viewActiveOriginTypes ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-        header: `${!viewActiveOriginTypes ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-        icon: 'pi pi-info-circle',
-        acceptClassName: `${!viewActiveOriginTypes ? 'p-button-success' : 'p-button-danger'}`,
-        accept,
-        reject
-      });    
+    setIsInactiveOriginType(true);          
   };
 
   const showOriginType = (rowData:any) => {
     setSelectedOriginType(rowData);
     setVisibleOriginType(true);
-  };  
+  };   
+
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   const accept = async () => {
     if (selectedOriginType) {
@@ -103,7 +112,7 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
               Authorization: `Bearer ${currentToken?.token}`
             },
           });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el registro', life: 3000 });
+          showAlert('info', 'Info', 'Se ha activado el registro');
         } else {
           formData.append('name', selectedOriginType.name);
           formData.append('status', 'inactive');
@@ -113,17 +122,15 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
               Authorization: `Bearer ${currentToken?.token}`
             },
           });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
+          showAlert('info', 'Info', 'Se ha desactivado el registro');
         }
       } catch (error) {
-        console.log(error);
+        handleErrorResponse(error);
       }
     }
   };
 
-  const reject = () => {
-    toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
-  };
+  const reject = () => showAlert('warn', 'Rechazado', 'Se ha rechazado el proceso');
 
   const optionsBodyTemplate = (rowData:any) => {
     return (
@@ -171,8 +178,8 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
         header={header}
         emptyMessage="Registro no encontrado."
       >
-        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  />
-        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} />
+        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
+        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
       <Dialog header={selectedOriginType ? 'Actualizar el tipo de origen' : 'Creación del tipo de origen'} visible={visible} onHide={() => setVisible(false)}

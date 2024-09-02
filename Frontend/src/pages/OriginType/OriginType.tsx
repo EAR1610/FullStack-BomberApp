@@ -3,6 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+import { handleErrorResponse } from "../../helpers/functions"
 
 const OriginType = ({ originType, setVisible }: any) => {
 
@@ -22,18 +23,6 @@ const OriginType = ({ originType, setVisible }: any) => {
       setStatus(originType.status);
     }
   }, []);
-
-  const handleErrorResponse = (error: any) => {
-    if (error.response && error.response.data && error.response.data.errors) {
-      const errorMessages = error.response.data.errors
-        .map((err: { message: string }) => err.message)
-        .join(', ');
-  
-      showAlert('error', 'Error', errorMessages);
-    } else {
-      showAlert('error', 'Error', 'Ocurrió un error inesperado');
-    }
-  };
 
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
     e.preventDefault();

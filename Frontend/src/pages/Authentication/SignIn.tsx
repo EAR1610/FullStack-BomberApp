@@ -32,6 +32,7 @@ const SignIn: React.FC = () => {
 
     try {
       // ? Use the apiRequest function to send a POST request to the "/login" endpoint
+      console.log(apiRequest);
       const res = await apiRequest.post("/login", {
         email,
         password,

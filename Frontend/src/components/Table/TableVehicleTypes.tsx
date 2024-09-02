@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { FilterMatchMode } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -15,6 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import VehicleType from '../../pages/VehicleType/VehicleType';
 import ViewVehicleType from '../../pages/VehicleType/ViewVehicleType';
+import { handleErrorResponse } from '../../helpers/functions';
 
 const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesType, loading}: any) => {
 
@@ -27,6 +28,7 @@ const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesT
       const [visible, setVisible] = useState(false);
       const [visibleVehicleType, setVisibleVehicleType] = useState(false);
       const [selectedVehicleType, setSelectedVehicleType] = useState(null);
+      const [isInactiveVehicleType, setIsInactiveVehicleType] = useState(false);
     
       const toast = useRef(null); 
       
@@ -44,6 +46,20 @@ const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesT
         setGlobalFilterValue(value);
     };
   
+    useEffect(() => {
+      if( selectedVehicleType && isInactiveVehicleType ){
+        confirmDialog({
+          message: `${!viewActiveVehiclesType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+          header: `${!viewActiveVehiclesType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+          icon: 'pi pi-info-circle',
+          acceptClassName: `${!viewActiveVehiclesType ? 'p-button-success' : 'p-button-danger'}`,
+          accept,
+          reject,
+          onHide: () => setIsInactiveVehicleType(false)
+        });
+      }
+    }, [selectedVehicleType])
+    
       
       const renderHeader = () => {
         return (
@@ -80,14 +96,7 @@ const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesT
 
     const deleteVehiclesType = async (rowData:any) => {    
         setSelectedVehicleType(rowData);
-          confirmDialog({
-            message: `${!viewActiveVehiclesType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-            header: `${!viewActiveVehiclesType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-            icon: 'pi pi-info-circle',
-            acceptClassName: `${!viewActiveVehiclesType ? 'p-button-success' : 'p-button-danger'}`,
-            accept,
-            reject
-          });    
+        setIsInactiveVehicleType(true);    
       };
       
     const showVehiclesType = (vehicleType: any) => {
@@ -96,37 +105,32 @@ const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesT
     }
 
     const accept = async () => {
-        if (selectedVehicleType) {
-          const formData = new FormData();
-          try {
-            if(!viewActiveVehiclesType){
-              formData.append('name', selectedVehicleType.name);
-              formData.append('status', 'active');
-              await apiRequestAuth.put(`/vehicle-type/${selectedVehicleType.id}`, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${currentToken?.token}`
-                },
-              });
-              toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el registro', life: 3000 });
-            } else {
-              formData.append('name', selectedVehicleType.name);
-              formData.append('status', 'inactive');
-              await apiRequestAuth.put(`/vehicle-type/${selectedVehicleType.id}`, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${currentToken?.token}`
-                },
-              });
-              toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }; 
+      if (!selectedVehicleType) return;
+    
+      const formData = new FormData();
+      const status = viewActiveVehiclesType ? 'inactive' : 'active';
+      const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+    
+      try {
+        formData.append('name', selectedVehicleType.name);
+        formData.append('status', status);
+    
+        await apiRequestAuth.put(`/vehicle-type/${selectedVehicleType.id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${currentToken?.token}`,
+          },
+        });
+            
+        showAlert('info' , 'Info', message);
+      } catch (error) {
+        handleErrorResponse(error);
+      }
+    };
 
-    const reject = () =>  toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
+    const reject = () => showAlert('warn', 'Rechazado', 'Has rechazado el proceso');
+
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
     const optionsBodyTemplate = (rowData:any) => {
         return (
@@ -174,8 +178,8 @@ const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesT
         header={header}
         emptyMessage="Registro no encontrado."
       >
-        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  />
-        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} />
+        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
+        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
