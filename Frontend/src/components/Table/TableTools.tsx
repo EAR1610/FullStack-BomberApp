@@ -15,6 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import Tool from '../../pages/Tool/Tool';
 import ViewTool from '../../pages/Tool/ViewTool';
+import { handleErrorResponse } from '../../helpers/functions';
 
 const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
   const [tools, setTools] = useState(null);
@@ -59,7 +60,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
         setTools(toolsWithTypeName);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        handleErrorResponse(error);
       }
     };
 
@@ -134,35 +135,30 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
   };
 
   const accept = async () => {
-    if (selectedTool) {
-      const formData = new FormData();
-      try {
-        if(!viewActiveTools){
-          formData.append('status', 'active');
-          await apiRequestAuth.put(`/tool/${selectedTool.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado la herramienta', life: 3000 });
-        } else {
-          formData.append('status', 'inactive');
-          await apiRequestAuth.put(`/tool/${selectedTool.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado la herramienta', life: 3000 });
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    if (!selectedTool) return;
+  
+    const formData = new FormData();
+    const status = viewActiveTools ? 'inactive' : 'active';
+    formData.append('status', status);
+  
+    try {
+      await apiRequestAuth.put(`/tool/${selectedTool.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+  
+      const message = status === 'active' ? 'Se ha activado la herramienta' : 'Se ha desactivado la herramienta';
+      showAlert('info', 'Info', message);  
+    } catch (error) {
+      handleErrorResponse(error);
     }
-  };
+  }
 
-  const reject = () => toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });  
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+
+  const reject = () => showAlert('warn', 'Rechazado', 'Se ha rechazado el proceso'); 
 
   const optionsBodyTemplate = (rowData:any) => {
     return (

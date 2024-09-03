@@ -100,35 +100,27 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   const accept = async () => {
-    if (selectedOriginType) {
-      const formData = new FormData();
-      try {
-        if(!viewActiveOriginTypes){
-          formData.append('name', selectedOriginType.name);
-          formData.append('status', 'active');
-          await apiRequestAuth.put(`/origin-type/${selectedOriginType.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          showAlert('info', 'Info', 'Se ha activado el registro');
-        } else {
-          formData.append('name', selectedOriginType.name);
-          formData.append('status', 'inactive');
-          await apiRequestAuth.put(`/origin-type/${selectedOriginType.id}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`
-            },
-          });
-          showAlert('info', 'Info', 'Se ha desactivado el registro');
-        }
-      } catch (error) {
-        handleErrorResponse(error);
-      }
+    if (!selectedOriginType) return;
+  
+    const formData = new FormData();
+    formData.append('name', selectedOriginType.name);
+    const status = viewActiveOriginTypes ? 'inactive' : 'active';
+    formData.append('status', status);
+  
+    try {
+      await apiRequestAuth.put(`/origin-type/${selectedOriginType.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+  
+      const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+      showAlert('info', 'Info', message);
+    } catch (error) {
+      handleErrorResponse(error);
     }
-  };
+  }
 
   const reject = () => showAlert('warn', 'Rechazado', 'Se ha rechazado el proceso');
 

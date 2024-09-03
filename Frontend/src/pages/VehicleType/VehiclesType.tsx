@@ -5,6 +5,7 @@ import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from 'primereact/toast';
 import TableVehicleTypes from "../../components/Table/TableVehicleTypes";
 import { useNavigate } from "react-router-dom";
+import { handleErrorResponse } from "../../helpers/functions";
 
 const VehiclesType = () => {
 
@@ -43,7 +44,7 @@ const VehiclesType = () => {
         if (response) setVehiclesTypes(response.data);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        handleErrorResponse(error);
       }
     }
 

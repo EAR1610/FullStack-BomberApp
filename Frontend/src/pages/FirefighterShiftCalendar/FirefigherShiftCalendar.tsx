@@ -7,6 +7,7 @@ import { Calendar, dayjsLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import "dayjs/locale/es"
 import dayjs from 'dayjs'
+import { handleErrorResponse } from "../../helpers/functions";
 dayjs.locale('es');
 
 const FirefigherShiftCalendar = () => {
@@ -18,14 +19,12 @@ const FirefigherShiftCalendar = () => {
 
   useEffect(() => {
     const getFirefighterShifts = async () => {
-      console.log(currentToken);
       try {
         const response = await apiRequestAuth.post(`/firefighter-shift/get-shift-by-firefighter/${currentToken?.firefighter?.id}`,{}, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         })
-        console.log(response)    
         if (response) {
           const transformedEvents = response.data.map((shift: FirefighterShift) => ({
             id: shift.id,
@@ -37,7 +36,7 @@ const FirefigherShiftCalendar = () => {
           setEvents(transformedEvents);      
         }
       } catch (error) {
-        console.log(error);
+        handleErrorResponse(error);
       }
     }
 

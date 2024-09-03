@@ -3,6 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+import { handleErrorResponse } from "../../helpers/functions"
 
 export const EmergencyType = ({ emergencyType, setVisible }:any) => {
 
@@ -23,42 +24,40 @@ export const EmergencyType = ({ emergencyType, setVisible }:any) => {
         }
     }, []);
 
-    const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
-        e.preventDefault();
-        setError("");
-        const formData = new FormData();
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setError("");
+      const formData = new FormData();
     
-        if( !name ){
-          setError("Todos los campos son obligatorios");
-          return;
-        } else {
-          formData.append('name', name);
-          formData.append('status', status);
-        }
-    
-        try {
-          if (emergencyType) {
-            await apiRequestAuth.put(`/emergency-type/${emergencyType.id}`, formData, {
-              headers: {
-                Authorization: `Bearer ${currentToken?.token}`,
-              },
-            });
-            setVisible(false);
-          } else {
-            await apiRequestAuth.post(`/emergency-type`, formData, {
-              headers: {
-                Authorization: `Bearer ${currentToken?.token}`,
-              },
-            });
-            showAlert('info', 'Info', 'Registro Creado!');
-            setVisible(false);
-          }
-        } catch (error) {
-          console.log(error);
-        }
+      if (!name) {
+        setError("Todos los campos son obligatorios");
+        return;
       }
+    
+      formData.append('name', name);
+      formData.append('status', status);
+    
+      try {
+        const url = emergencyType ? `/emergency-type/${emergencyType.id}` : '/emergency-type';
+        const method = emergencyType ? 'put' : 'post';
+    
+        await apiRequestAuth[method](url, formData, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`,
+          },
+        });
+    
+        if (!emergencyType) {
+          showAlert('info', 'Info', 'Registro Creado!');
+        }
+    
+        setVisible(false);
+      } catch (error) {
+        handleErrorResponse(error);
+      }
+    }
 
-      const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">

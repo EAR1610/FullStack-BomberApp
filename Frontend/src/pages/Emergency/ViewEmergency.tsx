@@ -5,6 +5,7 @@ import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import MapComponent from "../../components/Maps/MapComponent"
 import { apiRequestAuth } from "../../lib/apiRequest"
+import { handleErrorResponse } from "../../helpers/functions"
 
 const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
 
@@ -33,39 +34,42 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
       getFirefighters()
     }, []);
 
-    const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      let formData = new FormData();
+    
       try {
-        formData.append('firefighterId', selectedFirefighter?.id);
-        formData.append('emergencyId', String(emergency.id));
-        await apiRequestAuth.post('/firefighter-emergency', formData, {
+        const createFirefighterEmergencyFormData = new FormData();
+        createFirefighterEmergencyFormData.append('firefighterId', selectedFirefighter?.id);
+        createFirefighterEmergencyFormData.append('emergencyId', String(emergency.id));
+    
+        await apiRequestAuth.post('/firefighter-emergency', createFirefighterEmergencyFormData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           }
         });
-        formData = new FormData();
-        formData.append('emergencyTypeId', String(emergency.emergencyTypeId));
-        formData.append('applicant', emergency.applicant);
-        formData.append('address', emergency.address);
-        formData.append('latitude', String(emergency.latitude));
-        formData.append('longitude', String(emergency.longitude));
-        formData.append('description', emergency.description);
-        formData.append('userId', emergency.userId);
-        formData.append('status', 'En proceso');
-
-        await apiRequestAuth.put(`/emergencies/${emergency.id}`, formData, {
+    
+        const updateEmergencyFormData = new FormData();
+        updateEmergencyFormData.append('emergencyTypeId', String(emergency.emergencyTypeId));
+        updateEmergencyFormData.append('applicant', emergency.applicant);
+        updateEmergencyFormData.append('address', emergency.address);
+        updateEmergencyFormData.append('latitude', String(emergency.latitude));
+        updateEmergencyFormData.append('longitude', String(emergency.longitude));
+        updateEmergencyFormData.append('description', emergency.description);
+        updateEmergencyFormData.append('userId', emergency.userId);
+        updateEmergencyFormData.append('status', 'En proceso');
+    
+        await apiRequestAuth.put(`/emergencies/${emergency.id}`, updateEmergencyFormData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           }
-        })
-        showAlert('info', 'Info', 'Bombero registrado correctamente!');
-
+        });
+    
+        showAlert('info', 'Info', 'Emergencia registrada correctamente!');
         setTimeout(() => {
           setViewEmergency(false);
         }, 1500);
       } catch (error) {
-        console.log(error);
+        handleErrorResponse(error);
       }
     }
     

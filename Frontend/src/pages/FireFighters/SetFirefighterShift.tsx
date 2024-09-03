@@ -18,35 +18,35 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
     const toast = useRef(null);    
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+      e.preventDefault();
 
-        if (date === null) {
-          showAlert('warn', 'Atención', 'Todos los campos son obligatorios');
-          return;
-        }
+      if (date === null) {
+        showAlert('warn', 'Atención', 'Todos los campos son obligatorios');
+        return;
+      }
 
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
 
-        try {
-            const formData = new FormData();
-            formData.append('firefighterId', String(firefighter.id));
-            formData.append('year', String(year));
-            formData.append('month', String(month));
-            formData.append('status', String(status));
+      try {
+        const formData = new FormData();
+        formData.append('firefighterId', String(firefighter.id));
+        formData.append('year', String(year));
+        formData.append('month', String(month));
+        formData.append('status', String(status));
 
-            await apiRequestAuth.post('/firefighter-shift', formData, {
-                headers: {
-                    Authorization: `Bearer ${currentToken?.token}`,
-                },
-            });
-            showAlert('info', 'Info', 'Turno registrado correctamente!');
-            setTimeout(() => {
-              setVisible(false);              
-            }, 1500);
-        } catch (error) {
-            handleErrorResponse(error);
-        }
+        await apiRequestAuth.post('/firefighter-shift', formData, {
+            headers: {
+                Authorization: `Bearer ${currentToken?.token}`,
+            },
+        });
+        showAlert('info', 'Info', 'Turno registrado correctamente!');
+        setTimeout(() => {
+          setVisible(false);              
+        }, 1500);
+      } catch (error) {
+        handleErrorResponse(error);
+      }
     }
 
     const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });  

@@ -88,7 +88,7 @@ const EmergencyRequest: React.FC<Emergency> = () => {
             }
           );
         } else {
-          console.log("Geolocation is not supported by this browser.");
+          showAlert('error', 'Error', 'El navegador no soporta la geolocalización.');
         }
       };
       

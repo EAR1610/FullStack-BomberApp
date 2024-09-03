@@ -5,6 +5,7 @@ import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from 'primereact/toast';
 import TableEmergencyTypes from "../../components/Table/TableEmergencyTypes";
 import { useNavigate } from "react-router-dom";
+import { handleErrorResponse } from "../../helpers/functions";
 
 const EmergenciesType = () => {
 
@@ -47,7 +48,7 @@ const EmergenciesType = () => {
         if (response) setEmergenciesTypes(response.data);
           setLoading(false);
         } catch (error) {
-          console.log(error);
+          handleErrorResponse(error);
         }
      }
         getEmergenciesTypes();

@@ -69,60 +69,75 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
    * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
    * @return {Promise<void>} A promise that resolves when the request is completed.
    */
-  const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    if( 
-      !shiftPreference || !username || !email || !address ||  selectedUser === null 
-    ) {
-      showAlert("warn", "Atención","Todos los campos son obligatorios");
+  
+    if (!validateForm()) {
+      showAlert("warn", "Atención", "Todos los campos son obligatorios");
       return;
-    } else {
-      formData.append('shiftPreference', selectedShiftPreference?.code);
-      formData.append('userId', JSON.stringify(selectedUser?.id));
-      formData.append('status', status);
     }
-
+  
+    const formData = new FormData();
+    formData.append('shiftPreference', selectedShiftPreference?.code);
+    formData.append('userId', JSON.stringify(selectedUser?.id));
+    formData.append('status', status);
+  
     try {
-      if ( firefighter ) {
-        await apiRequestAuth.put(`/firefighter/${firefighter.id}`, formData, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`,
-          },
-        });
-
-        const formDataUser = new FormData();
-        formDataUser.append('username', username);
-        formDataUser.append('fullName', fullName);
-        formDataUser.append('email', selectedUser.email);
-        formDataUser.append('photography', selectedUser.photography || '');
-        formDataUser.append('password', selectedUser.password);
-        formDataUser.append('address', address);
-        formDataUser.append('roleId', JSON.stringify(selectedUser.roleId));
-        formDataUser.append('status', selectedUser.status);
-
-        await apiRequestAuth.put(`/${selectedUser.id}`, formDataUser, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`,
-          },
-        })
-      } else {        
-        await apiRequestAuth.post(`/firefighter`, formData, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`,
-          },
-        });
+      if (firefighter) {
+        await updateFirefighter(formData);
+      } else {
+        await createFirefighter(formData);
       }
       showAlert('info', 'Info', 'Proceso completado!');
       setTimeout(() => {
-        setVisible(false);        
+        setVisible(false);
       }, 1500);
     } catch (error) {
       const err = handleErrorResponse(error);
       showAlert('error', 'Error', err);
-      console.log(error);
     }
+  }
+  
+  const validateForm = () => {
+    return (
+      shiftPreference &&
+      username &&
+      email &&
+      address &&
+      selectedUser !== null
+    );
+  }
+  
+  const updateFirefighter = async (formData: FormData) => {
+    await apiRequestAuth.put(`/firefighter/${firefighter.id}`, formData, {
+      headers: {
+        Authorization: `Bearer ${currentToken?.token}`,
+      },
+    });
+  
+    const formDataUser = new FormData();
+    formDataUser.append('username', username);
+    formDataUser.append('fullName', fullName);
+    formDataUser.append('email', selectedUser.email);
+    formDataUser.append('photography', selectedUser.photography || '');
+    formDataUser.append('password', selectedUser.password);
+    formDataUser.append('address', address);
+    formDataUser.append('roleId', JSON.stringify(selectedUser.roleId));
+    formDataUser.append('status', selectedUser.status);
+  
+    await apiRequestAuth.put(`/${selectedUser.id}`, formDataUser, {
+      headers: {
+        Authorization: `Bearer ${currentToken?.token}`,
+      },
+    });
+  }
+  
+  const createFirefighter = async (formData: FormData) => {
+    await apiRequestAuth.post(`/firefighter`, formData, {
+      headers: {
+        Authorization: `Bearer ${currentToken?.token}`,
+      },
+    });
   }
   
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });  

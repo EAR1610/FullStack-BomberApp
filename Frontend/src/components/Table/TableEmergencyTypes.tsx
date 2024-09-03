@@ -15,6 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { EmergencyType } from '../../pages/EmergencyType/EmergencyType';
 import ViewEmergencyType from '../../pages/EmergencyType/ViewEmergencyType';
+import { handleErrorResponse } from '../../helpers/functions';
 
 const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEmergenciesType, loading }:any) => {
 
@@ -103,35 +104,29 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
     }
     
     const accept = async () => {
-        if (selectedEmergencyType) {
-          const formData = new FormData();
-          try {
-            if(!viewActiveEmergenciesType){
-              formData.append('name', selectedEmergencyType.name);
-              formData.append('status', 'active');
-              await apiRequestAuth.put(`/emergency-type/${selectedEmergencyType.id}`, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${currentToken?.token}`
-                },
-              });
-              toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha activado el registro', life: 3000 });
-            } else {
-              formData.append('name', selectedEmergencyType.name);
-              formData.append('status', 'inactive');
-              await apiRequestAuth.put(`/emergency-type/${selectedEmergencyType.id}`, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${currentToken?.token}`
-                },
-              });
-              toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }; 
+      if (!selectedEmergencyType) return;
+    
+      const formData = new FormData();
+      formData.append('name', selectedEmergencyType.name);
+      const status = viewActiveEmergenciesType ? 'inactive' : 'active';
+      formData.append('status', status);
+    
+      try {
+        await apiRequestAuth.put(`/emergency-type/${selectedEmergencyType.id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${currentToken?.token}`,
+          },
+        });
+    
+        const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+        showAlert('info', 'Confirmado', message);
+      } catch (error) {
+        handleErrorResponse(error);
+      }
+    } 
+
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
     const reject = () =>  toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
 

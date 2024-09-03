@@ -22,13 +22,11 @@ const Emergency = () => {
   useEffect(() => {
     const getEmergencies = async () => {
 
-    if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
-    if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+      if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+      if( currentToken?.user.isUser ) navigate('/app/emergency-request');
 
       try {
-
         let response;
-
         if (viewStatusEmergency === 0) {
           response = await apiRequestAuth.get("emergencies", {
             headers: {
@@ -69,7 +67,7 @@ const Emergency = () => {
     }
 
     getEmergencies();
-  }, [ viewStatusEmergency ]);
+  }, [ emergencies, viewStatusEmergency ]);
   
 
   return (
