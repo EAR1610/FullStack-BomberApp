@@ -5,7 +5,6 @@ import { AuthContextProps } from "../../interface/Auth"
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from "primereact/toast"
 import { TableFirefightersProps } from "../../helpers/Interfaces";
-import { handleErrorResponse } from "../../helpers/functions";
 
 const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, setVisible }:any) => {
     const [date, setDate] = useState(null);
@@ -45,7 +44,7 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
           setVisible(false);              
         }, 1500);
       } catch (error) {
-        handleErrorResponse(error);
+        showAlert('error', 'Error', error.response.data.message);
       }
     }
 

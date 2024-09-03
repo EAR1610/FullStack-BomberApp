@@ -55,18 +55,19 @@ async function generateShiftsForMonthForFirefighter(firefighterId: number, month
     if (existingShifts) throw new Error('El bombero ya tiene turnos asignados para este mes');
 
     const previousMonthDate = DateTime.local(year, month, 1).minus({ months: 1 });
-    const previousMonth = previousMonthDate.month;
-    const previousYear = previousMonthDate.year;
-
-    const lastMonthShifts = await FirefighterShift.query()
-        .where('firefighterId', firefighterId)
-        .andWhereRaw('EXTRACT(MONTH FROM shift_start) = ?', [previousMonth])
-        .andWhereRaw('EXTRACT(YEAR FROM shift_start) = ?', [previousYear])
-        .first();
+    const lastDayOfPreviousMonth = previousMonthDate.endOf('month');
+    const daysInPreviousMonth = lastDayOfPreviousMonth.day;
 
     let prefersEvenDays = firefighter.shiftPreference.toLowerCase() === 'par';
 
-    if (lastMonthShifts) prefersEvenDays = !prefersEvenDays;
+    const existingShiftsBefore = await FirefighterShift.query()
+        .where('firefighterId', firefighterId)
+        .andWhereRaw('EXTRACT(MONTH FROM shift_start) = ?', [month-1])
+        .andWhereRaw('EXTRACT(YEAR FROM shift_start) = ?', [year])
+        .first();
+
+    if ( daysInPreviousMonth % 2 !== 0 && existingShiftsBefore ) prefersEvenDays = !prefersEvenDays;
+
     const numberOfDays = DateTime.local(year, month).daysInMonth;
     if (numberOfDays === undefined) throw new Error(`Invalid month: ${month}`);
 

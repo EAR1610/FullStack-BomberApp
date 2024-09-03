@@ -119,77 +119,96 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
     }
   };  
   
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {    
     e.preventDefault();
-  
-    const requiredFields = user
-      ? ['username', 'fullName', 'email', 'address']
-      : ['username', 'fullName', 'email', 'password', 'address', 'photography'];
-  
-    if (requiredFields.some((field) => !getFieldValue(field))) {
-      showAlert('error', 'Error', 'Todos los campos son obligatorios');
-      return;
-    }
-  
+    
     const formData = new FormData();
-  
-    formData.append('username', username);
-    formData.append('fullName', fullName);
-    formData.append('email', email);
-    formData.append('address', address);
-    formData.append('roleId', JSON.stringify(roleId));
-    formData.append('status', status);
-  
-    if (user) {
-      formData.append('shiftPreference', selectedShiftPreference?.name || '');
+
+
+    if( user ) {
+
+
+      if ( 
+        !username || !fullName || !email  || !address
+      ) {
+        showAlert('error', 'Error', 'Todos los campos son obligatorios');
+        return;
+
+
+      } else {        
+        formData.append('username', username);
+        formData.append('fullName', fullName);
+        formData.append('email', email);
+        formData.append('address', address);
+        formData.append('roleId', JSON.stringify(roleId));
+        formData.append('status', status);
+        formData.append('shiftPreference', selectedShiftPreference !== null ? selectedShiftPreference?.name : '');
+        if ( typeof(photography) !== "string") formData.append('photography', photography);
+      } 
+
+
     } else {
-      formData.append('password', password);
-    }
-  
-    if (photography) formData.append('photography', photography);
+
+
+      if ( 
+        !username || !fullName || !email || 
+        !password || !address || !photography
+      ) {
+        showAlert('error', 'Error', 'Todos los campos son obligatorios');
+        return;
+      } else {
+        formData.append('username', username);
+        formData.append('fullName', fullName);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('address', address);
+        formData.append('roleId', JSON.stringify(roleId));
+        formData.append('status', status);
+        formData.append('shiftPreference', selectedShiftPreference !== null ? selectedShiftPreference?.name : '');
+        if (photography) formData.append('photography', photography);
+      }
+    }  
 
     try {
-      if (user) {
+      if ( user ) {
         await apiRequestAuth.put(`/${user.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${currentToken?.token}`,
+            Authorization: `Bearer ${currentToken?.token}`
           },
         });
-  
-        if (selectedFirefighter && selectedShiftPreference !== null && user.roleId === 2) {
-          const firefighterFormData = new FormData();
-          firefighterFormData.append('userId', user.id);
-          firefighterFormData.append('shiftPreference', selectedShiftPreference?.name);
-  
-          await apiRequestAuth.put(`/firefighter/${selectedFirefighter.id}`, firefighterFormData, {
+
+        if ( selectedFirefighter && selectedShiftPreference !== null && user.roleId === 2 ) {
+          const formData = new FormData();
+          formData.append('userId', user.id);
+          formData.append('shiftPreference', selectedShiftPreference?.name);
+
+
+          await apiRequestAuth.put(`/firefighter/${selectedFirefighter.id}`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${currentToken?.token}`,
-            },
-          });
+              Authorization: `Bearer ${currentToken?.token}`
+            }
+          })
         }
-  
-        showAlert('info', 'Info', 'Usuario Actualizado!');
+        showAlert('info', 'Info', 'Usuario Actualizado!');    
       } else {
-        const res = await apiRequest.post("/register", formData, {
+        const res =await apiRequest.post("/register", formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-  
-        if (!currentToken) {
-          updateToken(res.data);
-          navigate("/app/dashboard");
+
+        if( !currentToken ){
+          updateToken( res.data );
+          navigate("/app/dashboard");          
         }
-  
         showAlert('info', 'Info', 'Usuario Creado!');
-      }
-  
+      }      
       setTimeout(() => {
         setVisible(false);
       }, 1500);
-    } catch (err: any) {
+    } catch (err:any) {
       handleErrorResponse(err);
     }
   };
