@@ -6,48 +6,22 @@ import { Dropdown } from "primereact/dropdown"
 import MapComponent from "../../components/Maps/MapComponent"
 import { apiRequestAuth } from "../../lib/apiRequest"
 import { handleErrorResponse } from "../../helpers/functions"
+import { Dialog } from "primereact/dialog"
+import SetFirefighterEmergency from "../FireFighters/SetFirefighterEmergency"
 
 const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
 
-    const [firefighters, setFirefighters] = useState([]);
-    const [selectedFirefighter, setSelectedFirefighter] = useState(null);
+    const [viewFirefighterToSetEmergency, setViewFirefighterToSetEmergency] = useState(false);
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
     
     const toast = useRef(null);
 
-    useEffect(() => {
-      const getFirefighters = async () => {
-        try {
-          const response = await apiRequestAuth.get("/firefighter", {
-            headers: {
-              Authorization: `Bearer ${currentToken?.token}`,
-            },
-          })
-          if (response) setFirefighters(response.data)
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      getFirefighters()
-    }, []);
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
     
-      try {
-        const createFirefighterEmergencyFormData = new FormData();
-        createFirefighterEmergencyFormData.append('firefighterId', selectedFirefighter?.id);
-        createFirefighterEmergencyFormData.append('emergencyId', String(emergency.id));
-    
-        await apiRequestAuth.post('/firefighter-emergency', createFirefighterEmergencyFormData, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`,
-          }
-        });
-    
+      try {    
         const updateEmergencyFormData = new FormData();
         updateEmergencyFormData.append('emergencyTypeId', String(emergency.emergencyTypeId));
         updateEmergencyFormData.append('applicant', emergency.applicant);
@@ -73,7 +47,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
       }
     }
     
-    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
@@ -155,33 +129,31 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
 
               <div className="mb-4">
                 <label className="mb-2.5 block font-medium text-black dark:text-white">
-                Bombero
+                Bomberos para la emergencia
                 </label>
-                <div className="relative">
-                <Dropdown
-                  value={ selectedFirefighter }
-                  options={ firefighters }
-                  onChange={ (e) => setSelectedFirefighter(e.value) }
-                  optionLabel="user.fullName"
-                  optionValue="id"
-                  placeholder="Seleccione el bombero para la emergencia"
-                  className="w-full"
-                  required
+                <input
+                  onClick={ () => setViewFirefighterToSetEmergency(true) }
+                  value='Establecer bomberos para la emergencia'
+                  className="w-full cursor-pointer rounded-lg border border-yellow bg-yellow-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />
-                </div>
+                
               </div>
               <MapComponent latitude={emergency.latitude} longitude={emergency.longitude} />
               <div className="mb-5 mt-5">
                 <input
                   type="submit"
-                  value='Crear registro'
-                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                  value='Establecer estado de la emergencia'
+                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
                 />
               </div>            
             </form>
           </div>
         </div>
       </div>
+      <Dialog header="Asignación de bomberos a la emergencia" visible={viewFirefighterToSetEmergency} onHide={() => setViewFirefighterToSetEmergency(false)}
+        style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        <SetFirefighterEmergency idEmergency={emergency?.id} />
+      </Dialog>
     </div>
   )
 }
