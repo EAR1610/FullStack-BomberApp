@@ -13,8 +13,10 @@ const EmergencyRequest: React.FC<Emergency> = () => {
     const [selectedEmergencyType, setSelectedEmergencyType] = useState(null);
     const [applicant, setApplicant] = useState("");
     const [address, setAddress] = useState("");
-    const [latitude, setLatitude] = useState(0);
-    const [longitude, setLongitude] = useState(0);
+    const [userLocation, setUserLocation] = useState<{
+      latitude: number;
+      longitude: number;
+    } | null>(null);
     const [description, setDescription] = useState("");
     const [status, setstatus] = useState('Registrada');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,11 +48,10 @@ const EmergencyRequest: React.FC<Emergency> = () => {
     const handleConfirm = () => {
         setIsModalOpen(false);
         if (navigator.geolocation) {
-          const watchId = navigator.geolocation.watchPosition(async (position) => {              
+          navigator.geolocation.getCurrentPosition(
+            async ( position ) => {
               const { latitude, longitude } = position.coords;
-              setLatitude(latitude);
-              setLongitude(longitude);
-        
+              setUserLocation({ latitude, longitude });              
               const formData = new FormData();
               formData.append('emergencyTypeId', String(selectedEmergencyType?.id));
               formData.append('applicant', applicant);
@@ -60,7 +61,7 @@ const EmergencyRequest: React.FC<Emergency> = () => {
               formData.append('description', description);
               formData.append('status', status);
               formData.append('userId', String(currentToken?.user.id));
-        
+
               try {
                 await apiRequestAuth.post("/emergencies", formData, {
                   headers: {
@@ -70,28 +71,37 @@ const EmergencyRequest: React.FC<Emergency> = () => {
                 showAlert('info', 'Info', '¡Emergencia registrada correctamente!');
               } catch (error) {
                 console.log(error);
-              }
-        
-              navigator.geolocation.clearWatch(watchId);
+              }        
+              
               if( currentToken?.user.id ){
                 setTimeout(() => {
                   navigate('/app/my-emergencies');
-                }, 1500);
+                }, 1000);
               }
-            }, (error) => {
-              console.error("Error obteniendo la ubicación:", error);
             },
-            {
-              enableHighAccuracy: true,
-              timeout: 30000,
-              maximumAge: 0
-            }
+            (error) => {
+              showAlert('error', 'Error', `${error}`);
+              switch (error.code) {
+                case error.PERMISSION_DENIED:
+                  showAlert('error', 'Error', 'Permiso de geolocalización denegado. Activa los permisos en tu dispositivo.');
+                  break;
+                case error.POSITION_UNAVAILABLE:
+                  showAlert('error', 'Error', 'La información de la ubicación no está disponible.');
+                  break;
+                case error.TIMEOUT:
+                  showAlert('error', 'Error', 'La solicitud de geolocalización ha expirado. Intenta nuevamente.');
+                  break;
+                default:
+                  showAlert('error', 'Error', `Error desconocido: ${error.message}`);
+                  break;
+              }
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } 
           );
         } else {
           showAlert('error', 'Error', 'El navegador no soporta la geolocalización.');
         }
       };
-      
 
     const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
         e.preventDefault();
