@@ -13,10 +13,19 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
 
     const [viewFirefighterToSetEmergency, setViewFirefighterToSetEmergency] = useState(false);
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+    const [selectedStatus, setSelectedStatus] = useState<string>(emergency?.status || 'Registrada');
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
     
     const toast = useRef(null);
+
+    const emergencyStatuses = [
+      { label: 'Registrada', value: 'Registrada' },
+      { label: 'En proceso', value: 'En proceso' },
+      { label: 'Atendida', value: 'Atendida' },
+      { label: 'Cancelada', value: 'Cancelada' },
+      { label: 'Rechazada', value: 'Rechazada' }
+  ];
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -30,7 +39,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
         updateEmergencyFormData.append('longitude', String(emergency.longitude));
         updateEmergencyFormData.append('description', emergency.description);
         updateEmergencyFormData.append('userId', emergency.userId);
-        updateEmergencyFormData.append('status', 'En proceso');
+        updateEmergencyFormData.append('status', selectedStatus);
     
         await apiRequestAuth.put(`/emergencies/${emergency.id}`, updateEmergencyFormData, {
           headers: {
@@ -56,7 +65,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
         <div className={`${currentToken ? 'w-full' : 'border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'}`}>
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
-              Estas viendo una emergencia registrada en <span className='text-red-500'>BomberApp</span>
+              Estas viendo el seguimiento de una emergencia registrada en <span className='text-red-500'>BomberApp</span>
             </h2>
             <form onSubmit={ handleSubmit }>
               <div className="mb-4">
@@ -115,14 +124,14 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
                   Estado
                 </label>
                 <div className="relative">
-                  <input
-                    id='status'
-                    type="text"
-                    placeholder="Ingresa el tipo de gasolina de la unidad"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ emergency?.status }
-                    disabled                    
+                  <Dropdown
+                    id="status"
+                    value={selectedStatus}
+                    options={emergencyStatuses}
+                    onChange={(e) => setSelectedStatus(e.value)}
+                    placeholder="Selecciona el estado de la emergencia"
+                    className="w-full"
+                    disabled={emergency.status === 'Atendida' || emergency.status === 'Cancelada'}
                   />
                 </div>
               </div>
@@ -142,7 +151,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
               <div className="mb-5 mt-5">
                 <input
                   type="submit"
-                  value='Establecer estado de la emergencia'
+                  value='Modificar estado de la emergencia'
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
                 />
               </div>            

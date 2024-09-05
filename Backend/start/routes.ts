@@ -24,7 +24,10 @@ import EmergencyTypesController from '#controllers/emergency_types_controller';
 import EmergenciesController from '#controllers/emergencies_controller';
 import FirefighterEmergenciesController from '#controllers/firefighter_emergencies_controller';
 import DetailEmergenciesController from '#controllers/detail_emergencies_controller';
+import VehicleEmergenciesController from '#controllers/vehicle_emergencies_controller';
 
+
+router.resource('users/vehicle-emergency', VehicleEmergenciesController).use('*', middleware.auth());
 
 router.resource('users/detail-emergency', DetailEmergenciesController).use('*', middleware.auth());
 

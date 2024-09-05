@@ -8,12 +8,10 @@ import { InputIcon } from 'primereact/inputicon';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
-import 'primeicons/primeicons.css';      
-import { AuthContextProps } from '../../interface/Auth';
-import { AuthContext } from '../../context/AuthContext';
-import { apiRequestAuth } from '../../lib/apiRequest';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import 'primeicons/primeicons.css';     
+import { ConfirmDialog } from 'primereact/confirmdialog';
 import ViewEmergency from '../../pages/Emergency/ViewEmergency';
+import ViewDetailEmergency from '../../pages/Emergency/ViewDetailEmergency';
 
 const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:any) => {
 
@@ -28,6 +26,7 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
     const [globalFilterValue, setGlobalFilterValue] = useState('');      
     const [selectedEmergency, setSelectedEmergency] = useState(null);
     const [viewEmergency, setViewEmergency] = useState(false);
+    const [viewDetailEmergency, setViewDetailEmergency] = useState(false);
 
     const toast = useRef(null);
     
@@ -77,6 +76,11 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
         setViewEmergency(true);
       }
 
+      const showDetailEmergency = (rowData:any) => {
+        setSelectedEmergency(rowData);
+        setViewDetailEmergency(true);
+      }
+
       const optionsBodyTemplate = (rowData:any) => {
         return (
           <div className="flex items-center space-x-4">              
@@ -86,7 +90,14 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
                   className="p-button-rounded p-button-warning p-button-sm"
                   onClick={() => showEmergency(rowData)}
                   style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
-              />              
+              />
+              <Button
+                  size='small'
+                  icon="pi pi-plus"
+                  className="p-button-rounded p-button-info p-button-sm"
+                  onClick={() => showDetailEmergency(rowData)}
+                  style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
+              />
           </div>
       )};
 
@@ -119,6 +130,10 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
       <Dialog header="Seguimiento de Emergencia" visible={viewEmergency} onHide={() => setViewEmergency(false)}
         style={{ width: '85vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewEmergency emergency={selectedEmergency} setViewEmergency={ setViewEmergency } />
+      </Dialog>
+      <Dialog header="Detalle de Emergencia" visible={viewDetailEmergency} onHide={() => setViewDetailEmergency(false)}
+        style={{ width: '85vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        <ViewDetailEmergency emergency={selectedEmergency} setviewDetailEmergency={ setViewDetailEmergency } />
       </Dialog>
     </div>
   )

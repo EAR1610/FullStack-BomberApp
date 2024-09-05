@@ -3,7 +3,6 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { apiRequestAuth } from "../../lib/apiRequest"
-import { handleErrorResponse } from "../../helpers/functions"
 import { Dropdown } from "primereact/dropdown"
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -11,7 +10,6 @@ import { ConfirmDialog } from "primereact/confirmdialog"
 import { IconField } from "primereact/iconfield"
 import { InputIcon } from "primereact/inputicon"
 import { InputText } from "primereact/inputtext"
-import { Button } from "primereact/button"
 import { FilterMatchMode } from "primereact/api"
 
 const SetFirefighterEmergency = ({ idEmergency }: any) => {
@@ -24,10 +22,11 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
     shiftPreference: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     "firefighter.user.userName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     "firefighter.user.fullName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    "firefighter.user.address": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+    "emergency.description": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    "firefighter.shiftPreference": { value: null, matchMode: FilterMatchMode.STARTS_WITH }
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
+  const [updateTableFirefighterEmergency, setUpdateTableFirefighterEmergency] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");  const { currentToken } = authContext;
@@ -53,7 +52,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
         })
         if (response) setFirefighters(response.data)
       } catch (error) {
-        handleErrorResponse(error);
+        console.log(error);
         showAlert("error", "Error", "Ocurrio un error al obtener los bomberos");
       }
     }
@@ -66,23 +65,20 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
           },
         })
         if (response) setFirefightersEmergency(response.data)
-        console.log(response.data)
         setLoading(false);
       } catch (error) {
-        handleErrorResponse(error);
+        console.log(error);
         showAlert("error", "Error", "Ocurrio un error al obtener los bomberos");
       }
     }
 
     getFirefighters()
     getFirefighterEmergency()
-  }, []);
+  }, [updateTableFirefighterEmergency]);
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    debugger
     e.preventDefault();
       try {
         const createFirefighterEmergencyFormData = new FormData();
@@ -95,9 +91,9 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
           }
         });
         showAlert("success", "Asignación exitosa", "Se ha asignado el bombero a la emergencia");
+        setUpdateTableFirefighterEmergency(!updateTableFirefighterEmergency);
     } catch (error) {
-        console.log(error)
-        showAlert("error", "Error", "Ocurrio un error al asignar el bombero a la emergencia");
+        showAlert("error", "Error", `${error.response.data.error}`);
     }
   }
 
@@ -161,13 +157,14 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
                 filters={filters}
                 filterDisplay="row"
                 loading={loading}
-                globalFilterFields={['shiftPreference', 'user.userName', 'user.fullName', 'user.email']}
+                globalFilterFields={['firefighter.shiftPreference', 'firefighter.user.username', 'firefighter.user.fullName', 'emergency.description']}
                 header={header}
                 emptyMessage="Registro no encontrado."
                 >
                 <Column field="firefighter.user.username" header="Usuario"  style={{ minWidth: '4rem' }}  align={'center'} />
                 <Column field="firefighter.user.fullName" header="Nombre Completo"  style={{ minWidth: '4rem' }}  align={'center'} />
                 <Column field="firefighter.shiftPreference" header="Tipo Turno"  style={{ minWidth: '4rem' }}  align={'center'} />
+                <Column field="emergency.description" header="Descripción de Emergencia"  style={{ minWidth: '4rem' }}  align={'center'} />
                 </DataTable>                
             </div>
           </div>

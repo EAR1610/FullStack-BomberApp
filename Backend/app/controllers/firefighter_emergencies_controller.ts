@@ -31,8 +31,16 @@ export default class FirefighterEmergenciesController {
   /**
    * ? Handle form submission for the create action
    */
-  async store({ request }: HttpContext) {
+  async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createFirefighterEmergencyValidator);
+      const existingAssignment = await FirefighterEmergency
+      .query()
+      .where('firefighterId', payload.firefighterId)
+      .andWhere('emergencyId', payload.emergencyId)
+      .first();
+
+    if (existingAssignment) return response.badRequest({ error: 'El bombero ya está asignado a esta emergencia' });
+  
     const firefighter_emergency = new FirefighterEmergency();
     firefighter_emergency.fill(payload);
     return await firefighter_emergency.save();
@@ -53,13 +61,21 @@ export default class FirefighterEmergenciesController {
   /**
    * ? Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {
-    const payload = await request.validateUsing(createFirefighterEmergencyValidator);
-    const firefighter_emergency = await FirefighterEmergency.findOrFail(params.id);
-    firefighter_emergency.merge(payload);
-    await firefighter_emergency.save();
-    return firefighter_emergency
+  async update({ params, request, response }: HttpContext) {
+    const payload = await request.validateUsing(createFirefighterEmergencyValidator);    
+    const firefighterEmergency = await FirefighterEmergency.findOrFail(params.id);  
+    const existingAssignment = await FirefighterEmergency
+      .query()
+      .where('firefighterId', payload.firefighterId)
+      .andWhere('emergencyId', payload.emergencyId)
+      .andWhereNot('id', params.id)
+      .first();
+    if (existingAssignment) return response.badRequest({ error: 'El bombero ya está asignado a esta emergencia por otro registro.' });
+
+    firefighterEmergency.merge(payload);
+    return await firefighterEmergency.save();
   }
+  
 
   /**
    * Delete record
