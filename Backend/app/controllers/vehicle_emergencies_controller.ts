@@ -32,7 +32,7 @@ export default class VehicleEmergenciesController {
     .where('vehicleId', payload.vehicleId)
     .andWhere('emergencyId', payload.emergencyId)
     .first();
-    if (existingAssignment) return response.badRequest('La unidad ya se encuentra asignada a esta emergencia');
+    if (existingAssignment) return response.badRequest({ error: 'La unidad ya se encuentra asignada a esta emergencia' });
   
     const vehicle_emergency = new VehicleEmergency();
     vehicle_emergency.fill(payload);

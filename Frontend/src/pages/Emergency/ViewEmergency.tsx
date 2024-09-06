@@ -1,4 +1,4 @@
-import{ useContext, useEffect, useRef, useState } from "react"
+import{ useContext, useRef, useState } from "react"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
@@ -8,10 +8,12 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { handleErrorResponse } from "../../helpers/functions"
 import { Dialog } from "primereact/dialog"
 import SetFirefighterEmergency from "../FireFighters/SetFirefighterEmergency"
+import SetVehicleEmergency from "./SetVehicleEmergency"
 
 const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
 
-    const [viewFirefighterToSetEmergency, setViewFirefighterToSetEmergency] = useState(false);
+    const [viewFirefighterToSetEmergency, setViewFirefighterToSetEmergency] = useState(false);  
+    const [viewDetailEmergency, setViewDetailEmergency] = useState(false);
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     const [selectedStatus, setSelectedStatus] = useState<string>(emergency?.status || 'Registrada');
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -52,7 +54,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
           setViewEmergency(false);
         }, 1500);
       } catch (error) {
-        handleErrorResponse(error);
+        showAlert('error', 'Error', 'No se pudo registrar la emergencia');
       }
     }
     
@@ -117,7 +119,29 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
                     disabled                    
                   />
                 </div>
-              </div>          
+              </div>              
+
+              <div className="mb-4">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                Bomberos para la emergencia
+                </label>
+                <input
+                  onClick={ () => setViewFirefighterToSetEmergency(true) }
+                  value='Establecer bomberos para la emergencia'
+                  className="w-full cursor-pointer rounded-lg border border-yellow bg-yellow-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
+                />                
+              </div>
+
+              <div className="mb-4">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                Unidades para la emergencia
+                </label>
+                <input
+                  onClick={ () => setViewDetailEmergency(true) }
+                  value='Establecer las unidades para la emergencia'
+                  className="w-full cursor-pointer rounded-lg border border-yellow bg-green-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
+                />
+              </div>
 
               <div className="mb-4">
                 <label htmlFor='status' className="mb-2.5 block font-medium text-black dark:text-white">
@@ -136,17 +160,6 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                Bomberos para la emergencia
-                </label>
-                <input
-                  onClick={ () => setViewFirefighterToSetEmergency(true) }
-                  value='Establecer bomberos para la emergencia'
-                  className="w-full cursor-pointer rounded-lg border border-yellow bg-yellow-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
-                />
-                
-              </div>
               <MapComponent latitude={emergency.latitude} longitude={emergency.longitude} />
               <div className="mb-5 mt-5">
                 <input
@@ -162,6 +175,10 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
       <Dialog header="Asignación de bomberos a la emergencia" visible={viewFirefighterToSetEmergency} onHide={() => setViewFirefighterToSetEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SetFirefighterEmergency idEmergency={emergency?.id} />
+      </Dialog>    
+      <Dialog header="Asignación de unidades a la emergencia" visible={viewDetailEmergency} onHide={() => setViewDetailEmergency(false)}
+        style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        <SetVehicleEmergency idEmergency={emergency?.id} />
       </Dialog>
     </div>
   )
