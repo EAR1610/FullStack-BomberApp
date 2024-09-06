@@ -27,6 +27,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [updateTableFirefighterEmergency, setUpdateTableFirefighterEmergency] = useState(false);
+  const [isAlertShown, setIsAlertShown] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");  const { currentToken } = authContext;
@@ -45,15 +46,28 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
   useEffect(() => {
     const getFirefighters = async () => {
       try {
-        const response = await apiRequestAuth.get("/firefighter", {
+        
+        const formData = new FormData();
+        const currentDate = new Date();
+        const utcOffset = -6 * 60 * 60 * 1000;
+        const localDate = new Date(currentDate.getTime() + utcOffset);
+        const formattedDate = localDate.toISOString().replace('Z', '')
+        formData.append("date", formattedDate);
+
+        const response = await apiRequestAuth.post("/firefighter-shift/on-shift", formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         })
-        if (response) setFirefighters(response.data)
+        if (response) setFirefighters(response.data);
+
       } catch (error) {
         console.log(error);
-        showAlert("error", "Error", "Ocurrio un error al obtener los bomberos");
+        if (error.response.status === 404) {
+          showAlert("error", "Error", `${error.response.data.message}`);
+        } else {
+          showAlert("error", "Error", "Ocurrió un error al obtener los bomberos");
+        }
       }
     }
 
@@ -68,13 +82,13 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
         setLoading(false);
       } catch (error) {
         console.log(error);
-        showAlert("error", "Error", "Ocurrio un error al obtener los bomberos");
+        showAlert("error", "Error", "Ocurrió un error al obtener los bomberos");
       }
     }
 
     getFirefighters()
     getFirefighterEmergency()
-  }, [updateTableFirefighterEmergency]);
+  }, []);
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
@@ -129,8 +143,8 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
                     value={ selectedFirefighter }
                     options={ firefighters }
                     onChange={ (e) => setSelectedFirefighter(e.value) }
-                    optionLabel="user.fullName"
-                    optionValue="id"
+                    optionLabel="firefighter.user.fullName"
+                    optionValue="firefighter.user.fullName"
                     placeholder="Seleccione el bombero para la emergencia"
                     className="w-full"
                     required

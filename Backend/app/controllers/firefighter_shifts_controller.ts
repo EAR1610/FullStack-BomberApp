@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import FirefighterShift from '#models/firefighter_shift';
 import { createFirefighterShiftValidator, transformValidator } from '#validators/firefighter_shift';
 import type { HttpContext } from '@adonisjs/core/http'
@@ -26,6 +27,33 @@ export default class FirefighterShiftsController {
   async suspendedFirefighterShifts({}: HttpContext) {
     const firefighterShift = await FirefighterShift.query().where('status', 'suspended');
     return firefighterShift;
+  }
+
+  /**
+   * ? List firefighters who are on shift for a specific date
+   */
+  async getFirefightersOnShiftForDate({ request, response }: HttpContext) {
+    let { date } = request.only(['date']);
+    
+    let dateTime: DateTime;
+    
+    if (!date) {
+      dateTime = DateTime.now(); 
+    } else {
+      dateTime = DateTime.fromISO(date);
+    }
+
+    const firefightersOnShift = await FirefighterShift.query()
+      .where('shiftStart', '<=', dateTime.toISO())  
+      .andWhere('shiftEnd', '>', dateTime.toISO())  
+      .preload('firefighter', (query) => {
+        query.preload('user');
+      })
+      .where('status', 'active');
+      
+    if (firefightersOnShift.length === 0) response.status(404).json({ message: 'No hay bomberos en turno para la fecha y hora especificada' });
+        
+    return firefightersOnShift;
   }
 
   /**
