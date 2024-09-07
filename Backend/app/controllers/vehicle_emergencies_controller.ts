@@ -14,6 +14,7 @@ export default class VehicleEmergenciesController {
     .preload('emergency', (query) => {
       query.select('id', 'applicant', 'address', 'description')      
     })
+    
     return vehicle_emergency
   }
 
@@ -36,6 +37,7 @@ export default class VehicleEmergenciesController {
   
     const vehicle_emergency = new VehicleEmergency();
     vehicle_emergency.fill(payload);
+
     return await vehicle_emergency.save();
   }
 
@@ -43,7 +45,16 @@ export default class VehicleEmergenciesController {
    * * Show individual record
    */
   async show({ params }: HttpContext) {
-    return await VehicleEmergency.find( params.id );
+    const vehicle_emergency = await VehicleEmergency.query()
+    .preload('vehicle', (query) => {
+      query.select('brand', 'model', 'plate_number')
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'description')      
+    })
+    .where('emergencyId', params.id)
+
+    return vehicle_emergency
   }
 
   /**
@@ -52,7 +63,7 @@ export default class VehicleEmergenciesController {
   async edit({ params }: HttpContext) {}
 
   /**
-   * Handle form submission for the edit action
+   * * Handle form submission for the edit action
    */
   async update({ params, request, response }: HttpContext) {
 
@@ -64,8 +75,9 @@ export default class VehicleEmergenciesController {
     .andWhere('emergencyId', payload.emergencyId)
     .andWhereNot('id', params.id)
     .first();
-    if (existingAssignment) return response.badRequest('La emergencia ya se encuentra asignada a esta unidad');
+    if (existingAssignment) return response.badRequest({ error: 'La emergencia ya se encuentra asignada a esta unidad' });
     vehicle_emergency.merge(payload);
+
     return await vehicle_emergency.save();
   }
 

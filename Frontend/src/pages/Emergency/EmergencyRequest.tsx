@@ -80,21 +80,21 @@ const EmergencyRequest: React.FC<Emergency> = () => {
               }
             },
             (error) => {
-              showAlert('error', 'Error', `${error}`);
-              switch (error.code) {
-                case error.PERMISSION_DENIED:
-                  showAlert('error', 'Error', 'Permiso de geolocalización denegado. Activa los permisos en tu dispositivo.');
-                  break;
-                case error.POSITION_UNAVAILABLE:
-                  showAlert('error', 'Error', 'La información de la ubicación no está disponible.');
-                  break;
-                case error.TIMEOUT:
-                  showAlert('error', 'Error', 'La solicitud de geolocalización ha expirado. Intenta nuevamente.');
-                  break;
-                default:
-                  showAlert('error', 'Error', `Error desconocido: ${error.message}`);
-                  break;
-              }
+              // showAlert('error', 'Error', `${error}`);
+              // switch (error.code) {
+              //   case error.PERMISSION_DENIED:
+              //     showAlert('error', 'Error', 'Permiso de geolocalización denegado. Activa los permisos en tu dispositivo.');
+              //     break;
+              //   case error.POSITION_UNAVAILABLE:
+              //     showAlert('error', 'Error', 'La información de la ubicación no está disponible.');
+              //     break;
+              //   case error.TIMEOUT:
+              //     showAlert('error', 'Error', 'La solicitud de geolocalización ha expirado. Intenta nuevamente.');
+              //     break;
+              //   default:
+              //     showAlert('error', 'Error', `Error desconocido: ${error.message}`);
+              //     break;
+              // }
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } 
           );

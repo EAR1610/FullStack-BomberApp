@@ -75,6 +75,7 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
       };
 
       const showEmergency = (rowData:any) => {
+        console.log(rowData);
         setSelectedEmergency(rowData);
         setViewEmergency(true);
       }      

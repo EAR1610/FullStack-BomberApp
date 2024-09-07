@@ -11,23 +11,26 @@ import { InputText } from "primereact/inputtext"
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ConfirmDialog } from "primereact/confirmdialog"
+import { Button } from 'primereact/button';
 
 const SetVehicleEmergency = ({ idEmergency }:any ) => {
 
     const [vehicles, setVehicles] = useState([]);
     const [vechiclesEmergency, setVechiclesEmergency] = useState([]);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
+    const [selectedVehicleEmergency, setSelectedVehicleEmergency] = useState(null);
     const [mileageOutput, setMileageOutput] = useState(0);
     const [mileageInbound, setMileageInbound] = useState(0);
     const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    shiftPreference: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    "vehicle.brand": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    "vehicle.model": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    "emergency.description": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    "vehicle.plateNumber": { value: null, matchMode: FilterMatchMode.STARTS_WITH }
-  });
+    const [isUpdateVehicleEmergency, setIsUpdateVehicleEmergency] = useState(false);
+    const [filters, setFilters] = useState({
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      shiftPreference: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      "vehicle.brand": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      "vehicle.model": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      "emergency.description": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      "vehicle.plateNumber": { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+    });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [updateTableVehicleEmergency, setUpdateTableVehicleEmergency] = useState(false);
 
@@ -54,7 +57,6 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
               Authorization: `Bearer ${currentToken?.token}`,
             },
           })
-          console.log(response.data);
           if( response ) setVehicles(response.data);
         } catch (error) {
           console.log(error);
@@ -64,7 +66,7 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
 
       const getVehicleEmergency = async () => {
         try {
-          const response = await apiRequestAuth.get("/vehicle-emergency", {
+          const response = await apiRequestAuth.get(`/vehicle-emergency/${idEmergency}`, {
             headers: {
               Authorization: `Bearer ${currentToken?.token}`,
             },
@@ -86,6 +88,12 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      
+      if( mileageInbound < mileageOutput ) {
+        showAlert("error", "Error", "El kilometro de entrada debe ser mayor al de salida");
+        return;
+      }
+
       try {
         const createVehicleEmergencyFormData = new FormData();
         createVehicleEmergencyFormData.append("vehicleId", String(selectedVehicle?.id));
@@ -93,17 +101,36 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
         createVehicleEmergencyFormData.append('mileageInbound', String(mileageInbound));
         createVehicleEmergencyFormData.append('mileageOutput', String(mileageOutput));
 
-        await apiRequestAuth.post("/vehicle-emergency", createVehicleEmergencyFormData, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`,
-          },
-        })
-        showAlert("success", "Éxito", "Se ha registrado la emergencia");
+        if( isUpdateVehicleEmergency ) {
+          await apiRequestAuth.put(`/vehicle-emergency/${selectedVehicleEmergency?.id}`, createVehicleEmergencyFormData, {
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`,
+            },
+          })
+        } else {
+          await apiRequestAuth.post("/vehicle-emergency", createVehicleEmergencyFormData, {
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`,
+            },
+          })            
+        }
+
+        showAlert("success", "Éxito", `${ isUpdateVehicleEmergency ? "Se ha actualizado" : "Se ha registrado"} la emergencia`);
         setUpdateTableVehicleEmergency(!updateTableVehicleEmergency);
+        setIsUpdateVehicleEmergency(false);
+        cleanData();
+        
       } catch (error) {
         console.log(error);
         showAlert("error", "Error", `${error.response.data.error}`);
       }
+    }
+
+    const cleanData = () => {
+      setMileageOutput(0);
+      setMileageInbound(0);
+      setSelectedVehicle(null);
+      setSelectedVehicleEmergency(null);
     }
 
     const renderHeader = () => {
@@ -112,12 +139,34 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
             <IconField iconPosition="left">
                 <InputIcon className="pi pi-search" />
                 <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Búsqueda" />
-            </IconField>          
+            </IconField>
         </div>
       );
     };
   
     const header = renderHeader();
+
+    const editVehicleEmergency = (rowData:any) => {
+      setSelectedVehicleEmergency(rowData);
+      const selected = vehicles.find((vehicle: any) => vehicle.id === rowData.vehicle.id);
+      setSelectedVehicle(selected || null);
+      setMileageOutput(rowData.mileageOutput);
+      setMileageInbound(rowData.mileageInbound);
+      setIsUpdateVehicleEmergency(true);
+    }
+  
+    const optionsBodyTemplate = (rowData:any) => {
+      return (
+        <div className="flex items-center space-x-4">
+            <Button
+                size='small'
+                icon="pi pi-pencil"
+                className="p-button-rounded p-button-success p-button-sm"
+                onClick={() => editVehicleEmergency(rowData)}
+                style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
+            />
+        </div>
+    )};    
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
@@ -189,7 +238,7 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
             <div className="mb-5 mt-5">
               <input
                 type="submit"
-                value='Establecer vehículo para la emergencia'
+                value={isUpdateVehicleEmergency ? 'Actualizar vehiculo para la emergencia' : 'Registrar vehiculo para la emergencia'}
                 className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
               />
             </div>
@@ -214,6 +263,7 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
               <Column field="vehicle.brand" header="Marca"  style={{ minWidth: '4rem' }} align={'center'} />
               <Column field="vehicle.model" header="Modelo"  style={{ minWidth: '4rem' }} align={'center'} />
               <Column field="vehicle.plateNumber" header="Placa"  style={{ minWidth: '4rem' }} align={'center'} />
+              <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} />
             </DataTable>
           </div>
         </div>

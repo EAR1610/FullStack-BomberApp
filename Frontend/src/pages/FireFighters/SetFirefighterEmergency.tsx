@@ -27,7 +27,6 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [updateTableFirefighterEmergency, setUpdateTableFirefighterEmergency] = useState(false);
-  const [isAlertShown, setIsAlertShown] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");  const { currentToken } = authContext;
@@ -73,12 +72,12 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
 
     const getFirefighterEmergency = async () => {
       try {
-        const response = await apiRequestAuth.get("/firefighter-emergency", {
+        const response = await apiRequestAuth.get(`/firefighter-emergency/${idEmergency}`, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         })
-        if (response) setFirefightersEmergency(response.data)
+        if (response) setFirefightersEmergency(response.data)        
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -88,7 +87,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
 
     getFirefighters()
     getFirefighterEmergency()
-  }, []);
+  }, [updateTableFirefighterEmergency]);
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
@@ -96,7 +95,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
     e.preventDefault();
       try {
         const createFirefighterEmergencyFormData = new FormData();
-        createFirefighterEmergencyFormData.append('firefighterId', selectedFirefighter?.id);
+        createFirefighterEmergencyFormData.append('firefighterId', selectedFirefighter?.firefighter.id);
         createFirefighterEmergencyFormData.append('emergencyId', idEmergency);
     
         await apiRequestAuth.post('/firefighter-emergency', createFirefighterEmergencyFormData, {
@@ -107,6 +106,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
         showAlert("success", "Asignación exitosa", "Se ha asignado el bombero a la emergencia");
         setUpdateTableFirefighterEmergency(!updateTableFirefighterEmergency);
     } catch (error) {
+        console.log(error);
         showAlert("error", "Error", `${error.response.data.error}`);
     }
   }
@@ -178,8 +178,8 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
                 <Column field="firefighter.user.username" header="Usuario"  style={{ minWidth: '4rem' }}  align={'center'} />
                 <Column field="firefighter.user.fullName" header="Nombre Completo"  style={{ minWidth: '4rem' }}  align={'center'} />
                 <Column field="firefighter.shiftPreference" header="Tipo Turno"  style={{ minWidth: '4rem' }}  align={'center'} />
-                <Column field="emergency.description" header="Descripción de Emergencia"  style={{ minWidth: '4rem' }}  align={'center'} />
-                </DataTable>                
+                <Column field="emergency.description" header="Descripción de Emergencia"  style={{ minWidth: '4rem' }}  align={'center'} />                
+                </DataTable>
             </div>
           </div>
         </div>

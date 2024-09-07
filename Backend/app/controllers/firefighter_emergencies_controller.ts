@@ -50,7 +50,22 @@ export default class FirefighterEmergenciesController {
    * * Show individual record
    */
   async show({ params }: HttpContext) {
-    return await FirefighterEmergency.find( params.id );
+    const firefighter_emergency = await FirefighterEmergency.query()
+    .preload('firefighter', (query) => {
+      query.select('id', 'userId', 'shiftPreference')
+      .whereHas('user', (query) => {
+        query.where('status', 'active')
+      })
+      .preload('user', (query) => {
+        query.select('id', 'username', 'fullName', 'address')
+      })
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')      
+    })
+    .where('emergencyId', params.id)
+
+    return firefighter_emergency
   }
 
   /**
