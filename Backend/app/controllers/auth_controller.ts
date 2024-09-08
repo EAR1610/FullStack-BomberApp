@@ -4,6 +4,7 @@ import { loginValidator, registerValidator } from "#validators/auth";
 import { cuid } from "@adonisjs/core/helpers";
 import { HttpContext } from "@adonisjs/core/http";
 import app from "@adonisjs/core/services/app";
+import { emit } from "process";
 
 export default class AuthController {
     /**
@@ -72,7 +73,7 @@ export default class AuthController {
      * @throws {Object} - If the user's status is not 'active', an error object is returned.
      */
     async login({ request, response }: HttpContext) {
-        const { email, password } = await request.validateUsing(loginValidator);           
+        const { email, password } = await request.validateUsing(loginValidator);
         const user = await User.verifyCredentials(email, password);
         const userId = user.$attributes.id;
         const firefighter = await Firefighter.query().where('userId', userId).first();

@@ -139,24 +139,25 @@ const EmergencyRequest: React.FC<Emergency> = () => {
                     </div>
                 </div>
 
-                <div className="mb-4">
-                    <label htmlFor='applicant' className="mb-2.5 block font-medium text-black dark:text-white">
-                    Solicitante
-                    </label>
-                    <div className="relative">
-                    <input
-                        id='applicant'
-                        type="text"
-                        placeholder="Ingresa el nombre del solicitante"
-                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        required
-                        value={ applicant }
-                        onChange={ e => setApplicant( e.target.value ) }
-                    />
-                    </div>
-                </div>   
+              <div className="flex flex-wrap justify-between">
+                <div className="mb-4 w-full md:w-1/2">
+                  <label htmlFor='applicant' className="mb-2.5 block font-medium text-black dark:text-white">
+                      Solicitante
+                      </label>
+                      <div className="relative">
+                      <input
+                          id='applicant'
+                          type="text"
+                          placeholder="Ingresa el nombre del solicitante"
+                          className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          required
+                          value={ applicant }
+                          onChange={ e => setApplicant( e.target.value ) }
+                      />
+                      </div>
+                </div>
 
-                <div className="mb-4">
+                <div className="mb-4 w-full md:w-1/2">
                     <label htmlFor='address' className="mb-2.5 block font-medium text-black dark:text-white">
                     Dirección
                     </label>
@@ -171,24 +172,25 @@ const EmergencyRequest: React.FC<Emergency> = () => {
                         onChange={ e => setAddress( e.target.value ) }
                     />
                     </div>
-                </div>
+                </div>  
+              </div>               
 
-                <div className="mb-4">
-                    <label htmlFor='description' className="mb-2.5 block font-medium text-black dark:text-white">
-                    Descripción
-                    </label>
-                    <div className="relative">
-                    <input
-                        id='description'
-                        type="text"
-                        placeholder="Ingresa la descripción de la emergencia"
-                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        required
-                        value={ description }
-                        onChange={ e => setDescription( e.target.value ) }
-                    />
-                    </div>
-                </div>
+                    <div className="mb-4 ">
+                      <label htmlFor='description' className="mb-2.5 block font-medium text-black dark:text-white">
+                      Descripción
+                      </label>
+                      <div className="relative">
+                        <input
+                            id='description'
+                            type="text"
+                            placeholder="Ingresa la descripción de la emergencia"
+                            className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                            required
+                            value={ description }
+                            onChange={ e => setDescription( e.target.value ) }
+                        />
+                      </div>
+                  </div>                
 
                 <div className="mb-5">
                     <input

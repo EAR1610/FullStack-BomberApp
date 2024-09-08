@@ -5,7 +5,6 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import { TableFirefightersProps, User } from "../../helpers/Interfaces"
-import { handleErrorResponse } from "../../helpers/functions"
 
 const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible} ) => {
 
@@ -83,62 +82,29 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
     formData.append('status', status);
   
     try {
-      if (firefighter) {
-        await updateFirefighter(formData);
-      } else {
-        await createFirefighter(formData);
-      }
-      showAlert('info', 'Info', 'Proceso completado!');
+      await apiRequestAuth.put(`/firefighter/${firefighter.id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${currentToken?.token}`,
+        }
+      });
+      showAlert('info', 'Info', 'Bombero Actualizado!');
       setTimeout(() => {
         setVisible(false);
       }, 1500);
     } catch (error) {
-      const err = handleErrorResponse(error);
-      showAlert('error', 'Error', err);
+      showAlert('error', 'Error', 'Ha habido un error al actualizar el Bombero');
     }
   }
-  
-  const validateForm = () => {
-    return (
-      shiftPreference &&
-      username &&
-      email &&
-      address &&
-      selectedUser !== null
-    );
-  }
-  
-  const updateFirefighter = async (formData: FormData) => {
-    await apiRequestAuth.put(`/firefighter/${firefighter.id}`, formData, {
-      headers: {
-        Authorization: `Bearer ${currentToken?.token}`,
-      },
-    });
-  
-    const formDataUser = new FormData();
-    formDataUser.append('username', username);
-    formDataUser.append('fullName', fullName);
-    formDataUser.append('email', selectedUser.email);
-    formDataUser.append('photography', selectedUser.photography || '');
-    formDataUser.append('password', selectedUser.password);
-    formDataUser.append('address', address);
-    formDataUser.append('roleId', JSON.stringify(selectedUser.roleId));
-    formDataUser.append('status', selectedUser.status);
-  
-    await apiRequestAuth.put(`/${selectedUser.id}`, formDataUser, {
-      headers: {
-        Authorization: `Bearer ${currentToken?.token}`,
-      },
-    });
-  }
-  
-  const createFirefighter = async (formData: FormData) => {
-    await apiRequestAuth.post(`/firefighter`, formData, {
-      headers: {
-        Authorization: `Bearer ${currentToken?.token}`,
-      },
-    });
-  }
+
+    const validateForm = () => {
+      return (
+        shiftPreference &&
+        username &&
+        email &&
+        address &&
+        selectedUser !== null
+      );
+    }
   
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });  
 
@@ -149,7 +115,7 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
         <div className={`${currentToken ? 'w-full' : 'border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'}`}>
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
-              Crea el registro de bomberos en <span className='text-red-500'>BomberApp</span>
+              Actualiza el turno de los bomberos en <span className='text-red-500'>BomberApp</span>
             </h2>
             <form onSubmit={ handleSubmit }>
               <div className="mb-4">
@@ -159,63 +125,6 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
                 <Dropdown value={selectedShiftPreference} onChange={(e) => setSelectedShiftPreference(e.value)} options={shiftPreferences} optionLabel="name"
                 placeholder="Selecciona el turno" className="w-full md:w-14rem" required/>
               </div>
-
-              <div className="mb-4 bg-blue-800 p-1 rounded-lg">
-                <label htmlFor='username' className="block text-2xl text-white text-center">
-                    Datos del usuario
-                </label>
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor='username' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Nombre de Usuario
-                </label>
-                <div className="relative">
-                  <input
-                    id='username'
-                    type="text"
-                    placeholder="Ingresa el nombre del usuario del bombero"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ username }
-                    onChange={ e => setUsername( e.target.value ) }
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor='fullName' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Nombre completo
-                </label>
-                <div className="relative">
-                  <input
-                    id='fullName'
-                    type="text"
-                    placeholder="Ingresa el nombre del usuario del bombero"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ fullName }
-                    onChange={ e => setFullName( e.target.value ) }
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor='address' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Dirección
-                </label>
-                <div className="relative">
-                  <input
-                    id='address'
-                    type="text"
-                    placeholder="Ingresa la dirección del bombero"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ address }
-                    onChange={ e => setAddress( e.target.value ) }
-                  />
-                </div>
-              </div>             
 
               <div className="mb-5">
                 <input

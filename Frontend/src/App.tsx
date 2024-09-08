@@ -27,6 +27,7 @@ import FirefigherShiftCalendar from './pages/FirefighterShiftCalendar/Firefigher
 import EmergencyRequest from './pages/Emergency/EmergencyRequest';
 import MyEmergencies from './pages/Emergency/MyEmergencies';
 import 'leaflet/dist/leaflet.css';
+import { FirefighterEmergencies } from './pages/FireFighters/FirefighterEmergencies';
 
 
 
@@ -130,6 +131,14 @@ function App() {
               element: (
                 <>                 
                   <FirefigherShiftCalendar />
+                </>
+              )
+            },
+            {
+              path: 'firefighter-emergencies',
+              element: (
+                <>                 
+                  <FirefighterEmergencies />
                 </>
               )
             },
