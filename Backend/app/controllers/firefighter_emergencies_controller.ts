@@ -18,31 +18,20 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')      
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId')
+        .preload('emergencyType', (query) => {
+          query.select('id', 'name')
+        })     
     })
     return firefighter_emergency
   }
 
-  async inProcessEmergencies({}: HttpContext) {
+  async inProcessEmergencies({ params }: HttpContext) {
     const firefighter_emergency = await FirefighterEmergency.query()
-    .preload('firefighter', (query) => {
-      query.select('id', 'userId', 'shiftPreference')
-      .whereHas('user', (query) => {
-        query.where('status', 'active')
-      })
-      .preload('user', (query) => {
-        query.select('id', 'username', 'fullName', 'address')
-      })
-    })
-    .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')      
+    .whereHas('emergency', (query) => {
       query.where('status', 'En proceso')
     })
-    return firefighter_emergency
-  }
-
-  async cancelledEmeregencies({}: HttpContext) {
-    const firefighter_emergency = await FirefighterEmergency.query()
+    .andWhere('firefighterId', params.id)
     .preload('firefighter', (query) => {
       query.select('id', 'userId', 'shiftPreference')
       .whereHas('user', (query) => {
@@ -53,14 +42,20 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')  
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId')
+        .preload('emergencyType', (query) => {
+          query.select('id', 'name')
+        })      
+    })
+    return firefighter_emergency
+  }
+
+  async cancelledEmeregencies({ params }: HttpContext) {
+    const firefighter_emergency = await FirefighterEmergency.query()
+    .whereHas('emergency', (query) => {
       query.where('status', 'Cancelada')
     })
-    return firefighter_emergency
-  }
-
-  async rejectedEmergencies({}: HttpContext) {
-    const firefighter_emergency = await FirefighterEmergency.query()
+    .andWhere('firefighterId', params.id)
     .preload('firefighter', (query) => {
       query.select('id', 'userId', 'shiftPreference')
       .whereHas('user', (query) => {
@@ -71,14 +66,20 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')
-      .where('status', 'Rechazada') 
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId')
+        .preload('emergencyType', (query) => {
+          query.select('id', 'name')
+        })
     })
     return firefighter_emergency
   }
 
-  async attendedEmergencies({}: HttpContext) {
+  async rejectedEmergencies({ params }: HttpContext) {
     const firefighter_emergency = await FirefighterEmergency.query()
+    .whereHas('emergency', (query) => {
+      query.where('status', 'Rechazada')
+    })
+    .andWhere('firefighterId', params.id)
     .preload('firefighter', (query) => {
       query.select('id', 'userId', 'shiftPreference')
       .whereHas('user', (query) => {
@@ -89,8 +90,34 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')
-      .where('status', 'Atendida')
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId')
+        .preload('emergencyType', (query) => {
+          query.select('id', 'name')
+        })
+    })
+    return firefighter_emergency
+  }
+
+  async attendedEmergencies({ params }: HttpContext) {
+    const firefighter_emergency = await FirefighterEmergency.query()
+    .whereHas('emergency', (query) => {
+      query.where('status', 'Atendida')
+    })
+    .andWhere('firefighterId', params.id)
+    .preload('firefighter', (query) => {
+      query.select('id', 'userId', 'shiftPreference')
+      .whereHas('user', (query) => {
+        query.where('status', 'active')
+      })
+      .preload('user', (query) => {
+        query.select('id', 'username', 'fullName', 'address')
+      })
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId')
+        .preload('emergencyType', (query) => {
+          query.select('id', 'name')
+        })
     })
     return firefighter_emergency
   }
@@ -118,6 +145,28 @@ export default class FirefighterEmergenciesController {
     return await firefighter_emergency.save();
   }
 
+  async showEmergencyByFirefighter({ params }: HttpContext) {
+    const firefighter_emergency = await FirefighterEmergency.query()
+      .preload('firefighter', (query) => {
+        query.select('id', 'userId', 'shiftPreference')
+          .whereHas('user', (query) => {
+            query.where('status', 'active')
+          })
+          .preload('user', (query) => {
+            query.select('id', 'username', 'fullName', 'address')
+          })
+      })
+      .preload('emergency', (query) => {
+        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId')
+          .preload('emergencyType', (query) => {
+            query.select('id', 'name')
+          })
+      })
+      .where('firefighterId', params.id)
+  
+    return firefighter_emergency
+  }
+
   /**
    * * Show individual record
    */
@@ -138,7 +187,8 @@ export default class FirefighterEmergenciesController {
             query.select('id', 'name')
           })
       })
-      .where('firefighterId', params.id)
+      .where('emergencyId', params.id)
+      // .where('firefighterId', params.id)
   
     return firefighter_emergency
   }

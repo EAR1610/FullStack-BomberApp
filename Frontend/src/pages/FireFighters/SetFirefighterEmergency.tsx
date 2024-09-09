@@ -77,7 +77,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         })
-        if (response) setFirefightersEmergency(response.data)        
+        if (response) setFirefightersEmergency(response.data)    
         setLoading(false);
       } catch (error) {
         console.log(error);

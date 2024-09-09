@@ -6,6 +6,8 @@ import { AuthContextProps } from "../../interface/Auth"
 import EmergencyModal from "../../components/Emergencies/EmergencyModal";
 import EmergencyCard from "../../components/Emergencies/EmergencyCard";
 
+import { Dropdown } from "primereact/dropdown"
+
 
 export const FirefighterEmergencies = () => {
   const [emergencies, setEmergencies] = useState([]);
@@ -21,26 +23,26 @@ export const FirefighterEmergencies = () => {
     const getFirefighterEmergencies = async () => {
         try {
             let response;
-            if (viewStatusEmergency === 0) {
-              response = await apiRequestAuth.get(`/firefighter-emergency/in-process-emergencies/${currentToken?.firefighter?.id}`, {
+            if (viewStatusEmergency?.id === 0) {
+              response = await apiRequestAuth.post(`/firefighter-emergency/in-process-emergencies/${currentToken?.firefighter?.id}`, { },{
                  headers: {
                      Authorization: `Bearer ${currentToken?.token}`,
                  },
              })              
-            } else if (viewStatusEmergency === 1) {
-              response = await apiRequestAuth.get(`/firefighter-emergency/cancelled-emergencies/${currentToken?.firefighter?.id}`, {
+            } else if (viewStatusEmergency?.id === 1) {
+              response = await apiRequestAuth.post(`/firefighter-emergency/cancelled-emergencies/${currentToken?.firefighter?.id}`, { }, {
                  headers: {
                      Authorization: `Bearer ${currentToken?.token}`,
                  },
              })
-            } else if (viewStatusEmergency === 2) {
-              response = await apiRequestAuth.get(`/firefighter-emergency/rejected-emergencies/${currentToken?.firefighter?.id}`, {
+            } else if (viewStatusEmergency?.id === 2) {
+              response = await apiRequestAuth.post(`/firefighter-emergency/rejected-emergencies/${currentToken?.firefighter?.id}`, { }, {
                  headers: {
                      Authorization: `Bearer ${currentToken?.token}`,
                  },
              })
-            } else if (viewStatusEmergency === 3) {
-              response = await apiRequestAuth.get(`/firefighter-emergency/attended-emergencies/${currentToken?.firefighter?.id}`, {
+            } else if (viewStatusEmergency?.id === 3) {
+              response = await apiRequestAuth.post(`/firefighter-emergency/attended-emergencies/${currentToken?.firefighter?.id}`, { }, {
                  headers: {
                      Authorization: `Bearer ${currentToken?.token}`,
                  },
@@ -53,7 +55,14 @@ export const FirefighterEmergencies = () => {
     }
 
     getFirefighterEmergencies();
-  }, []);
+  }, [viewStatusEmergency]);
+
+  const emergencyTypes = [
+    { name: "En proceso", id: 0 },
+    { name: "Canceladas", id: 1 },
+    { name: "Rechazadas", id: 2 },
+    { name: "Atendidas", id: 3 },
+  ];
   
 
   const openModal = (emergency: any) => {
@@ -67,22 +76,41 @@ export const FirefighterEmergencies = () => {
   }; 
 
   return (
-    <div className="p-4">
-      {emergencies.map((emergency, index) => (
-        <EmergencyCard
-          key={index}
-          applicant={emergency?.emergency.applicant}
-          address={emergency?.emergency.address}
-          description={emergency.emergency?.description}
-          onShowDetails={() => openModal(emergency)}
-        />
-      ))}
+    <>    
+      <div className="mb-4">
+        <label className="mb-2.5 block font-medium text-black dark:text-white">
+        Tipo de emergencia
+        </label>
+        <div className="relative">
+          <Dropdown
+            value={viewStatusEmergency}
+            options={emergencyTypes}
+            onChange={(e) => setViewStatusEmergency(e.value)}
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Seleccione el tipo de emergencia"
+            className="w-full"
+            required
+          />
+        </div>
+      </div>
+      <div className="p-4">
+        {emergencies.map((emergency, index) => (
+          <EmergencyCard
+            key={index}
+            applicant={emergency?.emergency.applicant}
+            address={emergency?.emergency.address}
+            description={emergency.emergency?.description}
+            onShowDetails={() => openModal(emergency)}
+          />
+        ))}
 
-      <EmergencyModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        emergencyData={selectedEmergency}
-      />
-    </div>
+        <EmergencyModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          emergencyData={selectedEmergency}
+        />
+      </div>
+    </>
   )
 }
