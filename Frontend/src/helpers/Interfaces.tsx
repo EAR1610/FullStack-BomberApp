@@ -105,3 +105,16 @@ export interface ModalProps {
   onClose: () => void;
   onConfirm: () => void;
 }
+
+export interface EmergencyCardProps {
+  applicant: string;
+  address: string;
+  description: string;
+  onShowDetails: () => void;
+}
+
+export interface EmergencyModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  emergencyData: any;
+}

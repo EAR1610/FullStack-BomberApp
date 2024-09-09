@@ -53,7 +53,7 @@ const MapComponent: React.FC<MapProps> = ({ latitude, longitude }) => {
       .bindPopup('Ubicación solicitante')
       .openPopup();
 
-    L.Routing.control({
+    const control = L.Routing.control({
       waypoints: [
         L.latLng(firefighterCoords[0], firefighterCoords[1]),
         L.latLng(latitude, longitude),
@@ -63,10 +63,19 @@ const MapComponent: React.FC<MapProps> = ({ latitude, longitude }) => {
         const popupText = i === 0 ? 'Ubicación ambulancia' : 'Ubicación solicitante';
         return L.marker(waypoint.latLng, { icon: icon }).bindPopup(popupText);
       },
-      draggableWaypoints: false, 
-      addWaypoints: false, 
+      draggableWaypoints: false,
+      addWaypoints: false,
       routeWhileDragging: false,
     }).addTo(map);
+
+    // Hide the instructions, but keep the route
+    const controlContainer = document.querySelector('.leaflet-routing-container');
+    if (controlContainer) {
+      const instructions = controlContainer.querySelector('.leaflet-routing-alternatives-container');
+      if (instructions) {
+        instructions.style.display = 'none'; // hidden only the instructions
+      }
+    }
 
     return () => {
       map.remove();

@@ -23,6 +23,78 @@ export default class FirefighterEmergenciesController {
     return firefighter_emergency
   }
 
+  async inProcessEmergencies({}: HttpContext) {
+    const firefighter_emergency = await FirefighterEmergency.query()
+    .preload('firefighter', (query) => {
+      query.select('id', 'userId', 'shiftPreference')
+      .whereHas('user', (query) => {
+        query.where('status', 'active')
+      })
+      .preload('user', (query) => {
+        query.select('id', 'username', 'fullName', 'address')
+      })
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')      
+      query.where('status', 'En proceso')
+    })
+    return firefighter_emergency
+  }
+
+  async cancelledEmeregencies({}: HttpContext) {
+    const firefighter_emergency = await FirefighterEmergency.query()
+    .preload('firefighter', (query) => {
+      query.select('id', 'userId', 'shiftPreference')
+      .whereHas('user', (query) => {
+        query.where('status', 'active')
+      })
+      .preload('user', (query) => {
+        query.select('id', 'username', 'fullName', 'address')
+      })
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')  
+      query.where('status', 'Cancelada')
+    })
+    return firefighter_emergency
+  }
+
+  async rejectedEmergencies({}: HttpContext) {
+    const firefighter_emergency = await FirefighterEmergency.query()
+    .preload('firefighter', (query) => {
+      query.select('id', 'userId', 'shiftPreference')
+      .whereHas('user', (query) => {
+        query.where('status', 'active')
+      })
+      .preload('user', (query) => {
+        query.select('id', 'username', 'fullName', 'address')
+      })
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')
+      .where('status', 'Rechazada') 
+    })
+    return firefighter_emergency
+  }
+
+  async attendedEmergencies({}: HttpContext) {
+    const firefighter_emergency = await FirefighterEmergency.query()
+    .preload('firefighter', (query) => {
+      query.select('id', 'userId', 'shiftPreference')
+      .whereHas('user', (query) => {
+        query.where('status', 'active')
+      })
+      .preload('user', (query) => {
+        query.select('id', 'username', 'fullName', 'address')
+      })
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')
+      .where('status', 'Atendida')
+    })
+    return firefighter_emergency
+  }
+
   /**
    * Display form to create a new record
    */
@@ -51,22 +123,26 @@ export default class FirefighterEmergenciesController {
    */
   async show({ params }: HttpContext) {
     const firefighter_emergency = await FirefighterEmergency.query()
-    .preload('firefighter', (query) => {
-      query.select('id', 'userId', 'shiftPreference')
-      .whereHas('user', (query) => {
-        query.where('status', 'active')
+      .preload('firefighter', (query) => {
+        query.select('id', 'userId', 'shiftPreference')
+          .whereHas('user', (query) => {
+            query.where('status', 'active')
+          })
+          .preload('user', (query) => {
+            query.select('id', 'username', 'fullName', 'address')
+          })
       })
-      .preload('user', (query) => {
-        query.select('id', 'username', 'fullName', 'address')
+      .preload('emergency', (query) => {
+        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId')
+          .preload('emergencyType', (query) => {
+            query.select('id', 'name')
+          })
       })
-    })
-    .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description')      
-    })
-    .where('emergencyId', params.id)
-
+      .where('firefighterId', params.id)
+  
     return firefighter_emergency
   }
+  
 
   /**
    * Edit individual record
