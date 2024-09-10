@@ -37,7 +37,15 @@ export default class DetailEmergenciesController {
    * * Show individual record
    */
   async show({ params }: HttpContext) {
-    return await DetailEmergency.find( params.id );
+    const detailEmergencies = await DetailEmergency.query()
+    .whereHas('emergency', (query) => {
+      query.where('id', params.id);
+    })
+    .preload('emergency', (query) => {
+      query.select('id', 'applicant', 'address', 'description')
+    })
+
+    return detailEmergencies
   }
 
   /**
@@ -49,7 +57,11 @@ export default class DetailEmergenciesController {
    * ? Handle form submission for the edit action
    */
   async update({ params, request, response }: HttpContext) {
-    const detailEmergency = await DetailEmergency.find( params.id );
+    const detailEmergency = await DetailEmergency.query()
+    .whereHas('emergency', (query) => {
+      query.where('id', params.id);      
+    })
+    .first();
     if( !detailEmergency ) return response.status(404).json({ message: 'No se ha encontrado el detalle de la emergencia' });
     const payload = await request.validateUsing(createDetailEmergencyValidator);    
     detailEmergency.merge(payload);
