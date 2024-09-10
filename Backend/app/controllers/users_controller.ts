@@ -7,11 +7,23 @@ import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app';
 import Firefighter from '#models/firefighter';
 
+/**
+ * *This class definition is for a `UsersController` in a web application, likely built using the AdonisJS framework. Here's a succinct explanation of what each class method does:
+* `changePassword`: Updates a user's password after verifying the old password.
+* `getProfile`: Returns a user's profile picture as a downloadable file.
+* `index`: Retrieves a list of active users.
+* `inactiveUsers`: Retrieves a list of inactive users.
+* `suspendedUsers`: Retrieves a list of suspended users.
+* `create`: Currently an empty method, likely intended to handle user creation.
+* `store`: Creates a new user, validates the input data, and creates a corresponding firefighter record if the user has a role ID of 2.
+* `show`: Retrieves a user's details by ID.
+* `edit`: Currently an empty method, likely intended to handle user editing.
+* `update`: Updates a user's details, handles file uploads, and updates the corresponding firefighter record if necessary.
+* `destroy`: Currently an empty method, likely intended to handle user deletion.
+ */
+
 export default class UsersController {
 
-  /**
-   * ? Change the user's password 🔒
-  */
   async changePassword({ request, auth, response }: HttpContext) {
     const { oldPassword, newPassword } = await changePasswordValidator.validate(request.all());
     const user = auth.user!;
@@ -26,48 +38,29 @@ export default class UsersController {
     return response.ok({ message: 'Contraseña actualizada correctamente' });
   }
 
-  /**
-   * 
-   * ? Get the user's image
-   */
   async getProfile({ response, params }: HttpContext) {
     const filePath = app.makePath(`uploads/pictures/${params.file}`);
 
     response.download(filePath);
   }
 
-  /**
-   * ? Display a list of resource
-   */
   async index() {
     const user = await User.query().where('status', 'active');
     return user;    
   }
 
-  /**
-   * ? Display a list of inactive users
-   */
   async inactiveUsers() {
     const user = await User.query().where('status', 'inactive');
     return user;
   }
 
-  /**
-   * ? Display a list of suspended users
-   */
   async suspendedUsers() {
     const user = await User.query().where('status', 'suspended');
     return user;
   }
 
-  /**
-   * ? Display form to create a new record
-   */
   async create({}: HttpContext) {}
 
-  /**
-   * ? This code snippet handles the creation of a new user. It validates the form submission data using the `createUserValidator`, then saves the user's data, including their uploaded photography. If the user is a firefighter (roleId === 2), it also creates a new firefighter record associated with the user. Finally, it generates an access token for the newly created user and returns it.
-   */
   async store({ request, auth }: HttpContext) {
     const payload =  await request.validateUsing(createUserValidator,
       {
@@ -107,27 +100,18 @@ export default class UsersController {
     return User.accessTokens.create(user);
   }
 
-  /**
-   * ? Show individual record
-   */
   async show({ params }: HttpContext) {    
     const user = await User.find( params.id );
 
     return user;
   }
 
-  /**
-   * ? Edit individual record
-   */
   async edit({ params }: HttpContext) {
     const user = await User.find( params.id );
 
     return user;
   }
 
-  /**
-   * ? Handle form submission for the edit action
-   */
   async update({ request, params, response }: HttpContext) {
     const user = await User.find( params.id );
     if( !user ) return response.notFound({ message: 'No se encontro el usuario' });
@@ -177,8 +161,5 @@ export default class UsersController {
     return await user?.save();
   }
 
-  /**
-   * ? Delete record
-   */
   async destroy({}: HttpContext) {}
 }

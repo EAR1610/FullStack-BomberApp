@@ -2,10 +2,24 @@ import Emergency from '#models/emergency';
 import { createEmergencyValidator } from '#validators/emergency';
 import type { HttpContext } from '@adonisjs/core/http'
 
+/** 
+* * This class definition is for an `EmergenciesController` in an AdonisJS application. Here's a brief explanation of what each class method does:
+* `index`: Displays a list of emergencies with a status of 'Registrada'.
+* `myEmergencies`: Displays a list of emergencies for a specific user, identified by the `user_id` parameter.
+* `attendedEmergencies`: Displays a list of emergencies with a status of 'Atendida'.
+* `inProcessEmergencies`: Displays a list of emergencies with a status of 'En proceso'.
+* `canceledEmergencies`: Displays a list of emergencies with a status of 'Cancelada'.
+* `rejectedEmergencies`: Displays a list of emergencies with a status of 'Rechazada'.
+* `create`: Currently an empty method, intended to display a form to create a new emergency record.
+* `store`: Handles the form submission for creating a new emergency record, validating the input data and saving it to the database.
+* `show`: Displays a single emergency record, identified by the `id` parameter.
+* `edit`: Currently an empty method, intended to display a form to edit an existing emergency record.
+* `update`: Handles the form submission for editing an existing emergency record, validating the input data and saving it to the database.
+* `destroy`: Currently an empty method, intended to delete an emergency record.
+*/
+
 export default class EmergenciesController {
-  /**
-   * * Display a list of resource
-   */
+
   async index({}: HttpContext) {
     const emergency = await Emergency.query().where('status', 'Registrada');
     return emergency
@@ -36,14 +50,8 @@ export default class EmergenciesController {
     return emergency
   }
 
-  /**
-   * Display form to create a new record
-   */
   async create({}: HttpContext) {}
 
-  /**
-  //  * Handle form submission for the create action
-   */
   async store({ request }: HttpContext) {
     const payload = await request.validateUsing(createEmergencyValidator);
     const emergency = new Emergency();
@@ -51,21 +59,12 @@ export default class EmergenciesController {
     return await emergency.save();
   }
 
-  /**
-   * * Show individual record
-   */
   async show({ params }: HttpContext) {
     return await Emergency.find( params.id );
   }
 
-  /**
-   * Edit individual record
-   */
   async edit({ params }: HttpContext) {}
 
-  /**
-   * Handle form submission for the edit action
-   */
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createEmergencyValidator);
     const emergency = await Emergency.findOrFail(params.id);
@@ -74,8 +73,5 @@ export default class EmergenciesController {
     return await emergency.save();
   }
 
-  /**
-   * Delete record
-   */
   async destroy({ params }: HttpContext) {}
 }

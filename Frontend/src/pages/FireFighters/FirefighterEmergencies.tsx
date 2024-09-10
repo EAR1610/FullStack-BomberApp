@@ -79,7 +79,7 @@ export const FirefighterEmergencies = () => {
     <>    
       <div className="mb-4">
         <label className="mb-2.5 block font-medium text-black dark:text-white">
-        Tipo de emergencia
+          Tipo de emergencia
         </label>
         <div className="relative">
           <Dropdown
@@ -94,16 +94,19 @@ export const FirefighterEmergencies = () => {
           />
         </div>
       </div>
+
       <div className="p-4">
-        {emergencies.map((emergency, index) => (
-          <EmergencyCard
-            key={index}
-            applicant={emergency?.emergency.applicant}
-            address={emergency?.emergency.address}
-            description={emergency.emergency?.description}
-            onShowDetails={() => openModal(emergency)}
-          />
-        ))}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {emergencies.map((emergency, index) => (
+            <EmergencyCard
+              key={index}
+              applicant={emergency?.emergency.applicant}
+              address={emergency?.emergency.address}
+              description={emergency?.emergency.description}
+              onShowDetails={() => openModal(emergency)}
+            />
+          ))}
+        </div>
 
         <EmergencyModal
           isOpen={isModalOpen}

@@ -2,39 +2,40 @@ import VehicleType from '#models/vehicle_type';
 import { createVehicleTypeValidator, updateVehicleTypeValidator } from '#validators/vehicle_type';
 import type { HttpContext } from '@adonisjs/core/http'
 
+/**
+ * * This class definition is for a `VehicleTypesController` that handles CRUD (Create, Read, Update, Delete) operations for vehicle types. Here's a brief explanation of what each method does:
+
+- `index`: Retrieves a list of active vehicle types.
+- `inactiveVehicleTypes`: Retrieves a list of inactive vehicle types.
+- `suspendedVehicleTypes`: Retrieves a list of suspended vehicle types.
+- `create`: Currently empty, but intended to handle the creation of a new vehicle type.
+- `store`: Creates a new vehicle type based on the request payload, which is validated using the `createVehicleTypeValidator`.
+- `show`: Retrieves a single vehicle type by its ID.
+- `edit`: Currently empty, but intended to handle the editing of a vehicle type.
+- `update`: Updates an existing vehicle type based on the request payload, which is validated using the `updateVehicleTypeValidator`. If the vehicle type is not found, returns a 404 response.
+- `destroy`: Currently empty, but intended to handle the deletion of a vehicle type.
+Note: The `create` and `edit` methods are currently empty and intended to be implemented in the future.
+ */
+
 export default class VehicleTypesController {
-  /**
-   * ? Display a list of resource
-   */
+
   async index({}: HttpContext) {
     const vehicleType = await VehicleType.query().where('status', 'active');
     return vehicleType;
   }
 
-  /**
-   * ? Display a list of inactive resource
-   */
   async inactiveVehicleTypes({}: HttpContext) {
     const vehicleType = await VehicleType.query().where('status', 'inactive');
     return vehicleType;
   }
 
-  /**
-   * ? Display a list of suspended resource
-   */
   async suspendedVehicleTypes({}: HttpContext) {
     const vehicleType = await VehicleType.query().where('status', 'suspended');
     return vehicleType;
   }
 
-  /**
-   * Display form to create a new record
-   */
   async create({}: HttpContext) {}
 
-  /**
-   * ? Handle form submission for the create action
-   */
   async store({ request }: HttpContext) {
     const payload = await request.validateUsing(createVehicleTypeValidator);
     const vehicleType = new VehicleType();
@@ -42,21 +43,12 @@ export default class VehicleTypesController {
     return await vehicleType.save();
   }
 
-  /**
-   * ? Show individual record
-   */
   async show({ params }: HttpContext) {
     return await VehicleType.find( params.id );
   }
 
-  /**
-   * Edit individual record
-   */
   async edit({ params }: HttpContext) {}
 
-  /**
-   * ? Handle form submission for the edit action
-   */
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(updateVehicleTypeValidator, {
       meta: { id: params.id }
@@ -67,8 +59,5 @@ export default class VehicleTypesController {
     return await vehicleType?.save();
   }
 
-  /**
-   * Delete record
-   */
   async destroy({ params }: HttpContext) {}
 }

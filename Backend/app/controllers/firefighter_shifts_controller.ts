@@ -4,34 +4,38 @@ import { createFirefighterShiftValidator, transformValidator } from '#validators
 import type { HttpContext } from '@adonisjs/core/http'
 import { generateShiftsForMonthForFirefighter } from '../helpers/generateFirefighterShiftForMonth.js';
 
-export default class FirefighterShiftsController {
-  /**
-   * ? Display a list of resource
-   */
+/**
+ * * This class definition is for a `FirefighterShiftsController` in an AdonisJS application. Here's a succinct explanation of what each class method does:
+
+* `index`: Displays a list of active firefighter shifts.
+* `inactiveFirefighterShifts`: Displays a list of inactive firefighter shifts.
+* `suspendedFirefighterShifts`: Displays a list of suspended firefighter shifts.
+* `getFirefightersOnShiftForDate`: Retrieves a list of firefighters who are on shift for a specific date, including their user information.
+* `create`: Currently an empty method, likely intended to handle creating new firefighter shift records.
+* `store`: Creates a new firefighter shift record by generating shifts for a given month and year for a specific firefighter.
+* `getShiftByFirefighterId`: Retrieves a list of active firefighter shifts for a specific firefighter.
+* `show`: Retrieves a list of firefighter shifts for a specific firefighter.
+* `edit`: Currently an empty method, likely intended to handle editing existing firefighter shift records.
+* `update`: Updates an existing firefighter shift record after validating the input data.
+* `destroy`: Currently an empty method, likely intended to handle deleting firefighter shift records.
+ */
+
+export default class FirefighterShiftsController {  
   async index({}: HttpContext) {
     const firefighterShift = await FirefighterShift.query().where('status', 'active');
     return firefighterShift;
   }
-
-  /**
-   * ? Display a list of inactive resource
-   */
+  
   async inactiveFirefighterShifts({}: HttpContext) {
     const firefighterShift = await FirefighterShift.query().where('status', 'inactive');
     return firefighterShift;
   }
-
-  /**
-   * ? Display a list of suspended resource
-   */
+  
   async suspendedFirefighterShifts({}: HttpContext) {
     const firefighterShift = await FirefighterShift.query().where('status', 'suspended');
     return firefighterShift;
   }
-
-  /**
-   * ? List firefighters who are on shift for a specific date
-   */
+  
   async getFirefightersOnShiftForDate({ request, response }: HttpContext) {
     let { date } = request.only(['date']);
     
@@ -55,15 +59,9 @@ export default class FirefighterShiftsController {
         
     return firefightersOnShift;
   }
-
-  /**
-   * Display form to create a new record
-   */
+  
   async create({}: HttpContext) {}
-
-  /**
-   * ? Handle form submission for the create action
-   */
+  
   async store({ request, response }: HttpContext) {
     const { firefighterId, month, year } = request.only(['firefighterId', 'month', 'year']);
 
@@ -84,10 +82,7 @@ export default class FirefighterShiftsController {
     if(!firefighterShifts) return response.status(404).json({ message: 'No se ha encontrado el turno de bombero' })
     return firefighterShifts
   }
-
-  /**
-   * ? Show individual record
-   */
+  
   async show({ params, response }: HttpContext) {
     const firefighterShifts = await FirefighterShift.query()
           .where('firefighterId', params.id);
@@ -95,15 +90,9 @@ export default class FirefighterShiftsController {
     if (!firefighterShifts) return response.status(404).json({ message: 'No se ha encontrado el turno de bombero' })
     return firefighterShifts
   }
-
-  /**
-   * Edit individual record
-   */
+  
   async edit({ params }: HttpContext) {}
-
-  /**
-   * ? Handle form submission for the edit action
-   */
+  
   async update({ params, request, response }: HttpContext) {
     const firefighterShift = await FirefighterShift.find(params.id)
     if(!firefighterShift) return response.status(404).json({ message: 'No se ha encontrado el turno de bombero' })
@@ -112,9 +101,6 @@ export default class FirefighterShiftsController {
     firefighterShift?.merge(transformedPayload)
     return await firefighterShift?.save()
   }
-
-  /**
-   * Delete record
-   */
+  
   async destroy({ params }: HttpContext) {}
 }

@@ -2,39 +2,38 @@ import EquipmentType from '#models/equipment_type'
 import { createEquipmentTypeValidator, updateEquipmentTypeValidator } from '#validators/equipment_type';
 import type { HttpContext } from '@adonisjs/core/http'
 
-export default class EquipmentTypesController {
-  /**
-   * ? Display a list of equipment of types
-   */
+/**
+ * * This class definition is for an `EquipmentTypesController` that handles CRUD (Create, Read, Update, Delete) operations for equipment types. Here's a brief explanation of what each class method does:
+
+* `index`: Retrieves a list of active equipment types.
+* `inactiveEquipmentTypes`: Retrieves a list of inactive equipment types.
+* `suspendedEquipmentTypes`: Retrieves a list of suspended equipment types.
+* `create`: Currently an empty method, intended to handle the creation of a new equipment type.
+* `store`: Creates a new equipment type based on the request payload, which is validated using the `createEquipmentTypeValidator`.
+* `show`: Retrieves a single equipment type by its ID.
+* `edit`: Retrieves a single equipment type by its ID, intended to handle editing of the equipment type.
+* `update`: Updates an existing equipment type based on the request payload, which is validated using the `updateEquipmentTypeValidator`. If the equipment type is not found, returns a 404 response.
+* `destroy`: Currently an empty method, intended to handle the deletion of an equipment type.
+ */
+
+export default class EquipmentTypesController {  
   async index({}: HttpContext) {
     const equipmentType =  await EquipmentType.query().where('status', 'active');
     return equipmentType;
   }
-
-  /**
-   * ? Display a list of inactive equipment of types
-   */
+  
   async inactiveEquipmentTypes({}: HttpContext) {
     const equipmentType =  await EquipmentType.query().where('status', 'inactive');
     return equipmentType;
   }
-
-  /**
-   * ? Display a list of suspended equipment of types
-  */
+  
   async suspendedEquipmentTypes({}: HttpContext) {
     const equipmentType =  await EquipmentType.query().where('status', 'suspended');
     return equipmentType;
   }
-
-  /**
-   * Display form to create a new record
-   */
+  
   async create({}: HttpContext) {}
-
-  /**
-   * ? Handle form submission for the create action
-   */
+  
   async store({ request }: HttpContext) {
     const payload = await request.validateUsing(createEquipmentTypeValidator);
     const equipment_type = new EquipmentType();
@@ -42,26 +41,17 @@ export default class EquipmentTypesController {
     
     return await equipment_type.save();
   }
-
-  /**
-   * ? Show individual record
-   */
+  
   async show({ params }: HttpContext) {
     return await EquipmentType.find( params.id );
   }
-
-  /**
-   * ? Edit individual record
-   */
+  
   async edit({ params }: HttpContext) {
     const equipment_type = await EquipmentType.find( params.id );
 
     return equipment_type;
   }
-
-  /**
-   * ? Handle form submission for the edit action
-   */
+  
   async update({ request, params, response}: HttpContext) {
     const payload = await request.validateUsing( updateEquipmentTypeValidator, {
       meta: { id: params.id }
@@ -74,9 +64,6 @@ export default class EquipmentTypesController {
     
     return await equipment_type?.save();
   }
-
-  /**
-   * ? Delete record
-   */
+  
   async destroy({}: HttpContext) {}
 }

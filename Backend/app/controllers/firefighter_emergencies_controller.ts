@@ -2,10 +2,28 @@ import FirefighterEmergency from '#models/firefighter_emergency';
 import { createFirefighterEmergencyValidator } from '#validators/firefighter_emergency';
 import type { HttpContext } from '@adonisjs/core/http'
 
-export default class FirefighterEmergenciesController {
-  /**
-   * * Display a list of resource
-   */
+
+/**
+ * 
+* * This is a TypeScript class definition for a controller in an AdonisJS application. The class, `FirefighterEmergenciesController`, handles HTTP requests related to firefighter emergencies. Here's a brief explanation of what each method does:
+
+* `index`: Displays a list of all firefighter emergencies.
+* `inProcessEmergencies`: Displays a list of firefighter emergencies that are currently in process.
+* `cancelledEmeregencies`: Displays a list of firefighter emergencies that have been cancelled.
+* `rejectedEmergencies`: Displays a list of firefighter emergencies that have been rejected.
+* `attendedEmergencies`: Displays a list of firefighter emergencies that have been attended to.
+* `create`: Displays a form to create a new firefighter emergency record (not implemented).
+* `store`: Handles the form submission for creating a new firefighter emergency record.
+* `showEmergencyByFirefighter`: Displays a list of emergencies assigned to a specific firefighter.
+* `show`: Displays a single firefighter emergency record.
+* `edit`: Displays a form to edit a firefighter emergency record (not implemented).
+* `update`: Handles the form submission for editing a firefighter emergency record.
+* `destroy`: Deletes a firefighter emergency record (not implemented).
+* 
+Note that some methods are not implemented and are left as empty functions.
+ */
+
+export default class FirefighterEmergenciesController {  
   async index({}: HttpContext) {
     const firefighter_emergency = await FirefighterEmergency.query()
     .preload('firefighter', (query) => {
@@ -47,6 +65,7 @@ export default class FirefighterEmergenciesController {
           query.select('id', 'name')
         })      
     })
+    .limit(10)
     return firefighter_emergency
   }
 
@@ -71,6 +90,7 @@ export default class FirefighterEmergenciesController {
           query.select('id', 'name')
         })
     })
+    .limit(10)
     return firefighter_emergency
   }
 
@@ -95,6 +115,7 @@ export default class FirefighterEmergenciesController {
           query.select('id', 'name')
         })
     })
+    .limit(10)
     return firefighter_emergency
   }
 
@@ -119,17 +140,12 @@ export default class FirefighterEmergenciesController {
           query.select('id', 'name')
         })
     })
+    .limit(10)
     return firefighter_emergency
   }
 
-  /**
-   * Display form to create a new record
-   */
   async create({}: HttpContext) {}
 
-  /**
-   * ? Handle form submission for the create action
-   */
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createFirefighterEmergencyValidator);
       const existingAssignment = await FirefighterEmergency
@@ -167,9 +183,6 @@ export default class FirefighterEmergenciesController {
     return firefighter_emergency
   }
 
-  /**
-   * * Show individual record
-   */
   async show({ params }: HttpContext) {
     const firefighter_emergency = await FirefighterEmergency.query()
       .preload('firefighter', (query) => {
@@ -192,15 +205,8 @@ export default class FirefighterEmergenciesController {
     return firefighter_emergency
   }
   
-
-  /**
-   * Edit individual record
-   */
   async edit({ params }: HttpContext) {}
 
-  /**
-   * ? Handle form submission for the edit action
-   */
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createFirefighterEmergencyValidator);    
     const firefighterEmergency = await FirefighterEmergency.findOrFail(params.id);  
@@ -216,9 +222,5 @@ export default class FirefighterEmergenciesController {
     return await firefighterEmergency.save();
   }
   
-
-  /**
-   * Delete record
-   */
   async destroy({ params }: HttpContext) {}
 }

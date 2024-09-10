@@ -2,17 +2,22 @@ import Firefighter from '#models/firefighter';
 import { createFirefighterValidator } from '#validators/firefighter';
 import type { HttpContext } from '@adonisjs/core/http'
 
+/**
+ * * This class definition is for a FirefightersController, which appears to be part of a larger application for managing firefighters. Here's a brief description of what each method does:
+* `index`: Retrieves a list of all active firefighters, including their user information.
+* `inactiveFirefighters`: Retrieves a list of all inactive firefighters, including their user information.
+* `parFighters` and `imparFighters`: Retrieves lists of firefighters with specific shift preferences ("Par" or "Impar"), including their user information.
+* `create`: Currently an empty method, but presumably intended to handle creating new firefighter records.
+* `store`: Creates a new firefighter record based on validated input from the request.
+* `show`: Retrieves a single firefighter record by ID.
+* `showFirefighterByUserId`: Retrieves a firefighter record by user ID.
+* `edit`: Currently an empty method, but presumably intended to handle editing existing firefighter records.
+* `update`: Updates an existing firefighter record based on validated input from the request.
+* `destroy`: Currently an empty method, but presumably intended to handle deleting firefighter records.
+ */
+
 export default class FirefightersController {
-  /**
-   * 
-  * ? This code snippet is a method named `index` in a controller class. It retrieves a list of firefighters from the database and returns the list. 
-      Here's a breakdown of what it does:
-      1. It queries the `Firefighter` model to retrieve a list of firefighters.
-      2. It uses the `whereHas` method to filter the firefighters to only those that have a `user` with an `active` status.
-      3. It uses the `preload` method to eager-load the `user` relationship for each firefighter, selecting only the `id`, `roleId`, `username`, `fullName`, `email`, and `status` columns.
-      4. It maps over the list of firefighters, accessing the `isAdmin` and `isFirefighter` properties of each firefighter's `user` object (although these properties aren't used anywhere in the snippet).
-      5. It returns the list of firefighters.
-   */
+
   async index({}: HttpContext) {
     const firefighters = await Firefighter.query()
       .whereHas('user', (query) => {
@@ -29,9 +34,6 @@ export default class FirefightersController {
       });
   }
 
-  /*
-   * ? This code snippet is a method named `inactiveFirefighters` in a controller class. It retrieves a list of inactive firefighters from the database and returns the list.
-  */
   async inactiveFirefighters({}: HttpContext) {
     const firefighters = await Firefighter.query()
       .whereHas('user', (query) => {
@@ -48,9 +50,6 @@ export default class FirefightersController {
       });
   }
 
-  /**
-   * ? Display list of par firefighters
-   */
   async parFighters({}: HttpContext) {
     const parFirefighters = await Firefighter.query()
       .whereHas('user', (query) => {
@@ -68,9 +67,6 @@ export default class FirefightersController {
       });
   }
 
-  /**
-   * ? Display list of impar firefighters
-   */
   async imparFighters({}: HttpContext) {
     const imparFirefighters = await Firefighter.query()
       .whereHas('user', (query) => {
@@ -88,14 +84,8 @@ export default class FirefightersController {
       });
   }
 
-  /**
-   * Display form to create a new record
-   */
   async create({}: HttpContext) {}
 
-  /**
-   * ? Handle form submission for the create action
-   */
   async store({ request }: HttpContext) {
     const payload = await request.validateUsing(createFirefighterValidator);
     const firefighter = new Firefighter();
@@ -103,9 +93,6 @@ export default class FirefightersController {
     return await firefighter.save();
   }
 
-  /**
-   * ? Show individual record
-   */
   async show({ params }: HttpContext) {
     return await Firefighter.find( params.id );
   }
@@ -114,14 +101,8 @@ export default class FirefightersController {
     return await Firefighter.query().where('user_id', params.id)
   }
 
-  /**
-   * Edit individual record
-   */
   async edit({ params }: HttpContext) {}
 
-  /**
-   * ? Handle form submission for the edit action
-   */
   async update({ params, request, response }: HttpContext) {
     const firefighter = await Firefighter.find( params.id );
     if ( !firefighter ) return response.status(404).json({ message: 'No se ha encontrado el bombero' });
@@ -131,8 +112,5 @@ export default class FirefightersController {
     return await firefighter?.save();
   }
 
-  /**
-   * Delete record
-   */
   async destroy({ params }: HttpContext) {}
 }

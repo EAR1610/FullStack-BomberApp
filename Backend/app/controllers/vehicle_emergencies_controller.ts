@@ -2,10 +2,19 @@ import VehicleEmergency from '#models/vehicle_emergency'
 import { createVehicleEmergencyValidator } from '#validators/vehicle_emergency'
 import type { HttpContext } from '@adonisjs/core/http'
 
-export default class VehicleEmergenciesController {
-  /**
-   * * Display a list of resource
-   */
+/**
+ * * This class definition is for a `VehicleEmergenciesController` that handles CRUD (Create, Read, Update, Delete) operations for vehicle emergencies. Here's a brief explanation of what each method does:
+- `index`: Retrieves a list of all vehicle emergencies, preloading the associated `vehicle` and `emergency` models.
+- `create`: Currently empty, but intended to handle the creation of a new vehicle emergency.
+- `store`: Handles the form submission for creating a new vehicle emergency. It validates the input data using the `createVehicleEmergencyValidator`, checks for an existing assignment, creates a new `VehicleEmergency` instance, and saves it to the database.
+- `show`: Retrieves a single vehicle emergency by its ID, preloading the associated `vehicle` and `emergency` models.
+- `edit`: Currently empty, but intended to handle the editing of a vehicle emergency.
+- `update`: Handles the form submission for editing a vehicle emergency. It validates the input data, checks for an existing assignment, merges the changes, and saves the updated `VehicleEmergency` instance to the database.
+- `destroy`: Currently empty, but intended to handle the deletion of a vehicle emergency.
+Note that some methods are not implemented and are left as empty functions.
+*/
+
+export default class VehicleEmergenciesController {  
   async index({}: HttpContext) {
     const vehicle_emergency = await VehicleEmergency.query()
     .preload('vehicle', (query) => {
@@ -17,15 +26,9 @@ export default class VehicleEmergenciesController {
     
     return vehicle_emergency
   }
-
-  /**
-   * Display form to create a new record
-   */
+  
   async create({}: HttpContext) {}
-
-  /**
-   * * Handle form submission for the create action
-   */
+  
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createVehicleEmergencyValidator);
     const existingAssignment = await VehicleEmergency
@@ -40,10 +43,7 @@ export default class VehicleEmergenciesController {
 
     return await vehicle_emergency.save();
   }
-
-  /**
-   * * Show individual record
-   */
+  
   async show({ params }: HttpContext) {
     const vehicle_emergency = await VehicleEmergency.query()
     .preload('vehicle', (query) => {
@@ -56,15 +56,9 @@ export default class VehicleEmergenciesController {
 
     return vehicle_emergency
   }
-
-  /**
-   * Edit individual record
-   */
+  
   async edit({ params }: HttpContext) {}
-
-  /**
-   * * Handle form submission for the edit action
-   */
+  
   async update({ params, request, response }: HttpContext) {
 
     const payload = await request.validateUsing(createVehicleEmergencyValidator);
@@ -80,9 +74,6 @@ export default class VehicleEmergenciesController {
 
     return await vehicle_emergency.save();
   }
-
-  /**
-   * Delete record
-   */
+  
   async destroy({ params }: HttpContext) {}
 }

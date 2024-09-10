@@ -4,7 +4,6 @@ import { loginValidator, registerValidator } from "#validators/auth";
 import { cuid } from "@adonisjs/core/helpers";
 import { HttpContext } from "@adonisjs/core/http";
 import app from "@adonisjs/core/services/app";
-import { emit } from "process";
 
 export default class AuthController {
     /**
