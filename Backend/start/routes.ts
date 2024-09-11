@@ -46,6 +46,11 @@ router.group(() => {
   router.post('/cancelled-emergencies', [EmergenciesController, 'canceledEmergencies']);
   router.post('/rejected-emergencies', [EmergenciesController, 'rejectedEmergencies']);
   router.post('/attended-emergencies', [EmergenciesController, 'attendedEmergencies']);
+  router.post('/my-emergencies/in-registered-emergencies/:id', [EmergenciesController, 'myRegisteredEmergencies']);
+  router.post('/my-emergencies/in-process-emergencies/:id', [EmergenciesController, 'myInProcessEmergencies']);
+  router.post('/my-emergencies/cancelled-emergencies/:id', [EmergenciesController, 'myCanceledEmergencies']);
+  router.post('/my-emergencies/rejected-emergencies/:id', [EmergenciesController, 'myRejectedEmergencies']);
+  router.post('/my-emergencies/attended-emergencies/:id', [EmergenciesController, 'myAttendedEmergencies']);
   router.post('/my-emergencies/:id', [EmergenciesController, 'myEmergencies']);
 }).prefix('users/emergencies').use(middleware.auth());
 

@@ -1,25 +1,31 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
-
 import EmergencyModal from "../../components/Emergencies/EmergencyModal";
 import EmergencyCard from "../../components/Emergencies/EmergencyCard";
-
 import { Dropdown } from "primereact/dropdown"
+import { EmergencyCardProps, ViewStatusEmergency } from "../../helpers/Interfaces";
 
 
 export const FirefighterEmergencies = () => {
   const [emergencies, setEmergencies] = useState([]);
   const [selectedEmergency, setSelectedEmergency] = useState<any | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [viewStatusEmergency, setViewStatusEmergency] = useState(0);
+  const [viewStatusEmergency, setViewStatusEmergency] = useState<ViewStatusEmergency | null>(null);
+
+  const navigate = useNavigate();
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
 
   useEffect(() => {
+
+    if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+    if( currentToken?.user.isAdmin ) navigate('/app/dashboard');
+    
     const getFirefighterEmergencies = async () => {
         try {
             let response;
@@ -97,12 +103,13 @@ export const FirefighterEmergencies = () => {
 
       <div className="p-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {emergencies.map((emergency, index) => (
+          {emergencies.map((emergency:EmergencyCardProps, index) => (
             <EmergencyCard
               key={index}
               applicant={emergency?.emergency.applicant}
               address={emergency?.emergency.address}
               description={emergency?.emergency.description}
+              user={emergency?.firefighter?.user}
               onShowDetails={() => openModal(emergency)}
             />
           ))}

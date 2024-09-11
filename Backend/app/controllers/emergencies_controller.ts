@@ -1,22 +1,26 @@
 import Emergency from '#models/emergency';
 import { createEmergencyValidator } from '#validators/emergency';
 import type { HttpContext } from '@adonisjs/core/http'
-
-/** 
-* * This class definition is for an `EmergenciesController` in an AdonisJS application. Here's a brief explanation of what each class method does:
+/**
+ * * This class definition is for an `EmergenciesController` in an AdonisJS application. Here's a brief explanation of what each class method does:
 * `index`: Displays a list of emergencies with a status of 'Registrada'.
-* `myEmergencies`: Displays a list of emergencies for a specific user, identified by the `user_id` parameter.
+* `myEmergencies`: Displays a list of emergencies for a specific user, identified by the `userId` parameter.
+* `myRegisteredEmergencies`: Displays a list of registered emergencies for a specific user, identified by the `userId` parameter, with additional user and emergency type information.
 * `attendedEmergencies`: Displays a list of emergencies with a status of 'Atendida'.
+* `myAttendedEmergencies`: Displays a list of attended emergencies for a specific user, identified by the `userId` parameter, with additional user and emergency type information.
 * `inProcessEmergencies`: Displays a list of emergencies with a status of 'En proceso'.
+* `myInProcessEmergencies`: Displays a list of in-process emergencies for a specific user, identified by the `userId` parameter, with additional user and emergency type information.
 * `canceledEmergencies`: Displays a list of emergencies with a status of 'Cancelada'.
+* `myCanceledEmergencies`: Displays a list of canceled emergencies for a specific user, identified by the `userId` parameter, with additional user and emergency type information.
 * `rejectedEmergencies`: Displays a list of emergencies with a status of 'Rechazada'.
+* `myRejectedEmergencies`: Displays a list of rejected emergencies for a specific user, identified by the `userId` parameter, with additional user and emergency type information.
 * `create`: Currently an empty method, intended to display a form to create a new emergency record.
 * `store`: Handles the form submission for creating a new emergency record, validating the input data and saving it to the database.
 * `show`: Displays a single emergency record, identified by the `id` parameter.
 * `edit`: Currently an empty method, intended to display a form to edit an existing emergency record.
 * `update`: Handles the form submission for editing an existing emergency record, validating the input data and saving it to the database.
 * `destroy`: Currently an empty method, intended to delete an emergency record.
-*/
+ */
 
 export default class EmergenciesController {
 
@@ -26,27 +30,123 @@ export default class EmergenciesController {
   }
   
   async myEmergencies({ params }: HttpContext) {
-    const emergency = await Emergency.query().where('user_id', params.id);
+    const emergency = await Emergency.query().where('userId', params.id);
+    return emergency
+  }
+
+  async myRegisteredEmergencies({ params }: HttpContext) {
+    const emergency = await Emergency.query()
+    .whereHas('user', (query) => {
+      query.where('id', params.id)
+    })
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address')
+    })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
+    .where('status', 'Registrada')
+    .limit(10);
     return emergency
   }
 
   async attendedEmergencies({}: HttpContext) {
-    const emergency = await Emergency.query().where('status', 'Atendida');
+    const emergency = await Emergency.query()
+    .preload('user', (query) => {
+      query.select('id', 'username', 'fullName', 'address')
+    })
+    .where('status', 'Atendida');
+    return emergency
+  }
+
+  async myAttendedEmergencies({ params }: HttpContext) {
+    const emergency = await Emergency.query()
+    .whereHas('user', (query) => {
+      query.where('id', params.id)
+    })
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address')
+    })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
+    .where('status', 'Atendida')
+    .limit(10);
     return emergency
   }
 
   async inProcessEmergencies({}: HttpContext) {
-    const emergency = await Emergency.query().where('status', 'En proceso');
+    const emergency = await Emergency.query()
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address')
+    })
+    .where('status', 'En proceso');
+    return emergency
+  }
+
+  async myInProcessEmergencies({ params }: HttpContext) {
+    const emergency = await Emergency.query()
+    .whereHas('user', (query) => {
+      query.where('id', params.id)
+    })
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address')
+    })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
+    .where('status', 'En proceso')
+    .limit(10);
     return emergency
   }
 
   async canceledEmergencies({}: HttpContext) {
-    const emergency = await Emergency.query().where('status', 'Cancelada');
+    const emergency = await Emergency.query()
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address')
+    })
+    .where('status', 'Cancelada');
+    return emergency
+  }
+
+  async myCanceledEmergencies({ params }: HttpContext) {
+    const emergency = await Emergency.query()
+    .whereHas('user', (query) => {
+      query.where('id', params.id)
+    })
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address')
+    })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
+    .where('status', 'Cancelada')
+    .limit(10);
     return emergency
   }
 
   async rejectedEmergencies({}: HttpContext) {
-    const emergency = await Emergency.query().where('status', 'Rechazada');
+    const emergency = await Emergency.query()
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address')
+    })
+    .where('status', 'Rechazada');
+    return emergency
+  }
+
+  async myRejectedEmergencies({ params }: HttpContext) {
+    const emergency = await Emergency.query()
+    .whereHas('user', (query) => {
+      query.where('id', params.id)
+    })
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address')
+    })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
+    .where('status', 'Rechazada')
+    .limit(10);
     return emergency
   }
 
