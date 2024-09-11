@@ -18,7 +18,7 @@ const EmergencyRequest: React.FC<Emergency> = () => {
       longitude: number;
     } | null>(null);
     const [description, setDescription] = useState("");
-    const [status, setstatus] = useState('Registrada');
+    const [status, setStatus] = useState('Registrada');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);

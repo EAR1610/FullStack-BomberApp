@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet-routing-machine';
+import 'leaflet-routing-machine';  // Importar Leaflet Routing Machine
 
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIconRetina from 'leaflet/dist/images/marker-icon-2x.png';
@@ -33,56 +33,102 @@ const requesterIcon = new L.Icon({
   popupAnchor: [0, -46],
 });
 
-const MapComponent: React.FC<MapProps> = ({ latitude, longitude }) => {
+interface MapComponentProps extends MapProps {
+  onLocationChange: (latitude: number, longitude: number) => void;
+}
+
+const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLocationChange }) => {
+  const mapRef = useRef<L.Map | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
+  const routingControlRef = useRef<L.Routing.Control | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [instructionsVisible, setInstructionsVisible] = useState(false);
+
   const firefighterCoords = [16.925213065550683, -89.90177602186692];
 
   useEffect(() => {
-    const map = L.map('map').setView(firefighterCoords, 13);
+    if (mapContainerRef.current && !mapRef.current) {
+      mapRef.current = L.map(mapContainerRef.current).setView(firefighterCoords, 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(mapRef.current);
 
-    L.marker(firefighterCoords, { icon: firefighterIcon })
-      .addTo(map)
-      .bindPopup('Ubicación ambulancia')
-      .openPopup();
+      L.marker(firefighterCoords, { icon: firefighterIcon })
+        .addTo(mapRef.current)
+        .bindPopup('Ubicación ambulancia')
+        .openPopup();
 
-    L.marker([latitude, longitude], { icon: requesterIcon })
-      .addTo(map)
-      .bindPopup('Ubicación solicitante')
-      .openPopup();
+      markerRef.current = L.marker([latitude, longitude], {
+        icon: requesterIcon,
+        draggable: true,
+      }).addTo(mapRef.current);
 
-    const control = L.Routing.control({
-      waypoints: [
-        L.latLng(firefighterCoords[0], firefighterCoords[1]),
-        L.latLng(latitude, longitude),
-      ],
-      createMarker: (i, waypoint, n) => {
-        const icon = i === 0 ? firefighterIcon : requesterIcon;
-        const popupText = i === 0 ? 'Ubicación ambulancia' : 'Ubicación solicitante';
-        return L.marker(waypoint.latLng, { icon: icon }).bindPopup(popupText);
-      },
-      draggableWaypoints: false,
-      addWaypoints: false,
-      routeWhileDragging: false,
-    }).addTo(map);
+      // Crear la ruta desde firefighterCoords hasta la ubicación inicial
+      routingControlRef.current = L.Routing.control({
+        waypoints: [
+          L.latLng(firefighterCoords[0], firefighterCoords[1]),
+          L.latLng(latitude, longitude),
+        ],
+        createMarker: () => null, // No crear marcadores automáticamente
+        routeWhileDragging: false, // No actualizar la ruta mientras se arrastra
+      }).addTo(mapRef.current);
+      
+      // Inicialmente ocultar las instrucciones
+      const instructionsContainer = document.querySelector('.leaflet-routing-container');
+      if (instructionsContainer) {
+        instructionsContainer.classList.add('hidden');
+      }
 
-    // Hide the instructions, but keep the route
-    const controlContainer = document.querySelector('.leaflet-routing-container');
-    if (controlContainer) {
-      const instructions = controlContainer.querySelector('.leaflet-routing-alternatives-container');
-      if (instructions) {
-        instructions.style.display = 'none'; // hidden only the instructions
+      // Manejar el evento de arrastrar y soltar
+      markerRef.current.on('dragend', function (event) {
+        const marker = event.target;
+        const position = marker.getLatLng();
+        onLocationChange(position.lat, position.lng);
+
+        // Actualizar la ruta con la nueva posición
+        if (routingControlRef.current) {
+          routingControlRef.current.setWaypoints([
+            L.latLng(firefighterCoords[0], firefighterCoords[1]),
+            L.latLng(position.lat, position.lng),
+          ]);
+        }
+      });
+    }
+  }, [onLocationChange]);
+
+  useEffect(() => {
+    if (markerRef.current) {
+      markerRef.current.setLatLng([latitude, longitude]);
+
+      // Actualizar la ruta cuando cambien las coordenadas
+      if (routingControlRef.current) {
+        routingControlRef.current.setWaypoints([
+          L.latLng(firefighterCoords[0], firefighterCoords[1]),
+          L.latLng(latitude, longitude),
+        ]);
       }
     }
-
-    return () => {
-      map.remove();
-    };
   }, [latitude, longitude]);
 
-  return <div id="map" className="h-96 w-full"></div>;
+  const toggleInstructions = () => {
+    const instructionsContainer = document.querySelector('.leaflet-routing-container');
+    if (instructionsContainer) {
+      instructionsContainer.classList.toggle('hidden');
+      setInstructionsVisible(!instructionsVisible);
+    }
+  };
+
+  return (
+    <div>
+      <div ref={mapContainerRef} id="map" className="h-96 w-full"></div>
+      <button
+        onClick={toggleInstructions}
+        className="mt-2 p-2 bg-blue-500 text-white rounded w-full">
+        {instructionsVisible ? 'Ocultar Instrucciones' : 'Mostrar Instrucciones'}
+      </button>
+    </div>
+  );
 };
 
 export default MapComponent;

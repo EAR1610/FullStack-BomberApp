@@ -28,6 +28,7 @@ import EmergencyRequest from './pages/Emergency/EmergencyRequest';
 import MyEmergencies from './pages/Emergency/MyEmergencies';
 import 'leaflet/dist/leaflet.css';
 import { FirefighterEmergencies } from './pages/FireFighters/FirefighterEmergencies';
+import EmergencyRequestByAdmin from './pages/Emergency/EmergencyRequestByAdmin';
 
 
 
@@ -107,6 +108,14 @@ function App() {
               element: (
                 <>                 
                   <EmergencyRequest />
+                </>
+              )
+            },
+            {
+              path: 'emergency-request-by-admin',
+              element: (
+                <>                 
+                  <EmergencyRequestByAdmin />
                 </>
               )
             },

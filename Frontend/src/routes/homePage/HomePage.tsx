@@ -1,5 +1,6 @@
 import logo from "../../assets/bomber.png";
 import ambulancia from "../../assets/Ambulancia.png";
+import { Link } from "react-router-dom";
 
 export default function Homepage() {
   return (
@@ -9,7 +10,9 @@ export default function Homepage() {
           <h1 className="text-4xl font-bold text-red-600 mb-4">Sistema de Solicitud de Emergencias 'BomberApp'</h1>
           <p className="text-xl text-gray-600 mb-8">Proteger a las comunidades con servicios de emergencia rápidos y eficaces</p>
           <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-            Solicita una emergencia médica
+            <Link className="block flex-shrink-0" to="./login">
+                Solicita una emergencia médica
+            </Link>
           </button>
         </section>
 
