@@ -1,19 +1,32 @@
 import { EmergencyCardProps } from "../../helpers/Interfaces"
 
-const EmergencyCard: React.FC<EmergencyCardProps> = ({ applicant, address, description, onShowDetails }) => {
-    return (
-        <div className="bg-white shadow-md rounded-lg p-4 mb-4">
-          <h2 className="text-lg font-semibold text-gray-800 text-center">Soliciante:{applicant}</h2>
-          <p className="text-sm text-gray-600 text-center">Dirección:{address}</p>
-          <p className="text-sm text-gray-600 text-center">Descripción: {description}</p>
-          <button
-            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg w-full"
-            onClick={onShowDetails}
-          >
-            Ver Detalles
-          </button>
-        </div>
-    );
-}
+const EmergencyCard: React.FC<EmergencyCardProps> = ({
+  applicant,
+  address,
+  description,
+  onShowDetails,
+}: any) => {
+  return (
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out">
+      <div className="p-6">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white text-center mb-4">
+          Solicitante: {applicant}
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+          Dirección: {address}
+        </p>
+        <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
+          Descripción: {description}
+        </p>
+        <button
+          className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-300"
+          onClick={onShowDetails}
+        >
+          Ver Detalles
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default EmergencyCard

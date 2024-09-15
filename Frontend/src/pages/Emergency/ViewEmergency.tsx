@@ -8,10 +8,12 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { Dialog } from "primereact/dialog"
 import SetFirefighterEmergency from "../FireFighters/SetFirefighterEmergency"
 import SetVehicleEmergency from "./SetVehicleEmergency"
+import DetailEmergency from "./DetailEmergency"
 
 const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
 
     const [viewFirefighterToSetEmergency, setViewFirefighterToSetEmergency] = useState(false);  
+    const [viewVehicleSetEmergency, setViewVehicleSetEmergency] = useState(false);
     const [viewDetailEmergency, setViewDetailEmergency] = useState(false);
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     const [selectedStatus, setSelectedStatus] = useState<string>(emergency?.status || 'Registrada');
@@ -27,6 +29,8 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
       { label: 'Cancelada', value: 'Cancelada' },
       { label: 'Rechazada', value: 'Rechazada' }
   ];
+
+  console.log(emergency)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -136,7 +140,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
                 Unidades para la emergencia
                 </label>
                 <input
-                  onClick={ () => setViewDetailEmergency(true) }
+                  onClick={ () => setViewVehicleSetEmergency(true) }
                   value='Establecer las unidades para la emergencia'
                   className="w-full cursor-pointer rounded-lg border border-yellow bg-green-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />
@@ -162,6 +166,15 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
               <MapComponent latitude={emergency.latitude} longitude={emergency.longitude} />
               
               <div className="mb-5 mt-5">
+              <button
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold p-4 rounded-lg transition-colors duration-300 mb-2 uppercase"
+                onClick={e => {
+                  e.preventDefault();
+                  setViewDetailEmergency(true)
+                }}
+              >
+                Ver Detalle
+              </button>
                 <input
                   type="submit"
                   value='Modificar estado de la emergencia'
@@ -176,10 +189,24 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SetFirefighterEmergency idEmergency={emergency?.id} />
       </Dialog>    
-      <Dialog header="Asignación de unidades a la emergencia" visible={viewDetailEmergency} onHide={() => setViewDetailEmergency(false)}
+      <Dialog header="Asignación de unidades a la emergencia" visible={viewVehicleSetEmergency} onHide={() => setViewVehicleSetEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SetVehicleEmergency idEmergency={emergency?.id} />
       </Dialog>
+      <Dialog
+          header="Detalle Emergencia"
+          visible={viewDetailEmergency}
+          onHide={() => setViewDetailEmergency(false)}
+          style={{ width: '90vw' }}
+          breakpoints={{ '960px': '90vw', '641px': '100vw' }}
+        >
+          <DetailEmergency
+            idEmergency={emergency.id}
+            setViewDetailEmergency={setViewDetailEmergency}
+            statusEmergency={emergency.status}
+            isFirefighter={emergency.user.isFirefighter}
+          />
+        </Dialog>
     </div>
   )
 }

@@ -124,7 +124,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLoca
             e.preventDefault();
             toggleInstructions();
           }}
-          className="mt-2 p-2 bg-blue-500 text-white rounded w-full">
+          className="w-full cursor-pointer rounded-lg border border-primary bg-meta-5 text-white transition hover:bg-opacity-90 uppercase mt-2 p-2">
           { instructionsVisible ? 'Ocultar Instrucciones' : 'Mostrar Instrucciones' }
         </button>
       )}

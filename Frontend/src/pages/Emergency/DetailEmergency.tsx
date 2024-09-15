@@ -6,7 +6,7 @@ import { Toast } from "primereact/toast";
 import { Editor } from 'primereact/editor';
         
 
-const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency }: any ) => {
+const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency, isFirefighter }: any ) => {
     const [observation, setObservation] = useState('');
     const [duration, setDuration] = useState(0);
     const [isUpdated, setIsUpdated] = useState(false);
@@ -111,20 +111,22 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
                       />
                     </div>
                   </div>
-                  <div className="mb-5 mt-5">
-                    <input
-                      type="submit"
-                      value={ 
-                        statusEmergency === 'Atendida' 
-                        ? 'Emergencia Atendida' 
-                        : isUpdated
-                            ? 'Actualizar Emergencia'
-                            : 'Registrar Emergencia'
-                      }
-                      disabled={ statusEmergency === 'Atendida' }
-                      className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
-                    />
-                  </div>                                        
+                  { isFirefighter && (
+                    <div className="mb-5 mt-5">
+                      <input
+                        type="submit"
+                        value={ 
+                          statusEmergency === 'Atendida' 
+                          ? 'Emergencia Atendida' 
+                          : isUpdated
+                              ? 'Actualizar Emergencia'
+                              : 'Registrar Emergencia'
+                        }
+                        disabled={ statusEmergency === 'Atendida' }
+                        className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
+                      />
+                    </div>
+                  )}
                 </form>
               </div>
             </div>

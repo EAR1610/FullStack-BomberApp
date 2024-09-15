@@ -83,36 +83,38 @@ export const FirefighterEmergencies = () => {
 
   return (
     <>    
-      <div className="mb-4">
-        <label className="mb-2.5 block font-medium text-black dark:text-white">
-          Tipo de emergencia
-        </label>
-        <div className="relative">
-          <Dropdown
-            value={viewStatusEmergency}
-            options={emergencyTypes}
-            onChange={(e) => setViewStatusEmergency(e.value)}
-            optionLabel="name"
-            optionValue="id"
-            placeholder="Seleccione el tipo de emergencia"
-            className="w-full"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="p-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {emergencies.map((emergency:EmergencyCardProps, index) => (
-            <EmergencyCard
-              key={index}
-              applicant={emergency?.emergency.applicant}
-              address={emergency?.emergency.address}
-              description={emergency?.emergency.description}
-              user={emergency?.firefighter?.user}
-              onShowDetails={() => openModal(emergency)}
+      <div className="space-y-6">      
+        <div className="mb-6">
+          <label className="mb-2 block text-lg font-semibold text-gray-700 dark:text-gray-300">
+            Tipo de emergencia
+          </label>
+          <div className="relative">
+            <Dropdown
+              value={viewStatusEmergency}
+              options={emergencyTypes}
+              onChange={(e) => setViewStatusEmergency(e.value)}
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Seleccione el tipo de emergencia"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300"
+              required
             />
-          ))}
+          </div>
+        </div>
+
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {emergencies.map((emergency: EmergencyCardProps, index) => (
+              <EmergencyCard
+                key={index}
+                applicant={emergency?.emergency.applicant}
+                address={emergency?.emergency.address}
+                description={emergency?.emergency.description}
+                user={emergency?.firefighter?.user}
+                onShowDetails={() => openModal(emergency)}
+              />
+            ))}
+          </div>
         </div>
 
         <EmergencyModal
@@ -121,6 +123,7 @@ export const FirefighterEmergencies = () => {
           emergencyData={selectedEmergency}
         />
       </div>
+
     </>
   )
 }
