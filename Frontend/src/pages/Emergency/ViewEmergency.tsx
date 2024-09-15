@@ -5,7 +5,6 @@ import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import MapComponent from "../../components/Maps/MapComponent"
 import { apiRequestAuth } from "../../lib/apiRequest"
-import { handleErrorResponse } from "../../helpers/functions"
 import { Dialog } from "primereact/dialog"
 import SetFirefighterEmergency from "../FireFighters/SetFirefighterEmergency"
 import SetVehicleEmergency from "./SetVehicleEmergency"
@@ -161,6 +160,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
               </div>
 
               <MapComponent latitude={emergency.latitude} longitude={emergency.longitude} />
+              
               <div className="mb-5 mt-5">
                 <input
                   type="submit"

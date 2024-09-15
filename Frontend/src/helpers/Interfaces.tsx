@@ -123,3 +123,8 @@ export interface EmergencyModalProps {
 export interface ViewStatusEmergency {
   id: number;
 }
+
+export interface MapComponentProps extends MapProps {
+  onLocationChange: (latitude: number, longitude: number) => void;
+  isUser: boolean;
+}

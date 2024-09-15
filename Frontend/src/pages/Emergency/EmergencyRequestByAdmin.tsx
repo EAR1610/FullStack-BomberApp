@@ -4,7 +4,6 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
-import { Emergency } from "../../helpers/Interfaces"
 import MapComponent from "../../components/Maps/MapComponent"
 
 const EmergencyRequestByAdmin = () => {

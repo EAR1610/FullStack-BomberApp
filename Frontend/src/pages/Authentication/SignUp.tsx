@@ -200,9 +200,11 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         });
 
         if( !currentToken ){
-          updateToken( res.data );
-          navigate("/app/dashboard");          
+          setTimeout(() => {
+            navigate("/login");          
+          }, 1000);
         }
+
         showAlert('info', 'Info', 'Usuario Creado!');
       }      
       setTimeout(() => {
@@ -210,26 +212,6 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
       }, 1500);
     } catch (err:any) {
       handleErrorResponse(err);
-    }
-  };
-  
-  // * assuming getFieldValue is a function that returns the value of a field
-  const getFieldValue = (field: string) => {
-    switch (field) {
-      case 'username':
-        return username;
-      case 'fullName':
-        return fullName;
-      case 'email':
-        return email;
-      case 'password':
-        return password;
-      case 'address':
-        return address;
-      case 'photography':
-        return photography;
-      default:
-        return null;
     }
   };
 

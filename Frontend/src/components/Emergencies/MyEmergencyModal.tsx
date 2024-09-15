@@ -13,7 +13,7 @@ const MyEmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emer
           <p><strong>Descripción:</strong> {emergencyData.description}</p>
           <p className='mb-2'><strong>Tipo Emergencia:</strong> {emergencyData.emergencyType.name}</p>
   
-          <MapComponent latitude={emergencyData.latitude} longitude={emergencyData.longitude} />
+          <MapComponent latitude={emergencyData.latitude} longitude={emergencyData.longitude} isUser={true} />
                     
           <button
             className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg w-full"

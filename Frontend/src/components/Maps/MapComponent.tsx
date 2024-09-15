@@ -6,7 +6,7 @@ import 'leaflet-routing-machine';  // Importar Leaflet Routing Machine
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import { MapProps } from '../../helpers/Interfaces';
+import { MapComponentProps, MapProps } from '../../helpers/Interfaces';
 
 import firefighterIconImg from '../../assets/firefighterIcon.png';
 import requesterIconImg from '../../assets/EmergencyRequestIcon.png';
@@ -33,11 +33,7 @@ const requesterIcon = new L.Icon({
   popupAnchor: [0, -46],
 });
 
-interface MapComponentProps extends MapProps {
-  onLocationChange: (latitude: number, longitude: number) => void;
-}
-
-const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLocationChange }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLocationChange, isUser }) => {
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const routingControlRef = useRef<L.Routing.Control | null>(null);
@@ -122,11 +118,16 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLoca
   return (
     <div>
       <div ref={mapContainerRef} id="map" className="h-96 w-full"></div>
-      <button
-        onClick={toggleInstructions}
-        className="mt-2 p-2 bg-blue-500 text-white rounded w-full">
-        {instructionsVisible ? 'Ocultar Instrucciones' : 'Mostrar Instrucciones'}
-      </button>
+      { !isUser && (
+        <button
+          onClick={ e => {
+            e.preventDefault();
+            toggleInstructions();
+          }}
+          className="mt-2 p-2 bg-blue-500 text-white rounded w-full">
+          { instructionsVisible ? 'Ocultar Instrucciones' : 'Mostrar Instrucciones' }
+        </button>
+      )}
     </div>
   );
 };
