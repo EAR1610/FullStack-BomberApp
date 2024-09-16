@@ -10,7 +10,7 @@ import SetFirefighterEmergency from "../FireFighters/SetFirefighterEmergency"
 import SetVehicleEmergency from "./SetVehicleEmergency"
 import DetailEmergency from "./DetailEmergency"
 
-const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
+const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, changeStatusEmergency }: any) => {
 
     const [viewFirefighterToSetEmergency, setViewFirefighterToSetEmergency] = useState(false);  
     const [viewVehicleSetEmergency, setViewVehicleSetEmergency] = useState(false);
@@ -21,7 +21,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
     const { currentToken } = authContext;
     
     const toast = useRef(null);
-
+    
     const emergencyStatuses = [
       { label: 'Registrada', value: 'Registrada' },
       { label: 'En proceso', value: 'En proceso' },
@@ -29,8 +29,6 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
       { label: 'Cancelada', value: 'Cancelada' },
       { label: 'Rechazada', value: 'Rechazada' }
   ];
-
-  console.log(emergency)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -53,6 +51,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
         });
     
         showAlert('info', 'Info', 'Emergencia registrada correctamente!');
+        setChangeStatusEmergency(!changeStatusEmergency);
         setTimeout(() => {
           setViewEmergency(false);
         }, 1500);
@@ -204,7 +203,7 @@ const ViewEmergency = ({ emergency, setViewEmergency }: any) => {
             idEmergency={emergency.id}
             setViewDetailEmergency={setViewDetailEmergency}
             statusEmergency={emergency.status}
-            isFirefighter={emergency.user.isFirefighter}
+            isFirefighter={false}
           />
         </Dialog>
     </div>

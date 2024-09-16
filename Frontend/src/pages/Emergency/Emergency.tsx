@@ -10,6 +10,7 @@ import TableEmergencies from "../../components/Table/TableEmergencies";
 const Emergency = () => {
   const [emergencies, setEmergencies] = useState([]);
   const [viewStatusEmergency, setViewStatusEmergency] = useState(0);
+  const [changeStatusEmergency, setChangeStatusEmergency] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -67,13 +68,13 @@ const Emergency = () => {
     }
 
     getEmergencies();
-  }, [ emergencies, viewStatusEmergency ]);
+  }, [ changeStatusEmergency, viewStatusEmergency ]);
   
 
   return (
     <>
       <Toast ref={toast} />
-      <TableEmergencies data={emergencies} viewStatusEmergency={viewStatusEmergency} setViewStatusEmergency={setViewStatusEmergency} />
+      <TableEmergencies data={emergencies} viewStatusEmergency={viewStatusEmergency} setViewStatusEmergency={setViewStatusEmergency} setChangeStatusEmergency={setChangeStatusEmergency} changeStatusEmergency={changeStatusEmergency} />
     </>
   )
 }

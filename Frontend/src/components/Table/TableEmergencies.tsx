@@ -14,7 +14,7 @@ import ViewEmergency from '../../pages/Emergency/ViewEmergency';
 import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 
-const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:any) => {
+const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergency, changeStatusEmergency }:any) => {
 
     const [filters, setFilters] = useState({
         applicant: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -30,7 +30,6 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-    const { currentToken } = authContext;
     
     const toast = useRef(null);
     
@@ -120,7 +119,7 @@ const TableEmergencies = ({ data, viewStatusEmergency, setViewStatusEmergency }:
       </DataTable>
       <Dialog header="Seguimiento de Emergencia" visible={viewEmergency} onHide={() => setViewEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <ViewEmergency emergency={selectedEmergency} setViewEmergency={ setViewEmergency } />
+        <ViewEmergency emergency={selectedEmergency} setViewEmergency={ setViewEmergency } setChangeStatusEmergency={ setChangeStatusEmergency } changeStatusEmergency={ changeStatusEmergency } />
       </Dialog>
     </div>
   )

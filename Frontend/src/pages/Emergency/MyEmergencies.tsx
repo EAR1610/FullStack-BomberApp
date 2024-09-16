@@ -128,6 +128,7 @@ const MyEmergencies = () => {
             isOpen={isModalOpen}
             onClose={closeModal}
             emergencyData={selectedEmergency}
+            isUser={currentToken?.user.isUser}
           />
         </div>
     </>

@@ -23,7 +23,7 @@ The detailed view of the emergency is displayed in a `Dialog` component, which i
 Overall, this component is responsible for displaying the details of an emergency in a modal dialog.
  */
 
-const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emergencyData }) => {
+const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emergencyData, isFirefighter, isUser }) => {
   const [viewDetailEmergency, setViewDetailEmergency] = useState(false);
 
   if (!isOpen) return null;
@@ -73,7 +73,7 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
         <MapComponent
           latitude={emergencyData.emergency.latitude}
           longitude={emergencyData.emergency.longitude}
-          isUser={emergencyData.firefighter.user.isUser}
+          isUser={isUser}
         />
 
         <div className="mt-6 space-y-4">
@@ -102,7 +102,7 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
             idEmergency={emergencyData.emergency.id}
             setViewDetailEmergency={setViewDetailEmergency}
             statusEmergency={emergencyData.emergency.status}
-            isFirefighter={emergencyData.emergency.user.isFirefighter}
+            isFirefighter={isFirefighter}
           />
         </Dialog>
       </div>

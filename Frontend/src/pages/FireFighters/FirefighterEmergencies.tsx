@@ -121,6 +121,8 @@ export const FirefighterEmergencies = () => {
           isOpen={isModalOpen}
           onClose={closeModal}
           emergencyData={selectedEmergency}
+          isFirefighter={currentToken.user.isFirefighter}
+          isUser={currentToken.user.isUser}
         />
       </div>
 

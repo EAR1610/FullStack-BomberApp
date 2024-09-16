@@ -1,7 +1,7 @@
 import MapComponent from '../Maps/MapComponent';
 import { EmergencyModalProps } from '../../helpers/Interfaces';
 
-const MyEmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emergencyData }) => {
+const MyEmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emergencyData, isUser }) => {
     if (!isOpen) return null;
 
     return (
@@ -29,7 +29,7 @@ const MyEmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emer
             </p>
           </div>
   
-          <MapComponent latitude={emergencyData.latitude} longitude={emergencyData.longitude} isUser={true} />
+          <MapComponent latitude={emergencyData.latitude} longitude={emergencyData.longitude} isUser={isUser} />
                     
           <button
             className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg w-full"

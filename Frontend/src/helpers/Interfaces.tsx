@@ -118,6 +118,8 @@ export interface EmergencyModalProps {
   isOpen: boolean;
   onClose: () => void;
   emergencyData: any;
+  isFirefighter: boolean;
+  isUser: boolean;
 }
 
 export interface ViewStatusEmergency {

@@ -29,7 +29,8 @@
     "#database/*": "./database/*.js",
     "#start/*": "./start/*.js",
     "#tests/*": "./tests/*.js",
-    "#config/*": "./config/*.js"
+    "#config/*": "./config/*.js",
+    "#ressources/*": "./app/ressources/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.6.1",
@@ -59,7 +60,8 @@
     "@vinejs/vine": "^2.0.0",
     "luxon": "^3.4.4",
     "mysql2": "^3.10.1",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "socket.io": "^4.7.5"
   },
   "hotHook": {
     "boundaries": [
