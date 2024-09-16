@@ -12,7 +12,10 @@ const apiRequestAuth = axios.create({
   withCredentials: true,
 });
 
+const socketIoURL = `http://${localDevelopment}:3333`;
+
 export {
   apiRequest,
-  apiRequestAuth
+  apiRequestAuth,
+  socketIoURL
 };

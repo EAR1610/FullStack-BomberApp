@@ -1,6 +1,7 @@
 import Emergency from '#models/emergency';
 import { createEmergencyValidator } from '#validators/emergency';
 import type { HttpContext } from '@adonisjs/core/http'
+import Ws from '#services/Ws';
 /**
  * * This class definition is for an `EmergenciesController` in an AdonisJS application. Here's a brief explanation of what each class method does:
 * `index`: Displays a list of emergencies with a status of 'Registrada'.
@@ -156,7 +157,17 @@ export default class EmergenciesController {
     const payload = await request.validateUsing(createEmergencyValidator);
     const emergency = new Emergency();
     emergency.fill(payload);
-    return await emergency.save();
+    await emergency.save();
+  
+    // Emit event to all connected clients
+    const io = Ws.io;
+    if (io) {
+      io.emit('emergencyCreated', emergency);
+    } else {
+      console.error('WebSocket server is not initialized.');
+    }
+  
+    return emergency;
   }
 
   async show({ params }: HttpContext) {
@@ -170,7 +181,13 @@ export default class EmergenciesController {
     const emergency = await Emergency.findOrFail(params.id);
     if ( !emergency ) return response.status(404).json({ message: 'No se ha encontrado la emergencia' });
     emergency.merge(payload);
-    return await emergency.save();
+    await emergency.save();
+
+    // Emit event to all connected clients
+    const io = Ws.io;
+    io?.emit('emergencyUpdated', emergency);
+
+    return emergency
   }
 
   async destroy({ params }: HttpContext) {}
