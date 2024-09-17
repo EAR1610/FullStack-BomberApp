@@ -4,12 +4,12 @@ import Ws from '#services/Ws';
 app.ready(() => {
   Ws.boot();
 
-  // Cuando un cliente se conecta
+  // When a client connects
   const io = Ws.io;
   io?.on('connection', (socket) => {
     console.log('Client connected: ', socket.id);
 
-    // Podrías gestionar un evento específico aquí, por ejemplo:
+    // You could also do something like this:
     socket.on('joinRoom', (room) => {
       socket.join(room);
       console.log(`Client ${socket.id} joined room ${room}`);

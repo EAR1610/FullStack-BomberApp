@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { apiRequestAuth } from "../../lib/apiRequest";
+import { useContext, useEffect, useRef, useState } from "react";
+import { apiRequestAuth, socketIoURL } from "../../lib/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 import { AuthContextProps } from "../../interface/Auth";
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,9 @@ import { Dropdown } from "primereact/dropdown"
 import MyEmergencyCard from "../../components/Emergencies/MyEmergencyCard";
 import MyEmergencyModal from "../../components/Emergencies/MyEmergencyModal";
 import { EmergencyCardProps, ViewStatusEmergency } from "../../helpers/Interfaces";
+
+import { io } from 'socket.io-client';
+import { Toast } from "primereact/toast";
 
 const MyEmergencies = () => {
   const [myEmergencies, setMyEmergencies] = useState([]);
@@ -19,6 +22,8 @@ const MyEmergencies = () => {
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+
+  const toast = useRef(null);
 
   useEffect(() => {
     
@@ -68,6 +73,37 @@ const MyEmergencies = () => {
     getMyEmergencies();
   }, [viewStatusEmergency]);
 
+  useEffect(() => {
+    const socket = io(socketIoURL);
+
+    socket.on('emergencyUpdated', (updatedEmergency) => {
+
+      const statusMap = {
+        "Registrada": 0,
+        "En proceso": 1,
+        "Cancelada": 2,
+        "Rechazada": 3,
+        "Atendida": 4
+      };
+
+      const newStatusId = statusMap[updatedEmergency.status];
+
+      if (newStatusId !== undefined) {
+        const newStatus = emergencyTypes.find(type => type.id === newStatusId);
+        if (newStatus) {
+          setViewStatusEmergency(newStatus);
+          toast.current?.show({ severity: 'info', summary: 'Emergencia actualizada', detail: `La emergencia está ahora en estado: ${newStatus.name}` });
+        }
+      }
+    })
+
+    return () => {
+      socket.disconnect();
+    };
+
+  }, [viewStatusEmergency])
+  
+
   const emergencyTypes = [
     { name: "Registradas", id: 0 },
     { name: "En proceso", id: 1 },
@@ -84,10 +120,13 @@ const MyEmergencies = () => {
   const closeModal = () => {
     setSelectedEmergency(null);
     setModalOpen(false);
-  }; 
+  };
+  
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <>    
+      <Toast ref={toast} />
       <div className="space-y-6">
           {/* Dropdown de tipo de emergencia */}
           <div className="mb-6">

@@ -74,22 +74,21 @@ const Emergency = () => {
   
   // useEffect para configurar socket.io y escuchar eventos de emergencias
   useEffect(() => {
-    // Conectarse al servidor de WebSockets
-    const socket = io(socketIoURL); // Asegúrate de usar la URL correcta
+    // Connectar el WebSocket al servidor
+    const socket = io(socketIoURL);
 
-     // Escuchar el evento 'emergencyCreated'
+     // Listener the event 'emergencyCreated'
     socket.on('emergencyCreated', (newEmergency) => {
       console.log('Nueva emergencia creada:', newEmergency);
 
-      // Si no estamos en el estado "emergencias activas" (viewStatusEmergency === 0), lo seteamos a 0
+      // if viewStatusEmergency is not 0, set it to 0
       if (viewStatusEmergency !== 0) {
-        setViewStatusEmergency(0); // Cambiamos el estado a 0 (emergencias activas)
+        setViewStatusEmergency(0); // changing viewStatusEmergency to 0
       }
 
-      // Actualizamos la lista de emergencias añadiendo la nueva emergencia al principio
+      // Update the list of emergencies with the new emergency
       setEmergencies((prevEmergencies) => [newEmergency, ...prevEmergencies]);
 
-      // Mostrar un Toast notificando al usuario
       toast.current?.show({ severity: 'info', summary: 'Nueva emergencia', detail: 'Se ha creado una nueva emergencia' });
     });
 
