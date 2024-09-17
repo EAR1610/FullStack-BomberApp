@@ -10,7 +10,7 @@ import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
 import { handleErrorResponse } from '../../helpers/functions';
         
-const SignUp: React.FC = ({ user, setVisible }:any) => {
+const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:any) => {
   
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -206,7 +206,8 @@ const SignUp: React.FC = ({ user, setVisible }:any) => {
         }
 
         showAlert('info', 'Info', 'Usuario Creado!');
-      }      
+      }
+      setChangedAUser(!changedAUser);   
       setTimeout(() => {
         setVisible(false);
       }, 1500);

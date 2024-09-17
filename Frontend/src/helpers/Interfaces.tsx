@@ -75,6 +75,8 @@ export interface TableFirefightersProps {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   viewActiveFirefighters: boolean;
+  isChangedFirefighter: boolean;
+  setIsChangedFirefighter: React.Dispatch<React.SetStateAction<boolean>>;
   setViewActiveFirefighters: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

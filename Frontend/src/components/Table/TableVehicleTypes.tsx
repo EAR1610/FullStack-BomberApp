@@ -17,7 +17,7 @@ import VehicleType from '../../pages/VehicleType/VehicleType';
 import ViewVehicleType from '../../pages/VehicleType/ViewVehicleType';
 import { handleErrorResponse } from '../../helpers/functions';
 
-const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesType, loading}: any) => {
+const TableVehicleTypes = ({ data, viewActiveVehiclesType, setViewActiveVehiclesType, loading, isChangedVehicleType, setIsChangedVehicleType }: any) => {
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -121,7 +121,7 @@ const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesT
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-            
+        setIsChangedVehicleType(!isChangedVehicleType);
         showAlert('info' , 'Info', message);
       } catch (error) {
         handleErrorResponse(error);
@@ -184,7 +184,7 @@ const TableVehicleTypes = ({data, viewActiveVehiclesType, setViewActiveVehiclesT
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <VehicleType vehicleType={selectedVehicleType} setVisible={setVisible} />
+        <VehicleType vehicleType={selectedVehicleType} setVisible={setVisible} isChangedVehicleType={isChangedVehicleType} setIsChangedVehicleType={setIsChangedVehicleType} />
       </Dialog>
       <Dialog header="Header" visible={visibleVehicleType} onHide={() => setVisibleVehicleType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

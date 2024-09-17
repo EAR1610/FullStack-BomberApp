@@ -17,7 +17,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ViewUser from '../../pages/Users/ViewUser';
 import { handleErrorResponse } from '../../helpers/functions';
 
-const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
+const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setChangedAUser }:any) => {
   const [customers, setCustomers] = useState(null);
   const [filters, setFilters] = useState({
     username: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -132,8 +132,9 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${currentToken?.token}`,
           },
-        });  
+        });
         showAlert('info', 'Info', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario`);
+        setChangedAUser(!changedAUser);
       } catch (error) {
         handleErrorResponse(error);
       }
@@ -198,7 +199,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers }:any) => {
       </DataTable>
       <Dialog header={`${selectedUser ? 'Editar usuario' : 'Crear nuevo usuario'}`} visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <SignUp user={selectedUser} setVisible={setVisible} />
+        <SignUp user={selectedUser} setVisible={setVisible} changedAUser={changedAUser} setChangedAUser={setChangedAUser} />
       </Dialog>
       <Dialog header='Observando el usuario' visible={visibleUser} onHide={() => setVisibleUser(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

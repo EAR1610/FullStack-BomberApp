@@ -11,6 +11,7 @@ const FireFighters = () => {
     const [firefighters, setFirefighters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [viewActiveFirefighters, setViewActiveFirefighters] = useState(true);
+    const [isChangedFirefighter, setIsChangedFirefighter] = useState(false);
   
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -47,14 +48,18 @@ const FireFighters = () => {
       }
 
       getFirefighters()
-    }, [firefighters, setViewActiveFirefighters])
+    }, [isChangedFirefighter, viewActiveFirefighters])
     
-
-
   return (
     <>
       <Toast ref={toast} />
-      <TableFirefighters data={firefighters} loading={loading} setViewActiveFirefighters={setViewActiveFirefighters} viewActiveFirefighters={viewActiveFirefighters} 
+      <TableFirefighters 
+          data={firefighters} 
+          loading={loading} 
+          setViewActiveFirefighters={setViewActiveFirefighters} 
+          viewActiveFirefighters={viewActiveFirefighters} 
+          isChangedFirefighter={isChangedFirefighter}
+          setIsChangedFirefighter={setIsChangedFirefighter}
       />
     </>
   )

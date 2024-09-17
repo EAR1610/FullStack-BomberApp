@@ -6,7 +6,7 @@ import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import { TableFirefightersProps, User } from "../../helpers/Interfaces"
 
-const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible} ) => {
+const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible, isChangedFirefighter, setIsChangedFirefighter } ) => {
 
   const [shiftPreference, setShiftPreference] = useState('');
   const [username, setUsername] = useState('');
@@ -88,9 +88,12 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
         }
       });
       showAlert('info', 'Info', 'Bombero Actualizado!');
+      setIsChangedFirefighter(!isChangedFirefighter);
+
       setTimeout(() => {
         setVisible(false);
       }, 1500);
+      
     } catch (error) {
       showAlert('error', 'Error', 'Ha habido un error al actualizar el Bombero');
     }

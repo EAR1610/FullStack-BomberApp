@@ -17,7 +17,7 @@ import OriginType from '../../pages/OriginType/OriginType';
 import ViewOriginType from '../../pages/OriginType/ViewOriginType';
 import { handleErrorResponse } from '../../helpers/functions';
 
-const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginTypes, loading } : any) => {
+const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginTypes, loading, isChangedOriginType, setIsChangedOriginType } : any) => {
     
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -116,6 +116,7 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
       });
   
       const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+      setIsChangedOriginType(!isChangedOriginType);
       showAlert('info', 'Info', message);
     } catch (error) {
       handleErrorResponse(error);
@@ -176,7 +177,7 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
       </DataTable>
       <Dialog header={selectedOriginType ? 'Actualizar el tipo de origen' : 'Creación del tipo de origen'} visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <OriginType originType={selectedOriginType} setVisible={setVisible} />
+        <OriginType originType={selectedOriginType} setVisible={setVisible} isChangedOriginType={isChangedOriginType} setIsChangedOriginType={setIsChangedOriginType} />
       </Dialog>
       <Dialog header="Visualización del tipo de origen" visible={visibleOriginType} onHide={() => setVisibleOriginType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

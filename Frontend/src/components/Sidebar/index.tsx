@@ -204,23 +204,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Firefighter --> */}
 
-              {/* <!-- Menu Item Firefighter Shift--> */}
-              <li>
-                <NavLink
-                  to="./firefighter-shift"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" f="evenodd"/>
-                  </svg>
-
-                  Horario Bombero
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Firefighter --> */}
-
               {/* <!-- Menu Item Tool --> */}
               <li>
                 <NavLink

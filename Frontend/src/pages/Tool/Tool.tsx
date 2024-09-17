@@ -5,7 +5,7 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 
-const Tool = ({ tool, setVisible }:any) => {
+const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
 
     const [name, setName] = useState('')
     const [brand, setBrand] = useState('')
@@ -164,8 +164,7 @@ const Tool = ({ tool, setVisible }:any) => {
                 Authorization: `Bearer ${currentToken?.token}`
               },
             });
-            setVisible(false);        
-
+            showAlert('info', 'Info', 'Registro actualizado!');
           } else {
             await apiRequestAuth.post("/tool", formData, {
               headers: {
@@ -173,8 +172,14 @@ const Tool = ({ tool, setVisible }:any) => {
                 Authorization: `Bearer ${currentToken?.token}`
               },
             });
-            showAlert('info', 'Info', 'Registro Creado!');
+            showAlert('info', 'Info', 'Registro creado!');
           }          
+          setIsChangedTool(!isChangedTool);
+
+          setTimeout(() => {
+            setVisible(false);            
+          }, 1000);
+
         } catch (err:any) {
           setError(err.response.data.message);
         }

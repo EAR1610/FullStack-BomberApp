@@ -18,7 +18,7 @@ const ViewFireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVis
   const toast = useRef(null);
 
   useEffect(() => {
-   const getFirefighter = async () => {      
+   const getFirefighter = async () => {
       if (firefighter) {
         setShiftPreference(firefighter.shiftPreference);
         setUsername(firefighter.user.username);

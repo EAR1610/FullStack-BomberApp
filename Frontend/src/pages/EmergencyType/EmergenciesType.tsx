@@ -12,6 +12,7 @@ const EmergenciesType = () => {
     const [emergenciesTypes, setEmergenciesTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [viewActiveEmergenciesType, setViewActiveEmergenciesType] = useState(true);
+    const [isChangedEmergencyType, setIsChangedEmergencyType] = useState(false);
   
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -52,13 +53,20 @@ const EmergenciesType = () => {
         }
      }
         getEmergenciesTypes();
-    }, [emergenciesTypes, viewActiveEmergenciesType])
+    }, [isChangedEmergencyType, viewActiveEmergenciesType])
 
 
   return (
     <>
       <Toast ref={toast} />
-      <TableEmergencyTypes data = {emergenciesTypes} viewActiveEmergenciesType = {viewActiveEmergenciesType} setViewActiveEmergenciesType = {setViewActiveEmergenciesType} loading = {loading} />
+      <TableEmergencyTypes 
+        data = {emergenciesTypes} 
+        viewActiveEmergenciesType = {viewActiveEmergenciesType} 
+        setViewActiveEmergenciesType = {setViewActiveEmergenciesType} 
+        loading = {loading} 
+        isChangedEmergencyType = {isChangedEmergencyType}
+        setIsChangedEmergencyType = {setIsChangedEmergencyType}
+      />
     </>
   )
 }

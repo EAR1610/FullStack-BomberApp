@@ -10,6 +10,7 @@ const ToolsType = () => {
   const [toolsTypes, setToolsTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewActiveToolsType, setViewActiveToolsType] = useState(true);
+  const [isChangedToolType, setIsChangedToolType] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -44,20 +45,27 @@ const ToolsType = () => {
             }
           });
         }
-        if( response ) setToolsTypes(response.data); 
+        if( response ) setToolsTypes(response.data);
         setLoading(false);
       } catch (error) {
         toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los registros' });
       }
     }
     getToolsTypes();
-  }, [toolsTypes, viewActiveToolsType]);
+  }, [isChangedToolType, viewActiveToolsType]);
   
 
   return (
     <>
       <Toast ref={toast} />
-      <TableToolTypes data={toolsTypes} viewActiveToolsType={viewActiveToolsType} setViewActiveToolsType={setViewActiveToolsType} loading={loading} />
+      <TableToolTypes 
+        data={toolsTypes} 
+        viewActiveToolsType={viewActiveToolsType} 
+        setViewActiveToolsType={setViewActiveToolsType} 
+        loading={loading} 
+        isChangedToolType={isChangedToolType}
+        setIsChangedToolType={setIsChangedToolType}
+      />
     </>
   )
 }

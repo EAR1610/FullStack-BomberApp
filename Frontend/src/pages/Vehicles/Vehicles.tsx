@@ -12,6 +12,7 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewActiveVehicles, setViewActiveVehicles] = useState(true);
+  const [isChangedVehicle, setIsChangedVehicle] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -49,12 +50,19 @@ const Vehicles = () => {
     };
 
     getVehicles();
-  }, [vehicles, setViewActiveVehicles])  
+  }, [isChangedVehicle, setViewActiveVehicles])  
 
   return (
     <>
       <Toast ref={toast} />
-      <TableVehicles data={vehicles} loading={loading} viewActiveVehicles={viewActiveVehicles} setViewActiveVehicles={setViewActiveVehicles} />
+      <TableVehicles 
+        data={vehicles} 
+        loading={loading} 
+        viewActiveVehicles={viewActiveVehicles} 
+        setViewActiveVehicles={setViewActiveVehicles} 
+        isChangedVehicle={isChangedVehicle}
+        setIsChangedVehicle={setIsChangedVehicle}
+      />
     </>
   )
 }

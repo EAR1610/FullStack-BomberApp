@@ -17,7 +17,7 @@ import ToolType from '../../pages/ToolType/ToolType';
 import ViewToolType from '../../pages/ToolType/ViewToolType';
 import { handleErrorResponse } from '../../helpers/functions';
 
-const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loading } :any) => {
+const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loading, isChangedToolType, setIsChangedToolType } :any) => {
  
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -117,7 +117,9 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
       });
   
       const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+      setIsChangedToolType(!isChangedToolType);
       showAlert('info', 'Info', message);
+
     } catch (error) {
       handleErrorResponse(error);
     }
@@ -177,7 +179,7 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
       </DataTable>
       <Dialog header={selectedToolType ? 'Actualizar el tipo de herramienta' : 'Creación del tipo de herramienta'} visible={visible} onHide={() => setVisible(false)} 
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <ToolType toolType={selectedToolType} setVisible={setVisible} />
+        <ToolType toolType={selectedToolType} setVisible={setVisible} isChangedToolType={isChangedToolType} setIsChangedToolType={setIsChangedToolType} />
       </Dialog>
       <Dialog header="Visualizando el tipo de herramienta" visible={visibleToolType} onHide={() => setVisibleToolType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

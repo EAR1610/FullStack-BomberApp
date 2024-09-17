@@ -17,7 +17,7 @@ import { EmergencyType } from '../../pages/EmergencyType/EmergencyType';
 import ViewEmergencyType from '../../pages/EmergencyType/ViewEmergencyType';
 import { handleErrorResponse } from '../../helpers/functions';
 
-const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEmergenciesType, loading }:any) => {
+const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEmergenciesType, loading, isChangedEmergencyType, setIsChangedEmergencyType }:any) => {
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -121,6 +121,7 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
     
         const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
         showAlert('info', 'Confirmado', message);
+        setIsChangedEmergencyType(!isChangedEmergencyType);
       } catch (error) {
         handleErrorResponse(error);
       }
@@ -182,7 +183,7 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <EmergencyType emergencyType={selectedEmergencyType} setVisible={setVisible} />
+        <EmergencyType emergencyType={selectedEmergencyType} setVisible={setVisible} isChangedEmergencyType={isChangedEmergencyType} setIsChangedEmergencyType={setIsChangedEmergencyType} />
       </Dialog>
       <Dialog header="Header" visible={visibleEmergencyType} onHide={() => setVisibleEmergencyType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

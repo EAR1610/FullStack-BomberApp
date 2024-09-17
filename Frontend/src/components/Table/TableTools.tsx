@@ -17,7 +17,7 @@ import Tool from '../../pages/Tool/Tool';
 import ViewTool from '../../pages/Tool/ViewTool';
 import { handleErrorResponse } from '../../helpers/functions';
 
-const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
+const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, setIsChangedTool }:any) => {
   const [tools, setTools] = useState(null);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -150,6 +150,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
       });
   
       const message = status === 'active' ? 'Se ha activado la herramienta' : 'Se ha desactivado la herramienta';
+      setIsInactiveTool(!isChangedTool);
       showAlert('info', 'Info', message);  
     } catch (error) {
       handleErrorResponse(error);
@@ -214,7 +215,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools }:any) => {
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <Tool tool={selectedTool} setVisible={setVisible} />
+        <Tool tool={selectedTool} setVisible={setVisible} isChangedTool={isChangedTool} setIsChangedTool={setIsChangedTool} />
       </Dialog>
       <Dialog header="Header" visible={visibleTool} onHide={() => setVisibleTool(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

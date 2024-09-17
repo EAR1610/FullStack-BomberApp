@@ -11,6 +11,7 @@ const EquipmentsType = () => {
     const [equipmentsType, setEquipmentsType] = useState([]);
     const [loading, setLoading] = useState(true);
     const [viewActiveEquipmentsType, setViewActiveEquipmentsType] = useState(true);
+    const [isChangedEquipmentType, setIsChangedEquipmentType] = useState(false);
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -48,13 +49,20 @@ const EquipmentsType = () => {
       }
 
       getEquipmentsType()
-    }, [equipmentsType, viewActiveEquipmentsType])
+    }, [isChangedEquipmentType, viewActiveEquipmentsType])
     
 
   return (
     <>
       <Toast ref={toast} />
-      <TableEquipmentTypes data={equipmentsType} loading={loading} viewActiveEquipmentsType={viewActiveEquipmentsType} setViewActiveEquipmentsType={setViewActiveEquipmentsType} />
+      <TableEquipmentTypes 
+        data={equipmentsType} 
+        loading={loading} 
+        viewActiveEquipmentsType={viewActiveEquipmentsType} 
+        setViewActiveEquipmentsType={setViewActiveEquipmentsType}
+        isChangedEquipmentType={isChangedEquipmentType}
+        setIsChangedEquipmentType={setIsChangedEquipmentType}
+      />
     </>
   )
 }

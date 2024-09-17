@@ -9,6 +9,7 @@ const Tools = () => {
 
   const [tools, setTools] = useState([]);
   const [viewActiveTools, setViewActiveTools] = useState(true);
+  const [isChangedTool, setIsChangedTool] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -49,12 +50,12 @@ const Tools = () => {
        }
      }
      getTools();
-   },[tools, viewActiveTools]);
+   },[isChangedTool, viewActiveTools]);
   
   return (
     <>
       <Toast ref={toast} />
-      <TableTools data={tools} viewActiveTools={viewActiveTools} setViewActiveTools={setViewActiveTools} />
+      <TableTools data={tools} viewActiveTools={viewActiveTools} setViewActiveTools={setViewActiveTools}  isChangedTool={isChangedTool} setIsChangedTool={setIsChangedTool} />
     </>
   )
 }

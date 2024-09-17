@@ -17,7 +17,7 @@ import EquipmentType from '../../pages/EquipmentType/EquipmentType';
 import ViewEquipmentType from '../../pages/EquipmentType/ViewEquipmentType';
 import { handleErrorResponse } from '../../helpers/functions';
 
-const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEquipmentsType, loading }: any) => {
+const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEquipmentsType, loading, isChangedEquipmentType, setIsChangedEquipmentType }: any) => {
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -73,8 +73,7 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
                     <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newEquipmentType()} className='' />
                     <Button label={viewActiveEquipmentsType ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveEquipmentType() } className='ml-2' severity={viewActiveEquipmentsType ? 'danger' : 'success'} />
                   <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                    style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
-                    {/* <OriginType originType={selectedOriginType} setVisible={setVisible}/> */}
+                    style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}> 
                 </Dialog>
               </IconField>
           </div>
@@ -87,9 +86,7 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
     }
 
     const viewActiveOrInactiveEquipmentType = () => {
-      console.log(viewActiveEquipmentsType);
       setViewActiveEquipmentsType(!viewActiveEquipmentsType);
-      console.log(viewActiveEquipmentsType);
     } 
       
 
@@ -124,7 +121,7 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
                 Authorization: `Bearer ${currentToken?.token}`,
               },
             });      
-
+            setIsChangedEquipmentType(!isChangedEquipmentType);
             showAlert('info', 'Info', message);
           } catch (error) {
             handleErrorResponse(error);
@@ -186,11 +183,16 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
         <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
-      <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
+      <Dialog header="Gestión del Tipo de Equipo" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <EquipmentType equipmentType={selectedEquipmentType} setVisible={setVisible} />
+        <EquipmentType 
+          equipmentType={selectedEquipmentType} 
+          setVisible={setVisible} 
+          isChangedEquipmentType={isChangedEquipmentType} 
+          setIsChangedEquipmentType={setIsChangedEquipmentType} 
+        />
       </Dialog>
-      <Dialog header="Header" visible={visibleEquipmentType} onHide={() => setVisibleEquipmentType(false)}
+      <Dialog header="Información del Tipo de Equipo" visible={visibleEquipmentType} onHide={() => setVisibleEquipmentType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewEquipmentType equipmentType={selectedEquipmentType} />
       </Dialog>

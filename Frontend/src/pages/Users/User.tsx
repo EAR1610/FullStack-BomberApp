@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 const User = () => {
 
   const [users, setUsers] = useState([]);
+  const [changedAUser, setChangedAUser] = useState(false);
   const [viewActiveUsers, setViewActiveUsers] = useState(true);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
@@ -52,12 +53,12 @@ const User = () => {
       }
     }
     getUsers();
-  }, [users, viewActiveUsers]);
+  }, [changedAUser, viewActiveUsers]);
 
   return (    
     <>
       <Toast ref={toast} />
-      <Table data={users} viewActiveUsers={viewActiveUsers} setViewActiveUsers={setViewActiveUsers} />
+      <Table data={users} viewActiveUsers={viewActiveUsers} setViewActiveUsers={setViewActiveUsers} changedAUser={changedAUser} setChangedAUser={setChangedAUser}/>
     </>
   );
 }

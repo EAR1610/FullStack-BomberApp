@@ -4,7 +4,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 
-const VehicleType = ({ vehicleType, setVisible }:any) => {
+const VehicleType = ({ vehicleType, setVisible, isChangedVehicleType, setIsChangedVehicleType }:any) => {
 
     const [name, setName] = useState('');
     const [status, setStatus] = useState('active')
@@ -43,7 +43,7 @@ const VehicleType = ({ vehicleType, setVisible }:any) => {
                 Authorization: `Bearer ${currentToken?.token}`,
               },
             });
-            setVisible(false);
+            showAlert('info', 'Info', 'Registro Creado!');
           } else {
             await apiRequestAuth.post(`/vehicle-type`, formData, {
               headers: {
@@ -51,8 +51,11 @@ const VehicleType = ({ vehicleType, setVisible }:any) => {
               },
             });
             showAlert('info', 'Info', 'Registro Creado!');
-            setVisible(false);
           }
+          setIsChangedVehicleType(!isChangedVehicleType);
+          setTimeout(() => {
+            setVisible(false);            
+          }, 1000);
         } catch (error) {
           console.log(error);
         }

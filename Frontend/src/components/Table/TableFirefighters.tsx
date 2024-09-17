@@ -19,7 +19,7 @@ import SetFirefighterShift from '../../pages/FireFighters/SetFirefighterShift';
 import { TableFirefightersProps } from '../../helpers/Interfaces';
 
 
-const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveFirefighters, setViewActiveFirefighters, loading }) => {
+const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveFirefighters, setViewActiveFirefighters, loading, isChangedFirefighter, setIsChangedFirefighter }) => {
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -82,7 +82,10 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
     }, [selectedFirefighter])
     
 
-    const viewActiveOrInactiveFirefighters = () => setViewActiveFirefighters(!viewActiveFirefighters);
+    const viewActiveOrInactiveFirefighters = () => {
+      console.log(viewActiveFirefighters)
+      setViewActiveFirefighters(!viewActiveFirefighters);
+    }
 
     const editFirefighters = (firefighter: any) => {
         setVisible(true);
@@ -105,8 +108,11 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
     }
 
     const accept = async () => {
+
       if (selectedFirefighter) {
+
         const formData = new FormData();
+
         try {
           if(!viewActiveFirefighters){
             formData.append('status', 'active');
@@ -127,9 +133,11 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
             });
             toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
           }
+          setIsChangedFirefighter(!isChangedFirefighter);
         } catch (error) {
           console.log(error);
         }
+
       }
     }; 
   
@@ -196,7 +204,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
     </DataTable>
     <Dialog header={`${selectedFirefighter}` ? 'Actualizar Bombero' : 'Crear Bombero'} visible={visible} onHide={() => setVisible(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-      <FireFighter firefighter={selectedFirefighter} setVisible={setVisible} />
+      <FireFighter firefighter={selectedFirefighter} setVisible={setVisible} isChangedFirefighter ={isChangedFirefighter} setIsChangedFirefighter={setIsChangedFirefighter} />
     </Dialog>
     <Dialog header='Información del bombero' visible={visibleFirefighter} onHide={() => setVisibleFirefighter(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

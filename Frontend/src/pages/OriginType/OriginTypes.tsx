@@ -11,6 +11,7 @@ const OriginTypes = () => {
   const [originTypes, setOriginTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewActiveOriginTypes, setViewActiveOriginTypes] = useState(true);
+  const [isChangedOriginType, setIsChangedOriginType] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -47,12 +48,19 @@ const OriginTypes = () => {
       }
     };
     getOriginTypes();
-  }, [originTypes, viewActiveOriginTypes]);
+  }, [isChangedOriginType, viewActiveOriginTypes]);
 
   return (
     <>
       <Toast ref={toast} />
-      <TableOriginTypes data={originTypes} viewActiveOriginTypes={viewActiveOriginTypes} setViewActiveOriginTypes={setViewActiveOriginTypes} loadin={loading} />
+      <TableOriginTypes 
+        data={originTypes} 
+        viewActiveOriginTypes={viewActiveOriginTypes} 
+        setViewActiveOriginTypes={setViewActiveOriginTypes} 
+        loadin={loading} 
+        isChangedOriginType={isChangedOriginType}
+        setIsChangedOriginType={setIsChangedOriginType}
+      />
     </>
   )
 }

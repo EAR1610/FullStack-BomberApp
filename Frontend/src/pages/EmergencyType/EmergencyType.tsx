@@ -5,7 +5,7 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { handleErrorResponse } from "../../helpers/functions"
 
-export const EmergencyType = ({ emergencyType, setVisible }:any) => {
+export const EmergencyType = ({ emergencyType, setVisible, isChangedEmergencyType, setIsChangedEmergencyType }:any) => {
 
     const [name, setName] = useState('');
     const [status, setStatus] = useState('active')
@@ -47,11 +47,17 @@ export const EmergencyType = ({ emergencyType, setVisible }:any) => {
           },
         });
     
-        if (!emergencyType) {
-          showAlert('info', 'Info', 'Registro Creado!');
+        if (emergencyType) {
+          showAlert('info', 'Info', 'Registro actualizado!');
+        } else {
+          showAlert('info', 'Info', 'Registro creado!');
         }
-    
-        setVisible(false);
+
+        setIsChangedEmergencyType(!isChangedEmergencyType);
+        setTimeout(() => {
+          setVisible(false);          
+        }, 1000);
+
       } catch (error) {
         handleErrorResponse(error);
       }

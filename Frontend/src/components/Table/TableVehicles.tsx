@@ -17,7 +17,7 @@ import ViewVehicle from '../../pages/Vehicles/ViewVehicle';
 import Vehicle from '../../pages/Vehicles/Vehicle';
 import { handleErrorResponse } from '../../helpers/functions';
 
-const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loading }: any) => {
+const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loading, isChangedVehicle, setIsChangedVehicle }: any) => {
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         brand: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -143,6 +143,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       });
   
       const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';      
+      setIsChangedVehicle(!isChangedVehicle);
       showAlert('info', 'Info', `${message}`);
     } catch (error) {
       handleErrorResponse(error);
@@ -211,7 +212,7 @@ const header = renderHeader();
     </DataTable>
     <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-      <Vehicle vehicle={selectedVehicle} setVisible={setVisible} />
+      <Vehicle vehicle={selectedVehicle} setVisible={setVisible} isChangedVehicle={isChangedVehicle} setIsChangedVehicle={setIsChangedVehicle} />
     </Dialog>
     <Dialog header="Header" visible={visibleVehicle} onHide={() => setVisibleVehicle(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

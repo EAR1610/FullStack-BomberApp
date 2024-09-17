@@ -5,6 +5,7 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import MapComponent from "../../components/Maps/MapComponent"
+import { useNavigate } from "react-router-dom"
 
 const EmergencyRequestByAdmin = () => {
     const [emergenciesType, setEmergenciesType] = useState([]);
@@ -20,6 +21,8 @@ const EmergencyRequestByAdmin = () => {
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+
+    const navigate = useNavigate();
 
     const toast = useRef(null);
 
@@ -60,6 +63,10 @@ const EmergencyRequestByAdmin = () => {
             },
           });
           showAlert('info', 'Info', '¡Emergencia registrada correctamente!');
+
+          setTimeout(() => {
+            navigate('/app/emergencies');
+          }, 1000);
         } catch (error) {
           console.log(error);
         }        

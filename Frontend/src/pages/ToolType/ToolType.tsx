@@ -6,7 +6,7 @@ import { Toast } from "primereact/toast"
 import { handleErrorResponse } from "../../helpers/functions"
 // import { useToast } from "../../helpers/showAlert"
 
-const ToolType = ({ toolType, setVisible }: any) => {
+const ToolType = ({ toolType, setVisible, isChangedToolType, setIsChangedToolType }: any) => {
 
   const [name, setName] = useState('');
   const [status, setStatus] = useState('active')
@@ -52,6 +52,7 @@ const ToolType = ({ toolType, setVisible }: any) => {
         });
         showAlert('info', 'Info', 'Registro Creado!');
       }
+      setIsChangedToolType(!isChangedToolType);
       setTimeout(() => {
         setVisible(false);
       }, 1500);
@@ -61,8 +62,6 @@ const ToolType = ({ toolType, setVisible }: any) => {
   }
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
-
-  // const GlobalToast = () => <ToastComponent />;
 
   return (
     <>
@@ -100,7 +99,6 @@ const ToolType = ({ toolType, setVisible }: any) => {
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                 />
               </div>
-              { error && <span>{ error }</span> }
             </form>
           </div>
         </div>
