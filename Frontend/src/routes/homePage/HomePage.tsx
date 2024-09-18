@@ -1,5 +1,7 @@
 import logo from "../../assets/bomber.png";
-import ambulancia from "../../assets/Ambulancia.png";
+import ambulancia from "../../assets/Ambulancia.jpg";
+import bus from "../../assets/Bus.jpg";
+import motobomba from "../../assets/Motobomba.jpg";
 import { Link } from "react-router-dom";
 
 export default function Homepage() {
@@ -54,21 +56,22 @@ export default function Homepage() {
           <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Nuestras unidades</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { src: ambulancia, alt: "Camión de bomberos" },
-              { src: ambulancia, alt: "Vehículo de rescate" },
+              { src: bus, alt: "Bus de bomberos" },
+              { src: motobomba, alt: "Motobomba" },
               { src: ambulancia, alt: "Ambulancia" },
             ].map((image, index) => (
-              <div key={index} className="h-48 md:h-64 flex items-center justify-center">
+              <div key={index} className="h-64 xl:h-96 flex items-center justify-center">
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="w-full max-h-40 object-contain rounded-lg shadow-md"
+                  className="w-full h-full object-cover rounded-lg shadow-md"
                   style={{ aspectRatio: '16/9' }}
                 />
               </div>
             ))}
           </div>
         </section>
+
       </main>
     </div>
   )
