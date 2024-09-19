@@ -167,7 +167,7 @@ const MyEmergencies = () => {
             emergencyData={selectedEmergency}
             isUser={currentToken?.user.isUser}
           />
-        </div>
+      </div>
     </>
   );
 };

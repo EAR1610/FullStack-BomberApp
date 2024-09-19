@@ -126,6 +126,7 @@ router.resource('users/tool', ToolsController).use("*", middleware.auth());
 router.group(() => {
   router.post('/inactive-tools', [ToolsController, 'inactiveTools']);
   router.post('/suspended-tools', [ToolsController, 'suspendedTools']);
+  router.post('/tools-per-emergency-type/:id', [ToolsController, 'toolsPerEmergencyType']);
 }).prefix('users/tool').use(middleware.auth());
 
 /**

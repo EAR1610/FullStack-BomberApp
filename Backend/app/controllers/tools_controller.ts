@@ -34,6 +34,14 @@ export default class ToolsController {
     return tool
   }
 
+  async toolsPerEmergencyType({ params }: HttpContext) {
+    const tool = await Tool.query()
+    .where('emergencyTypeId', params.id).
+    select('id', 'name','brand', 'model', 'serial_number')
+    .where('status', 'active');
+    return tool
+  }
+
   async create({}: HttpContext) {}
 
   async store({ request }: HttpContext) {

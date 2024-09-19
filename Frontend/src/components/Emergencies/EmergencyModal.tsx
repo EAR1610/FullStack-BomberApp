@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { EmergencyModalProps } from '../../helpers/Interfaces';
 import MapComponent from '../Maps/MapComponent';
 import DetailEmergency from '../../pages/Emergency/DetailEmergency';
+import ToolsPerEmergency from '../../pages/Emergency/ToolsPerEmergency';
+import { apiRequestAuth } from '../../lib/apiRequest';
+import { AuthContextProps } from '../../interface/Auth';
+import { AuthContext } from '../../context/AuthContext';
 
 /**
  * 
@@ -25,10 +29,8 @@ Overall, this component is responsible for displaying the details of an emergenc
 
 const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emergencyData, isFirefighter, isUser }) => {
   const [viewDetailEmergency, setViewDetailEmergency] = useState(false);
-
-  if (!isOpen) return null;
-
-  console.log( emergencyData )
+  const [viewToolsPerEmergencyType, setViewToolsPerEmergencyType] = useState(false);
+  if( !isOpen ) return null;
 
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -80,6 +82,12 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
 
         <div className="mt-6 space-y-4">
           <button
+            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300"
+            onClick={() => setViewToolsPerEmergencyType(true)}
+          >
+            Consultar herramientas
+          </button>
+          <button
             className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300"
             onClick={() => setViewDetailEmergency(true)}
           >
@@ -105,6 +113,18 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
             setViewDetailEmergency={setViewDetailEmergency}
             statusEmergency={emergencyData.emergency.status}
             isFirefighter={isFirefighter}
+          />
+        </Dialog>
+
+        <Dialog
+          header="Herramientas para la emergencia"
+          visible={viewToolsPerEmergencyType}
+          onHide={() => setViewToolsPerEmergencyType(false)}
+          style={{ width: '90vw' }}
+          breakpoints={{ '960px': '90vw', '641px': '100vw' }}
+        >
+          <ToolsPerEmergency 
+            emergencyTypeId={emergencyData.emergency.emergencyTypeId}
           />
         </Dialog>
       </div>

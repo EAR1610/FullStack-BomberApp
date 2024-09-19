@@ -116,6 +116,14 @@ export interface EmergencyCardProps {
   onShowDetails: () => void;
 }
 
+export interface ToolPerEmergencyTypeProps {
+  applicant: string;
+  address: string;
+  description: string;
+  user: User;
+  onShowDetails: () => void;
+}
+
 export interface EmergencyModalProps {
   isOpen: boolean;
   onClose: () => void;
