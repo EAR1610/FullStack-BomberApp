@@ -51,9 +51,14 @@ export default class FirefighterShiftsController {
       .where('shiftStart', '<=', dateTime.toISO())  
       .andWhere('shiftEnd', '>', dateTime.toISO())  
       .preload('firefighter', (query) => {
+        query.preload('user')
+        .whereHas('user', (query) => {
+          query.where('status', 'active');
+        })
+      })
+      .whereHas('firefighter', (query) => {
         query.preload('user');
       })
-      .where('status', 'active');
       
     if (firefightersOnShift.length === 0) response.status(404).json({ message: 'No hay bomberos en turno para la fecha y hora especificada' });
         

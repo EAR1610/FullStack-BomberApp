@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany, HasManyThrough } from '@adonisjs/lucid/types/relations'
 import EmergencyType from './emergency_type.js'
 import User from './user.js'
+import Tool from './tool.js'
 
 export default class Emergency extends BaseModel {
   @column({ isPrimary: true })

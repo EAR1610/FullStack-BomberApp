@@ -3,7 +3,7 @@ import { createToolValidator } from '#validators/tool';
 import type { HttpContext } from '@adonisjs/core/http'
 
 /**
- * * This class definition defines a controller for handling HTTP requests related to tools.
+* * This class definition defines a controller for handling HTTP requests related to tools.
 1. `index({}: HttpContext)`: This method retrieves all active tools from the database.
 2. `inactiveTools({}: HttpContext)`: This method retrieves all inactive tools from the database.
 3. `suspendedTools({}: HttpContext)`: This method retrieves all suspended tools from the database.

@@ -10,6 +10,7 @@ export const createToolValidator = vine.compile(
         equipmentTypeId: vine.number(),
         originTypeId: vine.number(),
         toolTypeId: vine.number(),
+        emergencyTypeId: vine.number(),
         status: vine.enum(['active', 'inactive', 'suspended']),
     })
 )

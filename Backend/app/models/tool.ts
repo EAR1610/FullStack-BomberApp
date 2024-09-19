@@ -3,6 +3,7 @@ import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import ToolType from './tool_type.js'
 import EquipmentType from './equipment_type.js'
 import OriginType from './origin_type.js'
+import EmergencyType from './emergency_type.js'
 
 export default class Tool extends BaseModel {
   @column({ isPrimary: true })
@@ -16,6 +17,9 @@ export default class Tool extends BaseModel {
 
   @column()
   declare originTypeId: number
+
+  @column()
+  declare emergencyTypeId: number
 
   @column()
   declare name: string
@@ -52,6 +56,9 @@ export default class Tool extends BaseModel {
 
   @belongsTo(() => OriginType)
   public originType: BelongsTo<typeof OriginType>
+
+  @belongsTo(() => EmergencyType)
+  public emergencyType: BelongsTo<typeof EmergencyType>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

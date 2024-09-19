@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.integer('tool_type_id').unsigned().references('id').inTable('tool_types').onDelete('CASCADE')
       table.integer('origin_type_id').unsigned().references('id').inTable('origin_types').onDelete('CASCADE')
       table.integer('equipment_type_id').unsigned().references('id').inTable('equipment_types').onDelete('CASCADE')
+      table.integer('emergency_type_id').unsigned().references('id').inTable('emergency_types').onDelete('CASCADE')
       table.string('name', 255).notNullable()
       table.enu('status', ['active', 'inactive', 'suspended']).defaultTo('active')
       table.string('brand', 255).notNullable()
