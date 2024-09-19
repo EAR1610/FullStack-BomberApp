@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { handleErrorResponse } from "../../helpers/functions";
 
 const EmergenciesType = () => {
-
+  
     const [emergenciesTypes, setEmergenciesTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [viewActiveEmergenciesType, setViewActiveEmergenciesType] = useState(true);

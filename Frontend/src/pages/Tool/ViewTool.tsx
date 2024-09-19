@@ -12,6 +12,7 @@ const ViewTool = ({ tool }:any) => {
   const [selectedToolType, setSelectedToolType] = useState(null);
   const [selectedOriginTool, setSelectedOriginTool] = useState(null);
   const [selectedEquipmentType, setSelectedEquipmentType] = useState(null);
+  const [selectedEmergencyType, setSelectedEmergencyType] = useState(null);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -65,10 +66,25 @@ const ViewTool = ({ tool }:any) => {
         setSerialNumber(tool.serialNumber)
       }      
     }
+
+    const getEmergencyType = async () => {
+      try {
+        const response = await apiRequestAuth.get(`/emergency-type/${tool.emergencyTypeId}`, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        });
+        setSelectedEmergencyType(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     getTool();
     getToolType();
     getOriginTool();
     getEquipmentType();
+    getEmergencyType();
   }, []);
 
   return (
@@ -179,13 +195,27 @@ const ViewTool = ({ tool }:any) => {
                     Tipo de Equipo
                   </label>
                   <div className="relative">
-                  <input
-                    value={selectedEquipmentType?.name}
-                    placeholder="Seleccione el tipo de equipo de la herramienta"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
+                    <input
+                      value={selectedEquipmentType?.name}
+                      placeholder="Seleccione el tipo de equipo de la herramienta"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
                   </div>
-                </div>   
+                </div>  
+
+                <div className="mb-4">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                    Tipo de emergencia
+                  </label>
+                  <div className="relative">
+                    <input
+                      value={selectedEmergencyType?.name}
+                      placeholder="Seleccione el tipo de emergencia para la herramienta"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+                </div>  
+
               </form>
             </div>
           </div>

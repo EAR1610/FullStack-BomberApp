@@ -82,10 +82,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
     }, [selectedFirefighter])
     
 
-    const viewActiveOrInactiveFirefighters = () => {
-      console.log(viewActiveFirefighters)
-      setViewActiveFirefighters(!viewActiveFirefighters);
-    }
+    const viewActiveOrInactiveFirefighters = () => setViewActiveFirefighters(!viewActiveFirefighters);
 
     const editFirefighters = (firefighter: any) => {
         setVisible(true);

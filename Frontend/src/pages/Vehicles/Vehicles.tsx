@@ -50,7 +50,7 @@ const Vehicles = () => {
     };
 
     getVehicles();
-  }, [isChangedVehicle, setViewActiveVehicles])  
+  }, [isChangedVehicle, viewActiveVehicles])  
 
   return (
     <>

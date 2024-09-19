@@ -17,9 +17,11 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
     const [selectedToolType, setSelectedToolType] = useState(null);
     const [selectedOriginTool, setSelectedOriginTool] = useState(null);
     const [selectedEquipmentType, setSelectedEquipmentType] = useState(null);
+    const [selectedEmergencyType, setSelectedEmergencyType] = useState(null);
     const [toolTypes, setToolTypes] = useState([]);
     const [originTools, setOriginTools] = useState([]);
     const [equipmentTypes, setEquipmentTypes] = useState([]);
+    const [emergencyTypes, setEmergencyTypes] = useState([]);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -67,9 +69,23 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
       }
     }
 
+    const getEmergencyType = async () => {
+      try {
+        const response = await apiRequestAuth.get("/emergency-type", {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        });
+        if (response) setEmergencyTypes(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     getEquipmentType();
     getToolType();
     getOriginTool();
+    getEmergencyType();
   }, []);
 
   useEffect( () => {
@@ -82,21 +98,25 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
         setModel(tool.model)
         setSerialNumber(tool.serialNumber)
         setStatus(tool.status)
-        setSelectedToolType(()=> {
+        setSelectedToolType( () => {
           const toolType = toolTypes.find((type) => type.id === tool.toolTypeId);
           return toolType;
         });
-        setSelectedOriginTool(()=> {
+        setSelectedOriginTool( () => {
           const originTool = originTools.find((type) => type.id === tool.originTypeId);
           return originTool;
         });
-        setSelectedEquipmentType(()=> {
+        setSelectedEquipmentType( () => {
           const equipmentType = equipmentTypes.find((type) => type.id === tool.equipmentTypeId);
           return equipmentType;
         });
+        setSelectedEmergencyType( () => {
+          const emergencyType = emergencyTypes.find((type) => type.id === tool.emergencyTypeId);
+          return emergencyType;
+        });
       }      
     }
-    if (toolTypes.length > 0 && originTools.length > 0 && equipmentTypes.length > 0) {
+    if (toolTypes.length > 0 && originTools.length > 0 && equipmentTypes.length > 0 && emergencyTypes.length > 0) {
       getTool();
     }
   }, [toolTypes]);
@@ -133,6 +153,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
             formData.append('toolTypeId', JSON.stringify(selectedToolType?.id));
             formData.append('originTypeId', JSON.stringify(selectedOriginTool?.id));
             formData.append('equipmentTypeId', JSON.stringify(selectedEquipmentType?.id));
+            formData.append('emergencyTypeId', JSON.stringify(selectedEmergencyType?.id));
             if (status) formData.append('status', status);
           } 
     
@@ -153,6 +174,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
             formData.append('toolTypeId', JSON.stringify(selectedToolType?.id));
             formData.append('originTypeId', JSON.stringify(selectedOriginTool?.id));
             formData.append('equipmentTypeId', JSON.stringify(selectedEquipmentType?.id));
+            formData.append('emergencyTypeId', JSON.stringify(selectedEmergencyType?.id));
           }  
         }  
     
@@ -311,6 +333,23 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
                     optionLabel="name"
                     optionValue="id"
                     placeholder="Seleccione el tipo de equipo de la herramienta"
+                    className="w-full"
+                  />
+                  </div>
+                </div>               
+
+                <div className="mb-4">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                    Tipo de emergencia para la herramienta
+                  </label>
+                  <div className="relative">
+                  <Dropdown
+                    value={selectedEmergencyType}
+                    options={emergencyTypes}
+                    onChange={(e) => setSelectedEmergencyType(e.value)}
+                    optionLabel="name"
+                    optionValue="id"
+                    placeholder="Seleccione el tipo de emergencia para la herramienta"
                     className="w-full"
                   />
                   </div>

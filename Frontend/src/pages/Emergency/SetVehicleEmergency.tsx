@@ -33,6 +33,7 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
     });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [updateTableVehicleEmergency, setUpdateTableVehicleEmergency] = useState(false);
+    const [errorMessages, setErrorMessages] = useState('');
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -121,10 +122,21 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
         cleanData();
         
       } catch (error) {
-        console.log(error);
-        showAlert("error", "Error", `${error.response.data.error}`);
+        showAlert("error", "Error", handleErrorResponse(error));
       }
     }
+
+    const handleErrorResponse = (error: any) => {      
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errorMessages = error.response.data.errors
+          .map((err: { message: string }) => err.message)
+          .join(', ');
+          setErrorMessages(errorMessages);
+      } else {
+        setErrorMessages('Ocurrió un error inesperado');
+      }
+      return errorMessages
+    };
 
     const cleanData = () => {
       setMileageOutput(0);

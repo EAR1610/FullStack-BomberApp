@@ -14,6 +14,8 @@ export const EmergencyType = ({ emergencyType, setVisible, isChangedEmergencyTyp
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+
+    const [errorMessages, setErrorMessages] = useState('');
     
     const toast = useRef(null);
 
@@ -59,9 +61,21 @@ export const EmergencyType = ({ emergencyType, setVisible, isChangedEmergencyTyp
         }, 1000);
 
       } catch (error) {
-        handleErrorResponse(error);
+        showAlert('error', 'Error', `${handleErrorResponse(error)}`);
       }
     }
+
+    const handleErrorResponse = (error: any) => {
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errorMessages = error.response.data.errors
+          .map((err: { message: string }) => err.message)
+          .join(', ');
+          setErrorMessages(errorMessages);
+      } else {
+        setErrorMessages('Ocurrió un error inesperado');
+      }
+      return errorMessages;
+    };
 
     const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 

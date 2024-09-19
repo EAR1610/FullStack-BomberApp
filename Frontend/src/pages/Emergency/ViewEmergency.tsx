@@ -164,21 +164,21 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
 
               <MapComponent latitude={emergency.latitude} longitude={emergency.longitude} />
               
-              <div className="mb-5 mt-5">
-              <button
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold p-4 rounded-lg transition-colors duration-300 mb-2 uppercase"
-                onClick={e => {
-                  e.preventDefault();
-                  setViewDetailEmergency(true)
-                }}
-              >
-                Ver Detalle
-              </button>
-                <input
-                  type="submit"
-                  value='Modificar estado de la emergencia'
-                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
-                />
+              <div className="mb-5 mt-2">
+                <button
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold p-4 rounded-lg transition-colors duration-300 mb-2 uppercase"
+                  onClick={e => {
+                    e.preventDefault();
+                    setViewDetailEmergency(true)
+                  }}
+                >
+                  Ver Detalle
+                </button>
+                  <input
+                    type="submit"
+                    value='Modificar estado de la emergencia'
+                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
+                  />
               </div>            
             </form>
           </div>

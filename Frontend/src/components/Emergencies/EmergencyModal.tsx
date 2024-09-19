@@ -28,6 +28,8 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
 
   if (!isOpen) return null;
 
+  console.log( emergencyData )
+
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
   

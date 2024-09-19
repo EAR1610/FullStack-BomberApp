@@ -76,7 +76,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
             <IconField iconPosition="left" className='ml-2'>                
                   <InputIcon className="pi pi-search" />
                   <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newVehicle()} className='' />
-                  <Button label={viewActiveVehicles ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveVehicles() } className='ml-2' severity={viewActiveVehicles ? 'danger' : 'success'} />
+                  <Button label={viewActiveVehicles ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={ () => viewActiveOrInactiveVehicles() } className='ml-2' severity={viewActiveVehicles ? 'danger' : 'success'} />
                 <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
                   style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
                   <Vehicle vehicle={selectedVehicle} setVisible={setVisible} />
@@ -91,7 +91,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       setSelectedVehicle(null);
     }
 
-    const viewActiveOrInactiveVehicles = () => setViewActiveVehicles(!viewActiveVehicles);
+    const viewActiveOrInactiveVehicles = () => setViewActiveVehicles(!viewActiveVehicles)
 
     const editVehicles = (vehicleType: any) => {
       setVisible(true);

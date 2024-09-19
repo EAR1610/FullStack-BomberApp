@@ -124,7 +124,7 @@ const TableVehicleTypes = ({ data, viewActiveVehiclesType, setViewActiveVehicles
         setIsChangedVehicleType(!isChangedVehicleType);
         showAlert('info' , 'Info', message);
       } catch (error) {
-        handleErrorResponse(error);
+        handleErrorResponse(error); 
       }
     };
 
@@ -178,8 +178,8 @@ const TableVehicleTypes = ({ data, viewActiveVehiclesType, setViewActiveVehicles
         header={header}
         emptyMessage="Registro no encontrado."
       >
-        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
-        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'} />
+        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'} />
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
       <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}

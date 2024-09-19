@@ -117,14 +117,14 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLoca
 
   return (
     <div>
-      <div ref={mapContainerRef} id="map" className="h-50 w-full"></div>
+      <div ref={mapContainerRef} id="map" className="h-50 xl:h-60 w-full"></div>
       { !isUser && (
         <button
           onClick={ e => {
             e.preventDefault();
             toggleInstructions();
           }}
-          className="w-full cursor-pointer rounded-lg border border-primary bg-meta-5 text-white transition hover:bg-opacity-90 uppercase mt-2 p-2">
+          className="w-full bg-orange-400 hover:bg-orange-700 text-white font-semibold p-4 rounded-lg transition-colors duration-300 mb-2 uppercase mt-2">
           { instructionsVisible ? 'Ocultar Instrucciones' : 'Mostrar Instrucciones' }
         </button>
       )}

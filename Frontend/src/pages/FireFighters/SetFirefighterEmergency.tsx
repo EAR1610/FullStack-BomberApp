@@ -58,8 +58,9 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         })
-        if (response) setFirefighters(response.data);
 
+        if (response) setFirefighters(response.data);
+        console.log(response.data);
       } catch (error) {
         console.log(error);
         if (error.response.status === 404) {
@@ -110,7 +111,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
         showAlert("error", "Error", `${error.response.data.error}`);
     }
   }
-
+  
   const renderHeader = () => {
     return (
       <div className="flex justify-content-between">
@@ -139,16 +140,17 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
                   Bomberos de turno
                 </label>
                 <div className="relative">
-                    <Dropdown
-                    value={ selectedFirefighter }
-                    options={ firefighters }
-                    onChange={ (e) => setSelectedFirefighter(e.value) }
-                    optionLabel="firefighter.user.fullName"
-                    optionValue="firefighter.user.fullName"
-                    placeholder="Seleccione el bombero para la emergencia"
-                    className="w-full"
-                    required
-                    />
+                <Dropdown
+                  value={selectedFirefighter}
+                  options={firefighters.filter(f => f.firefighter && f.firefighter.user)}
+                  onChange={(e) => setSelectedFirefighter(e.value)}
+                  optionLabel="firefighter.user.fullName"
+                  optionValue="firefighter.user.fullName"
+                  placeholder={firefighters.length > 0 ? "Seleccione el bombero para la emergencia" : "No hay bomberos disponibles"}
+                  className="w-full"
+                  disabled={firefighters.length === 0}
+                  required
+                />
                 </div>
               </div>
               <div className="mb-5 mt-5">

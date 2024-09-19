@@ -122,8 +122,6 @@ const MyEmergencies = () => {
     setModalOpen(false);
   };
   
-  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
-
   return (
     <>    
       <Toast ref={toast} />
