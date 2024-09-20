@@ -1,12 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiRequestAuth } from "../../lib/apiRequest"
+import { apiRequestAuth, socketIoURL } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import EmergencyModal from "../../components/Emergencies/EmergencyModal";
 import EmergencyCard from "../../components/Emergencies/EmergencyCard";
 import { Dropdown } from "primereact/dropdown"
 import { EmergencyCardProps, ViewStatusEmergency } from "../../helpers/Interfaces";
+import { io } from "socket.io-client";
+import { Toast } from "primereact/toast";
 
 
 export const FirefighterEmergencies = () => {
@@ -20,6 +22,8 @@ export const FirefighterEmergencies = () => {
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+
+  const toast = useRef(null);
 
   useEffect(() => {
 
@@ -63,6 +67,24 @@ export const FirefighterEmergencies = () => {
     getFirefighterEmergencies();
   }, [viewStatusEmergency]);
 
+  useEffect(() => {
+    const socket = io(socketIoURL);
+
+    socket.on('firefighterEmergencyCreated', (newEmergency) => {
+      toast.current?.show({
+        severity: 'info',
+        summary: 'Nueva emergencia asignada',
+        detail: `Se le ha asignado una nueva emergencia`,
+      });
+      setViewStatusEmergency(emergencyTypes[0]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+
+  }, []);
+
   const emergencyTypes = [
     { name: "En proceso", id: 0 },
     { name: "Canceladas", id: 1 },
@@ -83,6 +105,7 @@ export const FirefighterEmergencies = () => {
 
   return (
     <>    
+     <Toast ref={toast} />
       <div className="space-y-6">      
         <div className="mb-6">
           <label className="mb-2 block text-lg font-semibold text-gray-700 dark:text-gray-300">
@@ -125,7 +148,6 @@ export const FirefighterEmergencies = () => {
           isUser={currentToken.user.isUser}
         />
       </div>
-
     </>
   )
 }

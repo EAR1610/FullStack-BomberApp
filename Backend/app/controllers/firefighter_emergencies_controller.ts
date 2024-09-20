@@ -1,4 +1,5 @@
 import FirefighterEmergency from '#models/firefighter_emergency';
+import Ws from '#services/Ws';
 import { createFirefighterEmergencyValidator } from '#validators/firefighter_emergency';
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -158,7 +159,17 @@ export default class FirefighterEmergenciesController {
   
     const firefighter_emergency = new FirefighterEmergency();
     firefighter_emergency.fill(payload);
-    return await firefighter_emergency.save();
+    await firefighter_emergency.save();
+
+    // Emit event to all connected clients
+    const io = Ws.io;
+    if (io) {
+      io.emit('firefighterEmergencyCreated', firefighter_emergency);
+    } else {
+      console.error('WebSocket server is not initialized.');
+    }
+
+    return firefighter_emergency;
   }
 
   async showEmergencyByFirefighter({ params }: HttpContext) {
