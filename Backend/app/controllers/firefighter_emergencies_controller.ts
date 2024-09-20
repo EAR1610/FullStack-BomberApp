@@ -161,10 +161,12 @@ export default class FirefighterEmergenciesController {
     firefighter_emergency.fill(payload);
     await firefighter_emergency.save();
 
-    // Emit event to all connected clients
+    // Emitir evento solo al bombero que fue asignado a la emergencia
+    const firefighterId = payload.firefighterId;
     const io = Ws.io;
     if (io) {
-      io.emit('firefighterEmergencyCreated', firefighter_emergency);
+      // Emitir al bombero asignado, diferenciando del evento para usuarios
+      io.to(`firefighter_${firefighterId}`).emit('firefighterEmergencyCreated', firefighter_emergency);
     } else {
       console.error('WebSocket server is not initialized.');
     }

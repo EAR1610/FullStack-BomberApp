@@ -68,15 +68,16 @@ export const FirefighterEmergencies = () => {
   }, [viewStatusEmergency]);
 
   useEffect(() => {
-    const socket = io(socketIoURL);
+    const socket = io(socketIoURL, {
+      query: { firefighterId: currentToken?.firefighter?.id }
+    });
 
-    socket.on('firefighterEmergencyCreated', (newEmergency) => {
+    socket.on('firefighterEmergencyCreated', () => {
       toast.current?.show({
         severity: 'info',
         summary: 'Nueva emergencia asignada',
         detail: `Se le ha asignado una nueva emergencia`,
       });
-      setViewStatusEmergency(emergencyTypes[0]);
     });
 
     return () => {

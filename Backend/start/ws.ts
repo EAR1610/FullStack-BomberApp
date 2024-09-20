@@ -7,16 +7,22 @@ app.ready(() => {
   // When a client connects
   const io = Ws.io;
   io?.on('connection', (socket) => {
-    console.log('Client connected: ', socket.id);
+    const { userId, firefighterId } = socket.handshake.query; // Get the userId and firefighterId from the query string
 
-    // You could also do something like this:
-    socket.on('joinRoom', (room) => {
-      socket.join(room);
-      console.log(`Client ${socket.id} joined room ${room}`);
-    });
+    if (userId) {
+      // If is a user (not a firefighter), join a room based on their userId
+      socket.join(`user_${userId}`);
+      console.log(`Usuario ${userId} conectado a su sala`);
+    }
+
+    if (firefighterId) {
+      // If is a firefighter, join a room based on their firefighterId
+      socket.join(`firefighter_${firefighterId}`);
+      console.log(`Bombero ${firefighterId} conectado a su sala`);
+    }
 
     socket.on('disconnect', () => {
-      console.log('Client disconnected: ', socket.id);
+      console.log(`User ${userId} disconnected`);
     });
   });
 });

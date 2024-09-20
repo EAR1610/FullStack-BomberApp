@@ -74,7 +74,9 @@ const MyEmergencies = () => {
   }, [viewStatusEmergency]);
 
   useEffect(() => {
-    const socket = io(socketIoURL);
+    const socket = io(socketIoURL,{
+      query: { userId: currentToken?.user.id }
+    });
 
     socket.on('emergencyUpdated', (updatedEmergency) => {
 

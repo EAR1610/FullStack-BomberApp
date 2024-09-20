@@ -180,12 +180,15 @@ export default class EmergenciesController {
     const payload = await request.validateUsing(createEmergencyValidator);
     const emergency = await Emergency.findOrFail(params.id);
     if ( !emergency ) return response.status(404).json({ message: 'No se ha encontrado la emergencia' });
+
     emergency.merge(payload);
     await emergency.save();
-
-    // Emit event to all connected clients
+      
+    const userId = emergency.userId;
+    // Emit event to one user only (the user who requested the emergency)
     const io = Ws.io;
-    io?.emit('emergencyUpdated', emergency);
+    
+    if (io) io.to(`user_${userId}`).emit('emergencyUpdated', emergency);
 
     return emergency
   }
