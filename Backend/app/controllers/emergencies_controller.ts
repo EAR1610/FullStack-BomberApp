@@ -159,7 +159,7 @@ export default class EmergenciesController {
     emergency.fill(payload);
     await emergency.save();
   
-    // Emit event to all connected clients
+    // ? Emit event to all connected clients
     const io = Ws.io;
     if (io) {
       io.emit('emergencyCreated', emergency);
@@ -185,7 +185,7 @@ export default class EmergenciesController {
     await emergency.save();
       
     const userId = emergency.userId;
-    // Emit event to one user only (the user who requested the emergency)
+    // ? Emit event to one user only (the user who requested the emergency)
     const io = Ws.io;
     
     if (io) io.to(`user_${userId}`).emit('emergencyUpdated', emergency);

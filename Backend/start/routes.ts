@@ -25,7 +25,25 @@ import EmergenciesController from '#controllers/emergencies_controller';
 import FirefighterEmergenciesController from '#controllers/firefighter_emergencies_controller';
 import DetailEmergenciesController from '#controllers/detail_emergencies_controller';
 import VehicleEmergenciesController from '#controllers/vehicle_emergencies_controller';
+import SupplyTypesController from '#controllers/supply_types_controller';
+import SuppliesController from '#controllers/supplies_controller';
+import SupplyEmergenciesController from '#controllers/supply_emergencies_controller';
 
+router.resource('users/supply-emergency', SupplyEmergenciesController).use('*', middleware.auth());
+
+router.resource('users/supply', SuppliesController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/inactive-supplies', [SuppliesController, 'inactiveSupplies']);
+  router.post('/suspended-supplies', [SuppliesController, 'suspendedSupplies']);
+  router.post('/my-supplies/:id', [SuppliesController, 'mySupplies']);
+})
+
+router.resource('users/supply-type', SupplyTypesController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/inactive-supply-types', [SupplyTypesController, 'inactiveSupplyTypes']);
+  router.post('/suspended-supply-types', [SupplyTypesController, 'suspendedSupplyTypes']);
+  router.post('/my-supply-types/:id', [SupplyTypesController, 'mySupplyTypes']);
+}).prefix('users/supply-type').use(middleware.auth());
 
 router.resource('users/vehicle-emergency', VehicleEmergenciesController).use('*', middleware.auth());
 
