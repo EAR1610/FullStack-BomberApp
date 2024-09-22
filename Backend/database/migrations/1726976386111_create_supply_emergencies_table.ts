@@ -8,8 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('supply_id').unsigned().references('id').inTable('supplies')
       table.integer('emergency_id').unsigned().references('id').inTable('emergencies')
-      table.integer('minimum').notNullable()
-      table.integer('maximum').notNullable()
+      table.integer('quantity').notNullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

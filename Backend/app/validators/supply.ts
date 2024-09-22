@@ -6,7 +6,7 @@ export const createSupplyValidator = vine.compile(
         name: vine.string().minLength(3).unique( async(db, value, field) => {
             const supply = await db
                 .from('supplies')
-                .where('name', value)
+                .where('name', field.meta.name)
                 .first()
                 return !supply
         }),
@@ -20,6 +20,7 @@ export const updateSupplyValidator = vine.compile(
             const supply = await db
                 .from('supplies')
                 .whereNot('id', field.meta.id)
+                .where('name', field.meta.name)
                 .where('name', value)
                 .first()
                 return !supply

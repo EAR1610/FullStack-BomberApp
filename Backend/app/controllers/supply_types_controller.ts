@@ -29,7 +29,14 @@ export default class SupplyTypesController {
   async create({}: HttpContext) {}
 
   async store({ request }: HttpContext) {
-    const payload = await request.validateUsing(createSupplyTypeValidator);
+    console.log(request);
+    const payload = await request.validateUsing(createSupplyTypeValidator,
+      {
+        meta: {
+          name: request.input('name'),
+        }
+      }
+    );
     const supplyType = new SupplyType();
     supplyType.fill(payload);
     return await supplyType.save();
@@ -42,7 +49,14 @@ export default class SupplyTypesController {
   async edit({ params }: HttpContext) {}
 
   async update({ params, request, response }: HttpContext) {
-    const payload = await request.validateUsing(updateSupplyTypeValidator);
+    const payload = await request.validateUsing(updateSupplyTypeValidator,
+      {
+        meta: {
+          id: params.id,
+          name: request.input('name'),
+        }
+      }
+    );
     const supplyType = await SupplyType.findOrFail(params.id);
     if ( !supplyType ) return response.status(404).json({ message: 'No se ha encontrado el tipo de insumos' });
 

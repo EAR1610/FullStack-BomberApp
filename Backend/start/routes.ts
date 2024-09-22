@@ -36,7 +36,7 @@ router.group(() => {
   router.post('/inactive-supplies', [SuppliesController, 'inactiveSupplies']);
   router.post('/suspended-supplies', [SuppliesController, 'suspendedSupplies']);
   router.post('/my-supplies/:id', [SuppliesController, 'mySupplies']);
-})
+}).prefix('users/supply').use(middleware.auth());
 
 router.resource('users/supply-type', SupplyTypesController).use('*', middleware.auth());
 router.group(() => {
