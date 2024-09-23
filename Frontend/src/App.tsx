@@ -29,6 +29,7 @@ import MyEmergencies from './pages/Emergency/MyEmergencies';
 import 'leaflet/dist/leaflet.css';
 import { FirefighterEmergencies } from './pages/FireFighters/FirefighterEmergencies';
 import EmergencyRequestByAdmin from './pages/Emergency/EmergencyRequestByAdmin';
+import SuppliesType from './pages/SupplyType/SuppliesType';
 
 
 
@@ -180,6 +181,14 @@ function App() {
               element: (
                 <>                 
                   <EquipmentsType />
+                </>
+              )
+            },
+            {
+              path: 'supply-type',
+              element: (
+                <>                 
+                  <SuppliesType />
                 </>
               )
             },

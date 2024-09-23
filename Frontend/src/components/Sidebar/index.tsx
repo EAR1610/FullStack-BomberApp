@@ -272,6 +272,23 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Equipment Type --> */}
 
+              {/* <!-- Menu Item Supply Type --> */}
+              <li>
+                <NavLink
+                  to="./supply-type"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/>
+                </svg>
+
+                  Tipo Insumo
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Supply Type --> */}
+
               {/* <!-- Menu Item Vehicle --> */}
               <li>
                 <NavLink

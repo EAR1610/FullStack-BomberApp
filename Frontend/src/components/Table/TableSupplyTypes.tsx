@@ -13,22 +13,23 @@ import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import EquipmentType from '../../pages/EquipmentType/EquipmentType';
-import ViewEquipmentType from '../../pages/EquipmentType/ViewEquipmentType';
 import { handleErrorResponse } from '../../helpers/functions';
+import SupplyType from '../../pages/SupplyType/SupplyType';
+import ViewSupplyType from '../../pages/SupplyType/ViewSupplyType';
 
-const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEquipmentsType, loading, isChangedEquipmentType, setIsChangedEquipmentType }: any) => {
+const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesType, loading, isChangedSupplyType, setIsChangedSupplyType }: any) => {
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }        
       });
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [visible, setVisible] = useState(false);
-    const [visibleEquipmentType, setVisibleEquipmentType] = useState(false);
-    const [selectedEquipmentType, setSelectedEquipmentType] = useState(null);
-    const [isInactiveEquipmentType, setIsInactiveEquipmentType] = useState(false);
+    const [visibleSupplyType, setVisibleSupplyType] = useState(false);
+    const [selectedSupplyType, setSelectedSupplyType] = useState(null);
+    const [isInactiveSupplyType, setIsInactiveSupplyType] = useState(false);
 
     const toast = useRef(null);  
 
@@ -47,21 +48,20 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
     };
 
     useEffect(() => {
-      if( selectedEquipmentType && isInactiveEquipmentType ){
-        confirmDialog({
-          message: `${!viewActiveEquipmentsType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-          header: `${!setViewActiveEquipmentsType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-          icon: 'pi pi-info-circle',
-          acceptClassName: `${!setViewActiveEquipmentsType ? 'p-button-success' : 'p-button-danger'}`,
-          accept,
-          reject,
-          onHide: () => setIsInactiveEquipmentType(false),
-        });
-      }
-    }, [selectedEquipmentType])
-    
-    
-    const renderHeader = () => {
+        if( selectedSupplyType && isInactiveSupplyType ){
+          confirmDialog({
+            message: `${!viewActiveSuppliesType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+            header: `${!setViewActiveSuppliesType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+            icon: 'pi pi-info-circle',
+            acceptClassName: `${!setViewActiveSuppliesType ? 'p-button-success' : 'p-button-danger'}`,
+            accept,
+            reject,
+            onHide: () => setIsInactiveSupplyType(false),
+          });
+        }
+      }, [selectedSupplyType])
+
+      const renderHeader = () => {
         return (
           <div className="flex justify-content-between">
               <IconField iconPosition="left">
@@ -70,8 +70,8 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
               </IconField>
               <IconField iconPosition="left" className='ml-2'>                
                     <InputIcon className="pi pi-search" />
-                    <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newEquipmentType()} className='' />
-                    <Button label={viewActiveEquipmentsType ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveEquipmentType() } className='ml-2' severity={viewActiveEquipmentsType ? 'danger' : 'success'} />
+                    <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newSupplyType()} className='' />
+                    <Button label={viewActiveSuppliesType ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveSupplyType() } className='ml-2' severity={viewActiveSuppliesType ? 'danger' : 'success'} />
                   <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
                     style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}> 
                 </Dialog>
@@ -80,85 +80,86 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
         );
       };
 
-    const newEquipmentType = () => {
+      const newSupplyType = () => {
         setVisible(true);
-        setSelectedEquipmentType(null);
-    }
+        setSelectedSupplyType(null);
+      }
 
-    const viewActiveOrInactiveEquipmentType = () => {
-      setViewActiveEquipmentsType(!viewActiveEquipmentsType);
-    } 
-      
-    const editEquipmentType = (toolType: any) => {
+      const viewActiveOrInactiveSupplyType = () => {
+        setViewActiveSuppliesType(!viewActiveSuppliesType);
+      }
+
+      const editSupplyType = (toolType: any) => {
         setVisible(true);
-        setSelectedEquipmentType(toolType);
-    }
+        setSelectedSupplyType(toolType);
+      }
 
-    const deleteEquipmentType = async (rowData:any) => { 
-        setSelectedEquipmentType(rowData);
-        setIsInactiveEquipmentType(true);              
+      const deleteSupplyType = async (rowData:any) => { 
+        setSelectedSupplyType(rowData);
+        setIsInactiveSupplyType(true);              
       };
-    
-      const showEquipmentType = (rowData:any) => {
-        setVisibleEquipmentType(true);
-        setSelectedEquipmentType(rowData);
+
+      const showSupplyType = (rowData:any) => {
+        setVisibleSupplyType(true);
+        setSelectedSupplyType(rowData);
       }  
-      
+
       const accept = async () => {
-        if (selectedEquipmentType) {
+        if (selectedSupplyType) {
           const formData = new FormData();
-          const status = !viewActiveEquipmentsType ? 'active' : 'inactive';
-          const message = !viewActiveEquipmentsType ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+          const status = !viewActiveSuppliesType ? 'active' : 'inactive';
+          const message = !viewActiveSuppliesType ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
       
           try {
-            formData.append('name', selectedEquipmentType.name);
+            formData.append('name', selectedSupplyType.name);
+            formData.append('description', selectedSupplyType.description);
             formData.append('status', status);
       
-            await apiRequestAuth.put(`/equipment-type/${selectedEquipmentType.id}`, formData, {
+            await apiRequestAuth.put(`/supply-type/${selectedSupplyType.id}`, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`,
               },
             });      
-            setIsChangedEquipmentType(!isChangedEquipmentType);
+            setIsChangedSupplyType(!isChangedSupplyType);
             showAlert('info', 'Info', message);
           } catch (error) {
-            handleErrorResponse(error);
+            showAlert('warn', 'Error', handleErrorResponse(error));
           }
         }
-      }      
+      }
       
-      const reject = () => showAlert('warn', 'Rechazado', 'Has rechazado el proceso');
+    const reject = () => showAlert('warn', 'Rechazado', 'Has rechazado el proceso');
 
-      const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
-      
-      const optionsBodyTemplate = (rowData:any) => {
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+
+    const optionsBodyTemplate = (rowData:any) => {
         return (
           <div className="flex items-center space-x-4">
               <Button
                   size='small'
                   icon="pi pi-pencil"
                   className="p-button-rounded p-button-success p-button-sm"
-                  onClick={() => editEquipmentType(rowData)}
+                  onClick={() => editSupplyType(rowData)}
                   style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
               />
               <Button
                   size='small'
                   icon="pi pi-eye"
                   className="p-button-rounded p-button-warning p-button-sm"
-                  onClick={() => showEquipmentType(rowData)}
+                  onClick={() => showSupplyType(rowData)}
                   style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
               />
               <Button
                   size='small'
-                  icon={viewActiveEquipmentsType ? 'pi pi-trash' : 'pi pi-check'}
-                  className={viewActiveEquipmentsType ? 'p-button-rounded p-button-danger p-button-sm' : 'p-button-rounded p-button-info p-button-sm'}
-                  onClick={() => deleteEquipmentType(rowData)}
+                  icon={viewActiveSuppliesType ? 'pi pi-trash' : 'pi pi-check'}
+                  className={viewActiveSuppliesType ? 'p-button-rounded p-button-danger p-button-sm' : 'p-button-rounded p-button-info p-button-sm'}
+                  onClick={() => deleteSupplyType(rowData)}
                   style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
               />
           </div>
       )};
-    
+
       const header = renderHeader();
 
   return (
@@ -179,24 +180,25 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
         emptyMessage="Registro no encontrado."
       >
         <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
+        <Column field="description" header="Descripción"  style={{ minWidth: '12rem' }}  align={'center'}/>
         <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
-      <Dialog header="Gestión del Tipo de Equipo" visible={visible} onHide={() => setVisible(false)}
+      <Dialog header="Gestión del Tipo de Insumo" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <EquipmentType 
-          equipmentType={selectedEquipmentType} 
+        <SupplyType 
+          supplyType={selectedSupplyType}
           setVisible={setVisible} 
-          isChangedEquipmentType={isChangedEquipmentType} 
-          setIsChangedEquipmentType={setIsChangedEquipmentType} 
+          isChangedSupplyType={isChangedSupplyType} 
+          setIsChangedSupplyType={setIsChangedSupplyType}
         />
       </Dialog>
-      <Dialog header="Información del Tipo de Equipo" visible={visibleEquipmentType} onHide={() => setVisibleEquipmentType(false)}
+      <Dialog header="Información del Tipo de Insumo" visible={visibleSupplyType} onHide={() => setVisibleSupplyType(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <ViewEquipmentType equipmentType={selectedEquipmentType} />
+        <ViewSupplyType supplyType={selectedSupplyType} />
       </Dialog>
     </div>
   )
 }
 
-export default TableEquipmentTypes
+export default TableSupplyTypes
