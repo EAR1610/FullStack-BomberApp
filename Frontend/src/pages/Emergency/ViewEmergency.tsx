@@ -9,12 +9,14 @@ import { Dialog } from "primereact/dialog"
 import SetFirefighterEmergency from "../FireFighters/SetFirefighterEmergency"
 import SetVehicleEmergency from "./SetVehicleEmergency"
 import DetailEmergency from "./DetailEmergency"
+import SetSupplyEmergency from "./SetSupplyEmergency"
 
 const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, changeStatusEmergency }: any) => {
 
     const [viewFirefighterToSetEmergency, setViewFirefighterToSetEmergency] = useState(false);  
     const [viewVehicleSetEmergency, setViewVehicleSetEmergency] = useState(false);
     const [viewDetailEmergency, setViewDetailEmergency] = useState(false);
+    const [viewSupplyEmergency, setViewSupplyEmergency] = useState(false);
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     const [selectedStatus, setSelectedStatus] = useState<string>(emergency?.status || 'Registrada');
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -146,6 +148,17 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
               </div>
 
               <div className="mb-4">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                Insumos para la emergencia
+                </label>
+                <input
+                  onClick={ () => setViewSupplyEmergency(true) }
+                  value='Establecer los insumos para la emergencia'
+                  className="w-full cursor-pointer rounded-lg border border-yellow bg-green-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
+                />
+              </div>
+
+              <div className="mb-4">
                 <label htmlFor='status' className="mb-2.5 block font-medium text-black dark:text-white">
                   Estado
                 </label>
@@ -191,6 +204,10 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
       <Dialog header="Asignación de unidades a la emergencia" visible={viewVehicleSetEmergency} onHide={() => setViewVehicleSetEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SetVehicleEmergency idEmergency={emergency?.id} />
+      </Dialog>
+      <Dialog header="Asignación de insumos a la emergencia" visible={viewSupplyEmergency} onHide={() => setViewSupplyEmergency(false)}
+        style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        <SetSupplyEmergency idEmergency={emergency?.id} />
       </Dialog>
       <Dialog
           header="Detalle Emergencia"

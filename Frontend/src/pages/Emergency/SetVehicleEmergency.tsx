@@ -182,106 +182,106 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
-    <Toast ref={toast} />
-    <div className="flex flex-wrap items-center justify-center">            
-      <div className={`${currentToken ? 'w-full' : 'border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'}`}>
-        <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-          <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
-            Establece las unidades para la emergencia en <span className='text-red-500'>BomberApp</span>
-          </h2>
-          <form onSubmit={ handleSubmit }>
-            <div className="mb-4">
-              <label htmlFor='vehicle' className="mb-2.5 block font-medium text-black dark:text-white">
-                Vehículo
-              </label>
-              <div className="relative">
-                <Dropdown
-                  id="vehicle"
-                  value={ selectedVehicle }
-                  options={vehicles.map((vehicle: any) => ({
-                    label: `${vehicle.brand} ${vehicle.model} - ${vehicle.plateNumber}`,
-                    value: vehicle 
-                  }))}
-                  onChange={(e) => setSelectedVehicle(e.value)}
-                  placeholder="Selecciona el vehículo para la emergencia"
-                  className="w-full"
+      <Toast ref={toast} />
+      <div className="flex flex-wrap items-center justify-center">            
+        <div className={`${currentToken ? 'w-full' : 'border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'}`}>
+          <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
+              Establece las unidades para la emergencia en <span className='text-red-500'>BomberApp</span>
+            </h2>
+            <form onSubmit={ handleSubmit }>
+              <div className="mb-4">
+                <label htmlFor='vehicle' className="mb-2.5 block font-medium text-black dark:text-white">
+                  Vehículo
+                </label>
+                <div className="relative">
+                  <Dropdown
+                    id="vehicle"
+                    value={ selectedVehicle }
+                    options={vehicles.map((vehicle: any) => ({
+                      label: `${vehicle.brand} ${vehicle.model} - ${vehicle.plateNumber}`,
+                      value: vehicle 
+                    }))}
+                    onChange={(e) => setSelectedVehicle(e.value)}
+                    placeholder="Selecciona el vehículo para la emergencia"
+                    className="w-full"
+                  />
+                </div>
+              </div>
+    
+              <div className="flex flex-wrap justify-between">
+                <div className="mb-4 w-full md:w-1/2">
+                  <label htmlFor='mileageOutput' className="mb-2.5 block font-medium text-black dark:text-white">
+                    Kilometraje de salida
+                  </label>
+                  <div className="relative">
+                    <input
+                      id='mileageOutput'
+                      type="number"
+                      placeholder="Ingrese el kilometraje de salida"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      required
+                      value={mileageOutput}
+                      min={0}
+                      onChange={ (e) => setMileageOutput(parseFloat(e.target.value) || 0) }
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4 w-full md:w-1/2">
+                  <label htmlFor='mileageInBound' className="mb-2.5 block font-medium text-black dark:text-white">
+                    Kilometraje de entrada
+                  </label>
+                  <div className="relative">
+                    <input
+                      id='mileageInBound'
+                      type="number"
+                      placeholder="Ingrese el kilometraje de entrada"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      required
+                      value={mileageInbound}
+                      min={0}
+                      onChange={ (e) => setMileageInbound(parseFloat(e.target.value) || 0) }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-5 mt-5">
+                <input
+                  type="submit"
+                  value={isUpdateVehicleEmergency ? 'Actualizar vehiculo para la emergencia' : 'Registrar vehiculo para la emergencia'}
+                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
                 />
               </div>
+            </form>
+    
+            <div className="card p-4 bg-gray-100 rounded-lg shadow-md">
+              <Toast ref={toast} />
+              <ConfirmDialog />
+              <DataTable
+                className='bg-white rounded-md overflow-hidden'
+                value={vechiclesEmergency}
+                paginator
+                rows={10}
+                dataKey="id"
+                filters={filters}
+                filterDisplay="row"
+                loading={loading}
+                globalFilterFields={['vehicle.plateNumber', 'vehicle.brand', 'vehicle.model', 'emergency.description']}
+                header={header}
+                emptyMessage="Registro no encontrado."
+              >
+                <Column field="vehicle.brand" header="Marca"  style={{ minWidth: '4rem' }} align={'center'} />
+                <Column field="vehicle.model" header="Modelo"  style={{ minWidth: '4rem' }} align={'center'} />
+                <Column field="vehicle.plateNumber" header="Placa"  style={{ minWidth: '4rem' }} align={'center'} />
+                <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} />
+              </DataTable>
             </div>
-  
-            <div className="flex flex-wrap justify-between">
-              <div className="mb-4 w-full md:w-1/2">
-                <label htmlFor='mileageOutput' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Kilometraje de salida
-                </label>
-                <div className="relative">
-                  <input
-                    id='mileageOutput'
-                    type="number"
-                    placeholder="Ingrese el kilometraje de salida"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={mileageOutput}
-                    min={0}
-                    onChange={ (e) => setMileageOutput(parseFloat(e.target.value) || 0) }
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4 w-full md:w-1/2">
-                <label htmlFor='mileageInBound' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Kilometraje de entrada
-                </label>
-                <div className="relative">
-                  <input
-                    id='mileageInBound'
-                    type="number"
-                    placeholder="Ingrese el kilometraje de entrada"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={mileageInbound}
-                    min={0}
-                    onChange={ (e) => setMileageInbound(parseFloat(e.target.value) || 0) }
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-5 mt-5">
-              <input
-                type="submit"
-                value={isUpdateVehicleEmergency ? 'Actualizar vehiculo para la emergencia' : 'Registrar vehiculo para la emergencia'}
-                className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
-              />
-            </div>
-          </form>
-  
-          <div className="card p-4 bg-gray-100 rounded-lg shadow-md">
-            <Toast ref={toast} />
-            <ConfirmDialog />
-            <DataTable
-              className='bg-white rounded-md overflow-hidden'
-              value={vechiclesEmergency}
-              paginator
-              rows={10}
-              dataKey="id"
-              filters={filters}
-              filterDisplay="row"
-              loading={loading}
-              globalFilterFields={['vehicle.plateNumber', 'vehicle.brand', 'vehicle.model', 'emergency.description']}
-              header={header}
-              emptyMessage="Registro no encontrado."
-            >
-              <Column field="vehicle.brand" header="Marca"  style={{ minWidth: '4rem' }} align={'center'} />
-              <Column field="vehicle.model" header="Modelo"  style={{ minWidth: '4rem' }} align={'center'} />
-              <Column field="vehicle.plateNumber" header="Placa"  style={{ minWidth: '4rem' }} align={'center'} />
-              <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} />
-            </DataTable>
           </div>
         </div>
       </div>
-    </div>
-  </div>  
+    </div>  
   )
 }
 

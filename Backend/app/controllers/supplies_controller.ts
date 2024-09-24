@@ -17,7 +17,14 @@ export default class SuppliesController {
   }
 
   async inactiveSupplies({}: HttpContext) {
-    const supplies = await Supply.query().where('status', 'inactive');
+    const supplies = await Supply.query()
+    .whereHas('supplyType', (query) => {
+      query.where('status', 'active');
+    })
+    .preload('supplyType', (query) => {
+      query.select('id', 'name', 'description', 'status')
+    })
+    .where('status', 'inactive');
     return supplies
   }
 

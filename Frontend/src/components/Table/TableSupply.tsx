@@ -17,7 +17,7 @@ import { handleErrorResponse } from '../../helpers/functions';
 import Supply from '../../pages/Supply/Supply';
 import ViewSupply from '../../pages/Supply/ViewSupply';
 
-const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading, isChangedSupply, setIsChangedSupply }: any) => {   
+const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading, isChangedSupply, setIsChangedSupply }: any) => {
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -111,6 +111,7 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
       
           try {
             formData.append('name', selectedSupply.name);
+            formData.append('supplyTypeId', JSON.stringify(selectedSupply.supplyTypeId));
             formData.append('status', status);
       
             await apiRequestAuth.put(`/supply/${selectedSupply.id}`, formData, {
@@ -173,7 +174,7 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['name', 'status']}
+        globalFilterFields={['name', 'supplyType.name', 'status']}
         header={header}
         emptyMessage="Registro no encontrado."
       >

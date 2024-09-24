@@ -30,6 +30,9 @@ import SuppliesController from '#controllers/supplies_controller';
 import SupplyEmergenciesController from '#controllers/supply_emergencies_controller';
 
 router.resource('users/supply-emergency', SupplyEmergenciesController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/supplies-per-emergency/:id', [SupplyEmergenciesController, 'suppliesPerEmergency']);
+}).prefix('users/supply-emergency').use(middleware.auth());
 
 router.resource('users/supply', SuppliesController).use('*', middleware.auth());
 router.group(() => {

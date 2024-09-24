@@ -59,7 +59,6 @@ const Supply = ({ supply, setVisible, isChangedSupply, setIsChangedSupply }: any
 
     const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
         e.preventDefault();
-        debugger;
         const formData = new FormData();
     
         if( !name || !selectedSupplyType ){
@@ -73,7 +72,6 @@ const Supply = ({ supply, setVisible, isChangedSupply, setIsChangedSupply }: any
     
         try {
           if (supply) {
-            console.log(JSON.stringify(selectedSupplyType?.id));
             await apiRequestAuth.put(`/supply/${supply.id}`, formData, {
               headers: {
                 Authorization: `Bearer ${currentToken?.token}`,
