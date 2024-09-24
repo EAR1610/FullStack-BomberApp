@@ -25,6 +25,7 @@ export const updateSupplyValidator = vine.compile(
                 .first()
                 return !supply
         }),
+        supplyTypeId: vine.number(),
         status: vine.enum(['active', 'inactive', 'suspended']),
     })
 )

@@ -5,7 +5,14 @@ import type { HttpContext } from '@adonisjs/core/http'
 export default class SuppliesController {
 
   async index({}: HttpContext) {
-    const supplies = await Supply.query().where('status', 'active');
+    const supplies = await Supply.query()
+    .whereHas('supplyType', (query) => {
+      query.where('status', 'active');
+    })
+    .preload('supplyType', (query) => {
+      query.select('id', 'name', 'description', 'status')
+    })
+    .where('status', 'active');
     return supplies
   }
 

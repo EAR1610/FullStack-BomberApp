@@ -14,22 +14,21 @@ import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { handleErrorResponse } from '../../helpers/functions';
-import SupplyType from '../../pages/SupplyType/SupplyType';
-import ViewSupplyType from '../../pages/SupplyType/ViewSupplyType';
+import Supply from '../../pages/Supply/Supply';
+import ViewSupply from '../../pages/Supply/ViewSupply';
 
-const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesType, loading, isChangedSupplyType, setIsChangedSupplyType }: any) => {
-
+const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading, isChangedSupply, setIsChangedSupply }: any) => {   
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        "supplyType.name": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }        
       });
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [visible, setVisible] = useState(false);
-    const [visibleSupplyType, setVisibleSupplyType] = useState(false);
-    const [selectedSupplyType, setSelectedSupplyType] = useState(null);
-    const [isInactiveSupplyType, setIsInactiveSupplyType] = useState(false);
+    const [visibleSupply, setVisibleSupply] = useState(false);
+    const [selectedSupply, setSelectedSupply] = useState(null);
+    const [isInactiveSupply, setIsInactiveSupply] = useState(false);
 
     const toast = useRef(null);  
 
@@ -48,18 +47,18 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
     };
 
     useEffect(() => {
-        if( selectedSupplyType && isInactiveSupplyType ){
+        if( selectedSupply && isInactiveSupply ){
           confirmDialog({
-            message: `${!viewActiveSuppliesType ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-            header: `${!setViewActiveSuppliesType ? 'Confirma la activación' : 'Confirma la inactivación'}`,
+            message: `${!viewActiveSupplies ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
+            header: `${!setViewActiveSupplies ? 'Confirma la activación' : 'Confirma la inactivación'}`,
             icon: 'pi pi-info-circle',
-            acceptClassName: `${!setViewActiveSuppliesType ? 'p-button-success' : 'p-button-danger'}`,
+            acceptClassName: `${!setViewActiveSupplies ? 'p-button-success' : 'p-button-danger'}`,
             accept,
             reject,
-            onHide: () => setIsInactiveSupplyType(false),
+            onHide: () => setIsInactiveSupply(false),
           });
         }
-      }, [selectedSupplyType])
+      }, [selectedSupply]);
 
       const renderHeader = () => {
         return (
@@ -70,8 +69,8 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
               </IconField>
               <IconField iconPosition="left" className='ml-2'>                
                     <InputIcon className="pi pi-search" />
-                    <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newSupplyType()} className='' />
-                    <Button label={viewActiveSuppliesType ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveSupplyType() } className='ml-2' severity={viewActiveSuppliesType ? 'danger' : 'success'} />
+                    <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newSupply()} className='' />
+                    <Button label={viewActiveSupplies ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveSupply() } className='ml-2' severity={viewActiveSupplies ? 'danger' : 'success'} />
                   <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
                     style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}> 
                 </Dialog>
@@ -80,48 +79,47 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
         );
       };
 
-      const newSupplyType = () => {
+      const newSupply = () => {
         setVisible(true);
-        setSelectedSupplyType(null);
+        setSelectedSupply(null);
       }
 
-      const viewActiveOrInactiveSupplyType = () => {
-        setViewActiveSuppliesType(!viewActiveSuppliesType);
+      const viewActiveOrInactiveSupply = () => {
+        setViewActiveSupplies(!viewActiveSupplies);
       }
 
-      const editSupplyType = (toolType: any) => {
+      const editSupply = (toolType: any) => {
         setVisible(true);
-        setSelectedSupplyType(toolType);
+        setSelectedSupply(toolType);
       }
 
-      const deleteSupplyType = async (rowData:any) => { 
-        setSelectedSupplyType(rowData);
-        setIsInactiveSupplyType(true);              
+      const deleteSupply = async (rowData:any) => { 
+        setSelectedSupply(rowData);
+        setIsInactiveSupply(true);
       };
 
-      const showSupplyType = (rowData:any) => {
-        setVisibleSupplyType(true);
-        setSelectedSupplyType(rowData);
+      const showSupply = (rowData:any) => {
+        setVisibleSupply(true);
+        setSelectedSupply(rowData);
       }  
 
       const accept = async () => {
-        if (selectedSupplyType) {
+        if (selectedSupply) {
           const formData = new FormData();
-          const status = !viewActiveSuppliesType ? 'active' : 'inactive';
-          const message = !viewActiveSuppliesType ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+          const status = !viewActiveSupplies ? 'active' : 'inactive';
+          const message = !viewActiveSupplies ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
       
           try {
-            formData.append('name', selectedSupplyType.name);
-            formData.append('description', selectedSupplyType.description);
+            formData.append('name', selectedSupply.name);
             formData.append('status', status);
       
-            await apiRequestAuth.put(`/supply-type/${selectedSupplyType.id}`, formData, {
+            await apiRequestAuth.put(`/supply/${selectedSupply.id}`, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`,
               },
             });      
-            setIsChangedSupplyType(!isChangedSupplyType);
+            setIsChangedSupply(!isChangedSupply);
             showAlert('info', 'Info', message);
           } catch (error) {
             showAlert('warn', 'Error', handleErrorResponse(error));
@@ -140,21 +138,21 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
                   size='small'
                   icon="pi pi-pencil"
                   className="p-button-rounded p-button-success p-button-sm"
-                  onClick={() => editSupplyType(rowData)}
+                  onClick={() => editSupply(rowData)}
                   style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
               />
               <Button
                   size='small'
                   icon="pi pi-eye"
                   className="p-button-rounded p-button-warning p-button-sm"
-                  onClick={() => showSupplyType(rowData)}
+                  onClick={() => showSupply(rowData)}
                   style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
               />
               <Button
                   size='small'
-                  icon={viewActiveSuppliesType ? 'pi pi-trash' : 'pi pi-check'}
-                  className={viewActiveSuppliesType ? 'p-button-rounded p-button-danger p-button-sm' : 'p-button-rounded p-button-info p-button-sm'}
-                  onClick={() => deleteSupplyType(rowData)}
+                  icon={viewActiveSupplies ? 'pi pi-trash' : 'pi pi-check'}
+                  className={viewActiveSupplies ? 'p-button-rounded p-button-danger p-button-sm' : 'p-button-rounded p-button-info p-button-sm'}
+                  onClick={() => deleteSupply(rowData)}
                   style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
               />
           </div>
@@ -179,26 +177,26 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
         header={header}
         emptyMessage="Registro no encontrado."
       >
-        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
-        <Column field="description" header="Descripción"  style={{ minWidth: '12rem' }}  align={'center'}/>
+        <Column field="name" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>        
+        <Column field="supplyType.name" header="Tipo de insumo"  style={{ minWidth: '12rem' }}  align={'center'}/> 
         <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
-      <Dialog header="Gestión del Tipo de Insumo" visible={visible} onHide={() => setVisible(false)}
+      <Dialog header="Gestión del Insumos" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <SupplyType 
-          supplyType={selectedSupplyType}
+        <Supply
+          supply={selectedSupply}
           setVisible={setVisible} 
-          isChangedSupplyType={isChangedSupplyType} 
-          setIsChangedSupplyType={setIsChangedSupplyType}
+          isChangedSupply={isChangedSupply} 
+          setIsChangedSupply={setIsChangedSupply}
         />
       </Dialog>
-      <Dialog header="Información del Tipo de Insumo" visible={visibleSupplyType} onHide={() => setVisibleSupplyType(false)}
+      <Dialog header="Información del Insumo" visible={visibleSupply} onHide={() => setVisibleSupply(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <ViewSupplyType supplyType={selectedSupplyType} />
+        <ViewSupply supply={selectedSupply} />
       </Dialog>
     </div>
   )
 }
 
-export default TableSupplyTypes
+export default TableSupply
