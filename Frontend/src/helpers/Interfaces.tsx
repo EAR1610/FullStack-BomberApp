@@ -124,6 +124,12 @@ export interface ToolPerEmergencyTypeProps {
   onShowDetails: () => void;
 }
 
+export interface SupplyPerEmergencyProps {
+  name: string;
+  quantity: number;
+  onShowDetails: () => void;
+}
+
 export interface EmergencyModalProps {
   isOpen: boolean;
   onClose: () => void;

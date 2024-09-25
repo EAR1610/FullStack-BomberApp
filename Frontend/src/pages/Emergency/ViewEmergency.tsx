@@ -154,7 +154,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                 <input
                   onClick={ () => setViewSupplyEmergency(true) }
                   value='Establecer los insumos para la emergencia'
-                  className="w-full cursor-pointer rounded-lg border border-yellow bg-green-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
+                  className="w-full cursor-pointer rounded-lg border border-yellow bg-orange-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />
               </div>
 
