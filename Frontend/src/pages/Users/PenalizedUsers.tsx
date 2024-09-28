@@ -2,20 +2,18 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
 import { apiRequestAuth } from "../../lib/apiRequest";
-import Table from "../../components/Table/Table";
 import { Toast } from 'primereact/toast';
 import { useNavigate } from "react-router-dom";
+import TablePenalizedUsers from "../../components/Table/TablePenalizedUsers";
 
-const User = () => {
 
-  const [users, setUsers] = useState([]);
-  const [changedAUser, setChangedAUser] = useState(false);
-  const [viewActiveUsers, setViewActiveUsers] = useState(true);
+const PenalizedUsers = () => {  
+  const [penalizedUsers, setPenalizedUsers] = useState([]);
+  const [changedAPenalizedUser, setChangedAPenalizedUser] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
-
 
   const navigate = useNavigate();
 
@@ -31,42 +29,32 @@ const User = () => {
    *
    * @return {Promise<void>} - A promise that resolves when the users are retrieved successfully.
    */
-    const getUsers = async () => {
+    const getPenalizedUsers = async () => {
       try {
         let response;
-        if (viewActiveUsers) {
-          response = await apiRequestAuth.get("/",{
-            headers: {
-              Authorization: `Bearer ${currentToken?.token}`
-            }
-          });        
-        } else {
-          response = await apiRequestAuth.post("/inactive-users",{},{
-            headers: {
-              Authorization: `Bearer ${currentToken?.token}`
-            }
-          });    
-        }
-        if(response) setUsers(response.data);
+        response = await apiRequestAuth.post("/penalized-users", {},{
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        });
+        if(response) setPenalizedUsers(response.data);
       } catch (error) {
         toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
       }
     }
-    getUsers();
-  }, [changedAUser, viewActiveUsers]);
+    getPenalizedUsers();
+  }, [changedAPenalizedUser]);
 
-  return (    
+  return (
     <>
       <Toast ref={toast} />
-      <Table 
-        data={users} 
-        viewActiveUsers={viewActiveUsers} 
-        setViewActiveUsers={setViewActiveUsers} 
-        changedAUser={changedAUser} 
-        setChangedAUser={setChangedAUser}
+      <TablePenalizedUsers 
+        data={penalizedUsers}
+        changedAPenalizedUser= {changedAPenalizedUser}
+        setChangedAPenalizedUser={setChangedAPenalizedUser}
       />
     </>
-  );
+  )
 }
 
-export default User
+export default PenalizedUsers

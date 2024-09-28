@@ -24,6 +24,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
     fullName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     email: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     address: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    dpi: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     status: { value: null, matchMode: FilterMatchMode.EQUALS },
     rol: { value: null, matchMode: FilterMatchMode.EQUALS },
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -84,7 +85,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
           <IconField iconPosition="left" className='ml-2'>                
                 <InputIcon className="pi pi-search" />
                 <Button label="Crear nuevo usuario" icon="pi pi-check" loading={loading} onClick={() => newUser()} className='' />
-                <Button label={viewActiveUsers ? 'Ver usuarios inactivos' : 'Ver usuarios activos'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveUsers()} className='ml-2' severity={viewActiveUsers ? 'danger' : 'success'} />              
+                <Button label={viewActiveUsers ? 'Ver usuarios inactivos' : 'Ver usuarios activos'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveUsers()} className='ml-2' severity={viewActiveUsers ? 'danger' : 'success'} />                
           </IconField>
       </div>
     );
@@ -135,8 +136,8 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
         });
         showAlert('info', 'Info', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario`);
         setChangedAUser(!changedAUser);
-      } catch (error) {
-        handleErrorResponse(error);
+      } catch (error) {        
+        showAlert('error', 'Error', handleErrorResponse(error));
       }
     }
   };
@@ -187,13 +188,13 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['username', 'fullName', 'rol', 'address']}
+        globalFilterFields={['username', 'fullName', 'rol', 'address', 'dpi']}
         header={header}
         emptyMessage="Usuario no encontrado."
       >
         <Column field="username" header="Usuario"  style={{ minWidth: '8rem' }}  align={'center'}/>
         <Column field="fullName" header="Nombre" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="dpi" header="DPI" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column field="roleId" header="Rol" body={roleBodyTemplate} style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>

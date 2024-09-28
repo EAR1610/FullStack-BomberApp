@@ -174,6 +174,7 @@ router.group(() => {
   router.post('/inactive-users', [UsersController, 'inactiveUsers']);
   router.post('/suspended-users', [UsersController, 'suspendedUsers']);
   router.get('/profile/:file', [UsersController, 'getProfile']);
+  router.post('/penalized-users', [UsersController, 'getPenalizedUsers']);
   router.post('/penalizations/:id', [UsersController, 'addPenalization']);
   router.post('/remove-penalizations/:id', [UsersController, 'removePenalization']);
 }).prefix('users').use(middleware.auth());

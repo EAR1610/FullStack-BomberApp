@@ -49,6 +49,11 @@ export default class UsersController {
     return response.ok({ message: 'Penalización aplicada con éxito.', penalizations: user.penalizations });
   }
 
+  async getPenalizedUsers() {
+    const user = await User.query().where('penalizations', '>', 0);
+    return user;
+  }
+
   async removePenalization({ params, response }: HttpContext) {
     const user = await User.find(params.id);
     

@@ -31,6 +31,7 @@ import EmergencyRequestByAdmin from './pages/Emergency/EmergencyRequestByAdmin';
 import SuppliesType from './pages/SupplyType/SuppliesType';
 import Supplies from './pages/Supply/Supplies';
 import Dashboard from './pages/Dashboard/ECommerce';
+import PenalizedUsers from './pages/Users/PenalizedUsers';
 
 
 /**
@@ -93,6 +94,14 @@ function App() {
               element: (
                 <>
                   <User />
+                </>
+              )
+            },
+            {
+              path: 'penalized-users',
+              element: (
+                <>
+                  <PenalizedUsers />
                 </>
               )
             },
