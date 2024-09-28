@@ -34,6 +34,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      debugger;
     
       try {    
         const updateEmergencyFormData = new FormData();
@@ -53,6 +54,16 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         });
     
         showAlert('info', 'Info', 'Emergencia registrada correctamente!');
+
+        if( selectedStatus == 'Rechazada' ) {
+          await apiRequestAuth.post(`/penalizations/${emergency.userId}`, {}, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${currentToken?.token}`,
+            },
+          });
+          showAlert('info', 'Info', 'Se ha penalizado al usuario');
+        }
         setChangeStatusEmergency(!changeStatusEmergency);
         setTimeout(() => {
           setViewEmergency(false);

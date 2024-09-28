@@ -1,4 +1,5 @@
 import Setting from '#models/setting';
+import { settingValidator } from '#validators/setting';
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class SettingsController {
@@ -33,7 +34,15 @@ export default class SettingsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {}
+  async update({ params, request, response }: HttpContext) {
+    const { id } = params
+    const payload = await request.validateUsing(settingValidator);
+    const setting = await Setting.findOrFail(id);
+    if ( !setting ) return response.status(404).json({ message: 'No se encontro la configuración' });
+
+    setting.merge(payload);
+    await setting.save();
+  }
 
   /**
    * Delete record
