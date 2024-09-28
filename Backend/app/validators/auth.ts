@@ -24,6 +24,16 @@ export const loginValidator = vine.compile(
           size: '2mb',
           extnames: ['jpg', 'png', 'jpeg']
         }),
+        dpi: vine.string().minLength(13).maxLength(13).unique(async (db, value, field) => {          
+          if (!value) return true;
+          const existingUserWithDpi = await db
+            .from('users')
+            .where('dpi', value)
+            .first();
+    
+          return !existingUserWithDpi;
+        }),
+        penalizations: vine.number().nullable(),
         roleId: vine.number(),
         shiftPreference: vine.enum(['Par', 'Impar']).nullable(),
         status: vine.enum(['active', 'inactive', 'suspended']),

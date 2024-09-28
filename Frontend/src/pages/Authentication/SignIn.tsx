@@ -32,7 +32,6 @@ const SignIn: React.FC = () => {
 
     try {
       // ? Use the apiRequest function to send a POST request to the "/login" endpoint
-      console.log(apiRequest);
       const res = await apiRequest.post("/login", {
         email,
         password,
@@ -56,11 +55,13 @@ const SignIn: React.FC = () => {
     } catch (err: any) {
       // ? Check if the error response contains the specific inactive account message
       if (err.response && err.response.status === 401 && err.response.data.error === 'Tu cuenta no está activa.') {
-        showAlert("error", "Tu cuenta no está activa. Por favor, contacta al administrador.", "Error");
+        showAlert("error", "Tu cuenta no está activa.", "Error");
+      } else if (err.response && err.response.status === 401 && err.response.data.error === 'Tu cuenta está suspendida por demasiadas penalizaciones.') {
+        showAlert("error", "Tu cuenta está suspendida por demasiadas penalizaciones.", "Error");
       } else {
         showAlert("error", "Credenciales incorrectas", "Error");
       }
-    }    
+    }
   };
 
   /**

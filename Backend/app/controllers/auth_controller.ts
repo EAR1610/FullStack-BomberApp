@@ -1,4 +1,5 @@
 import Firefighter from "#models/firefighter";
+import Setting from "#models/setting";
 import User from "#models/user";
 import { loginValidator, registerValidator } from "#validators/auth";
 import { cuid } from "@adonisjs/core/helpers";
@@ -30,6 +31,8 @@ export default class AuthController {
             password: payload.password,
             address: payload.address,
             roleId: payload.roleId,
+            dpi: payload.dpi,
+            penalizations: payload.penalizations,
             status: payload.status,
         }
 
@@ -76,6 +79,11 @@ export default class AuthController {
         const user = await User.verifyCredentials(email, password);
         const userId = user.$attributes.id;
         const firefighter = await Firefighter.query().where('userId', userId).first();
+
+        const settings = await Setting.query().first()
+        const maxPenalizations = settings?.max_penalizations || 3;
+        
+        if (user.penalizations >= maxPenalizations) response.status(401).send({ error: 'Tu cuenta está suspendida por demasiadas penalizaciones.' });
 
         if (user.status !== 'active') return response.status(401).send({ error: 'Tu cuenta no está activa.' });
         

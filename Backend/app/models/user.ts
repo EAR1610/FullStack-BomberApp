@@ -37,6 +37,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column()
   declare photography: string
+
+  @column()
+  declare dpi: string
+
+  @column()
+  declare penalizations: number
   
   @column()
   public status: 'active' | 'inactive' | 'suspended' | undefined

@@ -14,8 +14,9 @@ export default class extends BaseSchema {
       table.string('password', 180).notNullable()
       table.string('address', 255).notNullable()
       table.string('photography', 255).nullable()
+      table.string('dpi', 13).notNullable()
+      table.integer('penalizations').nullable().defaultTo(0)
       table.enu('status', ['active', 'inactive', 'suspended']).defaultTo('active')
-
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

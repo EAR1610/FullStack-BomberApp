@@ -10,7 +10,8 @@ export default class extends BaseSeeder {
         email: 'admin@bomberapp.com',
         password: 'admin',
         address: 'Peten',
-        roleId: 1
+        roleId: 1,
+        dpi: '1234567891012',
       },
       {
         username: 'bombero',
@@ -18,7 +19,8 @@ export default class extends BaseSeeder {
         email: 'bombero@bomberapp.com',
         password: 'bombero',
         address: 'Peten',
-        roleId: 2
+        roleId: 2,
+        dpi: '1234567891013',
       },
       {
         username: 'user',
@@ -26,7 +28,8 @@ export default class extends BaseSeeder {
         email: 'user@bomberapp.com',
         password: 'user',
         address: 'Peten',        
-        roleId: 3
+        roleId: 3,
+        dpi: '1234567891014',
       }
     ];
 
@@ -39,7 +42,8 @@ export default class extends BaseSeeder {
       user.email = userData.email;
       user.password = userData.password;
       user.roleId = userData.roleId;
-
+      user.dpi = userData.dpi;
+      
       await user.save();
     }
   }

@@ -28,6 +28,12 @@ import VehicleEmergenciesController from '#controllers/vehicle_emergencies_contr
 import SupplyTypesController from '#controllers/supply_types_controller';
 import SuppliesController from '#controllers/supplies_controller';
 import SupplyEmergenciesController from '#controllers/supply_emergencies_controller';
+import SettingsController from '#controllers/settings_controller';
+
+/** 
+ * ? Routes for the application: SETTINGS 🔧 
+ */
+router.resource('users/settings', SettingsController).use('*', middleware.auth());
 
 router.resource('users/supply-emergency', SupplyEmergenciesController).use('*', middleware.auth());
 router.group(() => {
@@ -168,6 +174,8 @@ router.group(() => {
   router.post('/inactive-users', [UsersController, 'inactiveUsers']);
   router.post('/suspended-users', [UsersController, 'suspendedUsers']);
   router.get('/profile/:file', [UsersController, 'getProfile']);
+  router.post('/penalizations/:id', [UsersController, 'addPenalization']);
+  router.post('/remove-penalizations/:id', [UsersController, 'removePenalization']);
 }).prefix('users').use(middleware.auth());
 
 /** 

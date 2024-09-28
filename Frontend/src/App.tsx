@@ -3,7 +3,6 @@ import { createBrowserRouter, RouterProvider, RouteObject } from 'react-router-d
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import ECommerce from './pages/Dashboard/ECommerce';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import DefaultLayout from './layout/DefaultLayout';
@@ -31,7 +30,7 @@ import { FirefighterEmergencies } from './pages/FireFighters/FirefighterEmergenc
 import EmergencyRequestByAdmin from './pages/Emergency/EmergencyRequestByAdmin';
 import SuppliesType from './pages/SupplyType/SuppliesType';
 import Supplies from './pages/Supply/Supplies';
-
+import Dashboard from './pages/Dashboard/ECommerce';
 
 
 /**
@@ -85,7 +84,7 @@ function App() {
               path: 'dashboard',
               element: (
                 <>
-                  <ECommerce />
+                  <Dashboard />
                 </>
               )
             },            

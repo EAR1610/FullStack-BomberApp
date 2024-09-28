@@ -38,6 +38,30 @@ export default class UsersController {
     return response.ok({ message: 'Contraseña actualizada correctamente' });
   }
 
+  async addPenalization({ params, response }: HttpContext) {
+    const user = await User.find(params.id);
+    
+    if (!user) return response.status(404).send({ error: 'Usuario no encontrado' });
+    
+    user.penalizations += 1;
+    await user.save();
+  
+    return response.ok({ message: 'Penalización aplicada con éxito.', penalizations: user.penalizations });
+  }
+
+  async removePenalization({ params, response }: HttpContext) {
+    const user = await User.find(params.id);
+    
+    if (!user) return response.status(404).send({ error: 'Usuario no encontrado' });
+    
+    if (user.penalizations > 0) {
+      user.penalizations -= 1;
+      await user.save();
+    }
+  
+    return response.ok({ message: 'Penalización eliminada con éxito.', penalizations: user.penalizations });
+  }
+  
   async getProfile({ response, params }: HttpContext) {
     const filePath = app.makePath(`uploads/pictures/${params.file}`);
 
