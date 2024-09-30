@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
 const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:any) => {
 
@@ -24,6 +25,8 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   const toast = useRef(null);
 
@@ -60,7 +63,6 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
   
 
   useEffect(() => {
-
     const getVehicle = async () => {
       const formattedDate = getFormattedDate();
         setDateOfPurchase(formattedDate);
@@ -140,12 +142,13 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
         });
         showAlert('info', 'Info', 'Registro creado!');
       }
+      await createLog(userId, 'CREATE', 'VEHÍCULO', `Se ha creado el registro de vehículo: ${brand} ${model}`, currentToken?.token);
       setIsChangedVehicle(!isChangedVehicle);
       setTimeout(() => {
         setVisible(false);        
       }, 1000);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   }
 

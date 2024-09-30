@@ -3,6 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
 const VehicleType = ({ vehicleType, setVisible, isChangedVehicleType, setIsChangedVehicleType }:any) => {
 
@@ -13,6 +14,8 @@ const VehicleType = ({ vehicleType, setVisible, isChangedVehicleType, setIsChang
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
 
     const [errorMessages, setErrorMessages] = useState('');
     
@@ -54,28 +57,17 @@ const VehicleType = ({ vehicleType, setVisible, isChangedVehicleType, setIsChang
             });
             showAlert('info', 'Info', 'Registro Creado!');
           }
+          await createLog(userId, 'CREATE', 'TIPO VEHÍCULO', `Se ha ${vehicleType ? 'actualizado' : 'creado'} el registro de tipo de vehículo: ${name}`, currentToken?.token);
           setIsChangedVehicleType(!isChangedVehicleType);
           setTimeout(() => {
             setVisible(false);            
           }, 1000);
-        } catch (error) {
-          showAlert('error', 'Error', handleErrorResponse(error));
+        } catch (err) {
+          showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
         }
       }
-
-      const handleErrorResponse = (error: any) => {      
-        if (error.response && error.response.data && error.response.data.errors) {
-          const errorMessages = error.response.data.errors
-            .map((err: { message: string }) => err.message)
-            .join(', ');
-            setErrorMessages(errorMessages);
-        } else {
-          setErrorMessages('Ocurrió un error inesperado');
-        }
-        return errorMessages
-      };
     
-      const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">

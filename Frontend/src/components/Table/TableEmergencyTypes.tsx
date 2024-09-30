@@ -15,7 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { EmergencyType } from '../../pages/EmergencyType/EmergencyType';
 import ViewEmergencyType from '../../pages/EmergencyType/ViewEmergencyType';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEmergenciesType, loading, isChangedEmergencyType, setIsChangedEmergencyType }:any) => {
 
@@ -35,6 +35,8 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
       const authContext = useContext<AuthContextProps | undefined>(AuthContext);
       if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
       const { currentToken } = authContext;
+      const userId = currentToken?.user?.id || 1;
+      const [errorMessages, setErrorMessages] = useState<string>('');
 
       const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -117,18 +119,18 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${currentToken?.token}`,
           },
-        });
-    
+        });    
         const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+        await createLog(userId, 'UPDATE', 'TIPO EMERGENCIA', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro de tipo de emergencia: ${selectedEmergencyType.name}`, currentToken?.token);
+
         showAlert('info', 'Confirmado', message);
         setIsChangedEmergencyType(!isChangedEmergencyType);
-      } catch (error) {
-        handleErrorResponse(error);
+      } catch (err) {
+        showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
       }
     } 
 
     const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
-
     const reject = () =>  toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
 
     const optionsBodyTemplate = (rowData:any) => {

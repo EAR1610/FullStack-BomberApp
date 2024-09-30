@@ -15,7 +15,7 @@ import SignUp from '../../pages/Authentication/SignUp';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ViewUser from '../../pages/Users/ViewUser';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setChangedAUser }:any) => {
   const [customers, setCustomers] = useState(null);
@@ -35,12 +35,14 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
   const [visibleUser, setVisibleUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isInactiveUser, setIsInactiveUser] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   const toast = useRef(null);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;  
+  const userId = currentToken?.user?.id || 1;
   
   useEffect(() => {
     const transformedData = data.map((customer: any) => ({
@@ -134,10 +136,14 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        showAlert('info', 'Info', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario`);
+
+        showAlert('info', 'Info', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario`);      
+        await createLog(userId, 'UPDATE', 'USUARIO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario: ${selectedUser?.username} con el dpi: ${selectedUser?.dpi}`, currentToken?.token);
+        
         setChangedAUser(!changedAUser);
-      } catch (error) {        
-        showAlert('error', 'Error', handleErrorResponse(error));
+      } catch (err) {
+        console.log(err);
+        showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
       }
     }
   };

@@ -17,6 +17,7 @@ import FireFighter from '../../pages/FireFighters/FireFighter';
 import ViewFireFighter from '../../pages/FireFighters/ViewFireFighter';
 import SetFirefighterShift from '../../pages/FireFighters/SetFirefighterShift';
 import { TableFirefightersProps } from '../../helpers/Interfaces';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 
 const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveFirefighters, setViewActiveFirefighters, loading, isChangedFirefighter, setIsChangedFirefighter }) => {
@@ -41,6 +42,8 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       const authContext = useContext<AuthContextProps | undefined>(AuthContext);
       if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
       const { currentToken } = authContext; 
+      const userId = currentToken?.user?.id || 1;
+      const [errorMessages, setErrorMessages] = useState<string>('');
 
       const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -105,11 +108,8 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
     }
 
     const accept = async () => {
-
       if (selectedFirefighter) {
-
         const formData = new FormData();
-
         try {
           if(!viewActiveFirefighters){
             formData.append('status', 'active');
@@ -130,14 +130,16 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
             });
             toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
           }
+          await createLog(userId, 'UPDATE', 'FIREFIGHTER', `Se ha ${viewActiveFirefighters ? 'activado' : 'desactivado'} el registro del bombero: ${selectedFirefighter?.user?.fullName}`, currentToken?.token);
           setIsChangedFirefighter(!isChangedFirefighter);
         } catch (error) {
           console.log(error);
+          showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
         }
-
       }
     }; 
-  
+
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });  
     const reject = () =>  toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
 
     const optionsBodyTemplate = (rowData:any) => {

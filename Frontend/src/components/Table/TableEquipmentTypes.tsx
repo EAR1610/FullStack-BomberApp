@@ -15,7 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import EquipmentType from '../../pages/EquipmentType/EquipmentType';
 import ViewEquipmentType from '../../pages/EquipmentType/ViewEquipmentType';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEquipmentsType, loading, isChangedEquipmentType, setIsChangedEquipmentType }: any) => {
 
@@ -35,6 +35,8 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
 
     const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -119,17 +121,17 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`,
               },
-            });      
+            });
+            await createLog(userId, 'UPDATE', 'TIPO DE EQUIPO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de equipo: ${selectedEquipmentType?.name}`, currentToken?.token);
             setIsChangedEquipmentType(!isChangedEquipmentType);
             showAlert('info', 'Info', message);
           } catch (error) {
-            handleErrorResponse(error);
+            showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
           }
         }
       }      
       
       const reject = () => showAlert('warn', 'Rechazado', 'Has rechazado el proceso');
-
       const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
       
       const optionsBodyTemplate = (rowData:any) => {

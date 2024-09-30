@@ -15,7 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import Tool from '../../pages/Tool/Tool';
 import ViewTool from '../../pages/Tool/ViewTool';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, setIsChangedTool }:any) => {
   const [tools, setTools] = useState(null);
@@ -39,6 +39,8 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;  
+  const [errorMessages, setErrorMessages] = useState<string>('');
+  const userId = currentToken?.user?.id || 1;
   
   useEffect(() => {
     const getToolTypes = async () => {
@@ -60,7 +62,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
         setTools(toolsWithTypeName);
         setLoading(false);
       } catch (error) {
-        handleErrorResponse(error);
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }
     };
 
@@ -151,9 +153,10 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
   
       const message = status === 'active' ? 'Se ha activado la herramienta' : 'Se ha desactivado la herramienta';
       setIsInactiveTool(!isChangedTool);
-      showAlert('info', 'Info', message);  
+      showAlert('info', 'Info', message);
+      await createLog(userId, 'UPDATE', 'TOOL', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} la herramienta: ${selectedTool?.name}`, currentToken?.token);
     } catch (error) {
-      handleErrorResponse(error);
+      showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
     }
   }
 

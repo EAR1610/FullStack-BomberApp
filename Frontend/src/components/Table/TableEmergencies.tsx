@@ -11,8 +11,6 @@ import { Toast } from 'primereact/toast';
 import 'primeicons/primeicons.css';     
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import ViewEmergency from '../../pages/Emergency/ViewEmergency';
-import { AuthContextProps } from '../../interface/Auth';
-import { AuthContext } from '../../context/AuthContext';
 
 const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergency, changeStatusEmergency }:any) => {
 
@@ -27,9 +25,6 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
     const [globalFilterValue, setGlobalFilterValue] = useState('');      
     const [selectedEmergency, setSelectedEmergency] = useState(null);
     const [viewEmergency, setViewEmergency] = useState(false);
-
-    const authContext = useContext<AuthContextProps | undefined>(AuthContext);
-    if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     
     const toast = useRef(null);
     

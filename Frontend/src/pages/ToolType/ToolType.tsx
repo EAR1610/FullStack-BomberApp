@@ -3,7 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
-import { handleErrorResponse } from "../../helpers/functions"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 // import { useToast } from "../../helpers/showAlert"
 
 const ToolType = ({ toolType, setVisible, isChangedToolType, setIsChangedToolType }: any) => {
@@ -14,6 +14,8 @@ const ToolType = ({ toolType, setVisible, isChangedToolType, setIsChangedToolTyp
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const [errorMessages, setErrorMessages] = useState<string>('');
   
   const toast = useRef(null);
 
@@ -52,12 +54,15 @@ const ToolType = ({ toolType, setVisible, isChangedToolType, setIsChangedToolTyp
         });
         showAlert('info', 'Info', 'Registro Creado!');
       }
+
+      await createLog(userId, 'UPDATE', 'TIPO DE HERRAMIENTA', `Se ha ${toolType ? 'actualizado' : 'creado'} el registro del tipo de herramienta: ${name}`, currentToken?.token);
       setIsChangedToolType(!isChangedToolType);
+
       setTimeout(() => {
         setVisible(false);
       }, 1500);
     } catch (error) {
-      handleErrorResponse(error);
+      showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
     }
   }
 
@@ -65,7 +70,6 @@ const ToolType = ({ toolType, setVisible, isChangedToolType, setIsChangedToolTyp
 
   return (
     <>
-    {/* <GlobalToast /> */}
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
     <Toast ref={toast} />
       <div className="flex flex-wrap items-center">            

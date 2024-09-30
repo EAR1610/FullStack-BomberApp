@@ -13,7 +13,7 @@ import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const TablePenalizedUsers = ({ data, changedAPenalizedUser, setChangedAPenalizedUser }:any) => {
   const [filters, setFilters] = useState({
@@ -37,6 +37,8 @@ const TablePenalizedUsers = ({ data, changedAPenalizedUser, setChangedAPenalized
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   useEffect(() => {
     setLoading(false);
@@ -76,9 +78,11 @@ const TablePenalizedUsers = ({ data, changedAPenalizedUser, setChangedAPenalized
           });
         }
         showAlert('info', 'Info', `Se ha ${addOrRestPenalizationUser === true ? 'agregado' : 'restado'} la penalización al usuario`);
+        await createLog(userId, 'UPDATE', 'USUARIO', `Se ha ${addOrRestPenalizationUser === true ? 'agregado' : 'restado'} la penalización al usuario: ${selectedUser?.username} con el dpi: ${selectedUser?.dpi}`, currentToken?.token);
+        
         setChangedAPenalizedUser(!changedAPenalizedUser);
-      } catch (error) {        
-        showAlert('error', 'Error', handleErrorResponse(error));
+      } catch (err) {        
+        showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
       }
     }
   };

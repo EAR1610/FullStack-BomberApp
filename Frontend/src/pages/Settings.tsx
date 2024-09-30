@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { AuthContextProps } from "../interface/Auth";
 import { apiRequestAuth } from "../lib/apiRequest";
 import { Toast } from "primereact/toast";
+import { createLog, handleErrorResponse } from "../helpers/functions";
 
 const Settings = () => {
   const [settings, setSettings] = useState(null);
@@ -10,33 +11,39 @@ const Settings = () => {
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;  
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   const toast = useRef(null);
 
   useEffect(() => {
     const getSettings = async () => {
-    const response = await apiRequestAuth.get(`/settings`, {
-      headers: {
-        Authorization: `Bearer ${currentToken?.token}`
-      }
-    });
-    setSettings(response.data);
-    console.log(response.data);
-  }
+      const response = await apiRequestAuth.get(`/settings`, {
+        headers: {
+          Authorization: `Bearer ${currentToken?.token}`
+        }
+      });
+      setSettings(response.data);
+    }
     getSettings();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('maxPenalizations', String(settings?.maxPenalizations));
-
-    await apiRequestAuth.put(`/settings/${settings?.id}`, formData, {
-      headers: {
-        Authorization: `Bearer ${currentToken?.token}`
-      }
-    });
-    showAlert('info', 'Info', 'Configuraciones guardadas correctamente');
+    try {
+      const formData = new FormData();
+      formData.append('maxPenalizations', String(settings?.maxPenalizations));
+  
+      await apiRequestAuth.put(`/settings/${settings?.id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${currentToken?.token}`
+        }
+      });
+      await createLog(userId, 'UPDATE', 'CONFIGURACION', `Se ha actualizado la configuracion del sistema`, currentToken?.token);
+      showAlert('info', 'Info', 'Configuraciones guardadas correctamente');      
+    } catch (err) {
+      showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
+    }
   }
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });

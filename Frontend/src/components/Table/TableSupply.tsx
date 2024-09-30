@@ -13,7 +13,7 @@ import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 import Supply from '../../pages/Supply/Supply';
 import ViewSupply from '../../pages/Supply/ViewSupply';
 
@@ -35,6 +35,8 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
 
     const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -119,11 +121,12 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`,
               },
-            });      
+            });
+            await createLog(userId, 'UPDATE', 'INSUMO', `Se ha actualizado la informacion del insumo: ${selectedSupply.name}`, currentToken?.token);
             setIsChangedSupply(!isChangedSupply);
             showAlert('info', 'Info', message);
-          } catch (error) {
-            showAlert('warn', 'Error', handleErrorResponse(error));
+          } catch (err) {
+            showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
           }
         }
       }

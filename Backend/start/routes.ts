@@ -29,6 +29,13 @@ import SupplyTypesController from '#controllers/supply_types_controller';
 import SuppliesController from '#controllers/supplies_controller';
 import SupplyEmergenciesController from '#controllers/supply_emergencies_controller';
 import SettingsController from '#controllers/settings_controller';
+import LogsController from '#controllers/logs_controller';
+
+
+/**
+ * ? Routes for the application: LOGS 📜
+ */
+router.resource('users/logs', LogsController).use('*', middleware.auth());
 
 /** 
  * ? Routes for the application: SETTINGS 🔧 

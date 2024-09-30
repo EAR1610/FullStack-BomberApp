@@ -15,7 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ToolType from '../../pages/ToolType/ToolType';
 import ViewToolType from '../../pages/ToolType/ViewToolType';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loading, isChangedToolType, setIsChangedToolType } :any) => {
  
@@ -35,6 +35,8 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   useEffect(() => {
     if( selectedToolType && isInactiveToolType ) {
@@ -117,11 +119,11 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
       });
   
       const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+      await createLog(userId, 'UPDATE', 'TIPO DE HERRAMIENTA', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de herramienta: ${selectedToolType?.name}`, currentToken?.token);
       setIsChangedToolType(!isChangedToolType);
       showAlert('info', 'Info', message);
-
     } catch (error) {
-      handleErrorResponse(error);
+      showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
     }
   }; 
   

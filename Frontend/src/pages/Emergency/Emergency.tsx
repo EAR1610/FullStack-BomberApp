@@ -65,44 +65,40 @@ const Emergency = () => {
         if (response) setEmergencies(response.data);
 
       } catch (error) {
-        toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
+        toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener las emergencias' });
       }
     }
 
     getEmergencies();
   }, [ changeStatusEmergency, viewStatusEmergency ]);
   
-  // useEffect para configurar socket.io y escuchar eventos de emergencias
   useEffect(() => {
-    // Connectar el WebSocket al servidor
     const socket = io(socketIoURL);
 
-     // Listener the event 'emergencyCreated'
     socket.on('emergencyCreated', (newEmergency) => {
       console.log('Nueva emergencia creada:', newEmergency);
 
-      // if viewStatusEmergency is not 0, set it to 0
-      if (viewStatusEmergency !== 0) {
-        setViewStatusEmergency(0); // changing viewStatusEmergency to 0
-      }
+      if (viewStatusEmergency !== 0) setViewStatusEmergency(0);
 
-      // Update the list of emergencies with the new emergency
       setEmergencies((prevEmergencies) => [newEmergency, ...prevEmergencies]);
-
       toast.current?.show({ severity: 'info', summary: 'Nueva emergencia', detail: 'Se ha creado una nueva emergencia' });
     });
 
     return () => {
-      socket.disconnect(); // Desconectar el WebSocket cuando se desmonte el componente
+      socket.disconnect();
     };
   }, [viewStatusEmergency]);
-
-  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <>
       <Toast ref={toast} />
-      <TableEmergencies data={emergencies} viewStatusEmergency={viewStatusEmergency} setViewStatusEmergency={setViewStatusEmergency} setChangeStatusEmergency={setChangeStatusEmergency} changeStatusEmergency={changeStatusEmergency} />
+      <TableEmergencies 
+        data={emergencies} 
+        viewStatusEmergency={viewStatusEmergency} 
+        setViewStatusEmergency={setViewStatusEmergency} 
+        setChangeStatusEmergency={setChangeStatusEmergency} 
+        changeStatusEmergency={changeStatusEmergency} 
+      />
     </>
   )
 }

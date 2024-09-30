@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
 const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
 
@@ -26,6 +27,8 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const [errorMessages, setErrorMessages] = useState<string>('');
   
   const toast = useRef(null);
 
@@ -195,7 +198,8 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
               },
             });
             showAlert('info', 'Info', 'Registro creado!');
-          }          
+          }
+          await createLog(userId, 'UPDATE', 'TOOL', `Se ha ${tool ? 'actualizado' : 'creado'} la herramienta: ${name}`, currentToken?.token);
           setIsChangedTool(!isChangedTool);
 
           setTimeout(() => {
@@ -203,7 +207,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
           }, 1000);
 
         } catch (err:any) {
-          setError(err.response.data.message);
+          showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
         }
       };
 
@@ -362,8 +366,6 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
-                { error && <span>{ error }</span> }
-
               </form>
             </div>
           </div>

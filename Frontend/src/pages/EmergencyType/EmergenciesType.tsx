@@ -25,6 +25,7 @@ const EmergenciesType = () => {
     useEffect(() => {
 
       if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+      if( currentToken?.user.isUser ) navigate('/app/emergency-request');
       
       const getEmergenciesTypes = async () => {
         try {
@@ -49,7 +50,7 @@ const EmergenciesType = () => {
         if (response) setEmergenciesTypes(response.data);
           setLoading(false);
         } catch (error) {
-          handleErrorResponse(error);
+          toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los registros' });
         }
      }
         getEmergenciesTypes();

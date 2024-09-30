@@ -4,11 +4,11 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
-import { Emergency } from "../../helpers/Interfaces"
 import ModalLocalitationEmergency from "./ModalLocalitationEmergency"
 import { useNavigate } from "react-router-dom"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
-const EmergencyRequest: React.FC<Emergency> = () => {
+const EmergencyRequest = () => {
     const [emergenciesType, setEmergenciesType] = useState([]);
     const [selectedEmergencyType, setSelectedEmergencyType] = useState(null);
     const [applicant, setApplicant] = useState("");
@@ -24,6 +24,8 @@ const EmergencyRequest: React.FC<Emergency> = () => {
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
 
     const toast = useRef(null);
     const navigate = useNavigate();
@@ -68,15 +70,17 @@ const EmergencyRequest: React.FC<Emergency> = () => {
                     Authorization: `Bearer ${currentToken?.token}`,
                   },
                 });
+                await createLog(userId, 'UPDATE', 'EMERGENCIA', `Se ha registrado la emergencia: ${applicant} con la descripción: ${description}`, currentToken?.token);
                 showAlert('info', 'Info', '¡Emergencia registrada correctamente!');
               } catch (error) {
                 console.log(error);
+                showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
               }        
               
               if( currentToken?.user.id ){
                 setTimeout(() => {
                   navigate('/app/my-emergencies');
-                }, 1000);
+                }, 1500);
               }
             },
             (error) => {

@@ -3,6 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
 const SupplyType = ({ supplyType, setVisible, isChangedSupplyType, setIsChangedSupplyType }: any) => {
 
@@ -13,9 +14,8 @@ const SupplyType = ({ supplyType, setVisible, isChangedSupplyType, setIsChangedS
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
-    
-    const [errorMessages, setErrorMessages] = useState('');
-    
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');        
     const toast = useRef(null);
 
     useEffect(() => {
@@ -55,28 +55,15 @@ const SupplyType = ({ supplyType, setVisible, isChangedSupplyType, setIsChangedS
             });
             showAlert('info', 'Info', 'Registro creado!');
           }
+          await createLog(userId, 'UPDATE', 'TIPO DE INSUMO', `Se ha ${supplyType ? 'actualizado' : 'creado'} el registro del tipo de insumo: ${name}`, currentToken?.token);
           setIsChangedSupplyType(!isChangedSupplyType);
           setTimeout(() => {
             setVisible(false);
           }, 1000);
-        } catch (error) {
-          showAlert('warn', 'Error', handleErrorResponse(error));
+        } catch (err) {
+          showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
         }
-      }
-
-      const handleErrorResponse = (error: any) => {
-        if (error.response && error.response.data && error.response.data.errors) {
-          const errorMessages = error.response.data.errors
-            .map((err: { message: string }) => err.message)
-            .join(', ');
-            setErrorMessages(errorMessages);
-        } else {
-          setErrorMessages('Ocurrió un error inesperado');
-        }
-    
-        return errorMessages
-    };
-
+      }      
       const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
     return (

@@ -45,7 +45,7 @@ const VehiclesType = () => {
         if (response) setVehiclesTypes(response.data);
         setLoading(false);
       } catch (error) {
-        handleErrorResponse(error);
+        toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los registros' });
       }
     }
 

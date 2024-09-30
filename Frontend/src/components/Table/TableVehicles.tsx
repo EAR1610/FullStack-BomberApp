@@ -15,7 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ViewVehicle from '../../pages/Vehicles/ViewVehicle';
 import Vehicle from '../../pages/Vehicles/Vehicle';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loading, isChangedVehicle, setIsChangedVehicle }: any) => {
     const [filters, setFilters] = useState({
@@ -40,6 +40,8 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       const authContext = useContext<AuthContextProps | undefined>(AuthContext);
       if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
       const { currentToken } = authContext; 
+      const userId = currentToken?.user?.id || 1;
+      const [errorMessages, setErrorMessages] = useState<string>('');
 
       const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -142,16 +144,17 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
         },
       });
   
-      const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';      
+      const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+      await createLog(userId, 'UPDATE', 'VEHÍCULO', `Se ha actualizado la informacion del vehículo: ${selectedVehicle.brand} ${selectedVehicle.model}`, currentToken?.token);
+      
       setIsChangedVehicle(!isChangedVehicle);
       showAlert('info', 'Info', `${message}`);
-    } catch (error) {
-      handleErrorResponse(error);
+    } catch (err) {
+      showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   }; 
 
   const reject = () => showAlert('warn', 'Rechazado', `Has rechazado el proceso`);
-
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   const optionsBodyTemplate = (rowData:any) => {
@@ -181,9 +184,8 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       </div>
   )};
 
-const header = renderHeader();
-
-    
+  const header = renderHeader();
+  
   return (
     <div className="card p-4 bg-gray-100 rounded-lg shadow-md">
     <Toast ref={toast} />

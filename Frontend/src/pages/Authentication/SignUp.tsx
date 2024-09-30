@@ -8,13 +8,15 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
         
 const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:any) => {
   
+  const [errorMessages, setErrorMessages] = useState<string>('');
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken, updateToken } = authContext;  
+  const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
   const navigate = useNavigate();
   
   const toast = useRef(null);
@@ -124,19 +126,15 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
   
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {    
     e.preventDefault();
-    debugger;
     const formData = new FormData();
 
-
     if( user ) {
-
 
       if ( 
         !username || !fullName || !email  || !address || !dpi
       ) {
         showAlert('error', 'Error', 'Todos los campos son obligatorios');
         return;
-
 
       } else {        
         formData.append('username', username);
@@ -151,9 +149,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
         if ( typeof(photography) !== "string") formData.append('photography', photography);
       } 
 
-
     } else {
-
 
       if ( 
         !username || !fullName || !email || 
@@ -190,7 +186,6 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
           formData.append('userId', user.id);
           formData.append('shiftPreference', selectedShiftPreference?.name);
 
-
           await apiRequestAuth.put(`/firefighter/${selectedFirefighter.id}`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -198,7 +193,10 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
             }
           })
         }
-        showAlert('info', 'Info', 'Usuario Actualizado!');    
+
+        await createLog(userId, 'UPDATE', 'USUARIO', `Se ha actualizado la informacion del usuario: ${user.fullName} con dpi: ${dpi}`, currentToken?.token);
+        showAlert('info', 'Info', 'Usuario Actualizado!');
+
       } else {
         await apiRequest.post("/register", formData, {
           headers: {
@@ -211,7 +209,6 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
             navigate("/login");          
           }, 1000);
         }
-
         showAlert('info', 'Info', 'Usuario Creado!');
       }
       setChangedAUser(!changedAUser);   
@@ -220,7 +217,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
       }, 1500);
     } catch (err:any) {
       console.log(err);
-      handleErrorResponse(err);
+      showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   };
 

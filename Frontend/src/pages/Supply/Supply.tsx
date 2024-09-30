@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
 const Supply = ({ supply, setVisible, isChangedSupply, setIsChangedSupply }: any) => {
 
@@ -16,9 +17,9 @@ const Supply = ({ supply, setVisible, isChangedSupply, setIsChangedSupply }: any
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
-    
-    const [errorMessages, setErrorMessages] = useState('');
-    
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
+
     const toast = useRef(null);
 
     useEffect(() => {
@@ -86,29 +87,19 @@ const Supply = ({ supply, setVisible, isChangedSupply, setIsChangedSupply }: any
             });
             showAlert('info', 'Info', 'Registro creado!');
           }
+
+          await createLog(userId, 'CREATE', 'INSUMO', `Se ha creado el registro de insumo: ${name}`, currentToken?.token);
           setIsChangedSupply(!isChangedSupply);
+          
           setTimeout(() => {
             setVisible(false);
           }, 1000);
-        } catch (error) {
-          showAlert('warn', 'Error', handleErrorResponse(error));
+        } catch (err) {
+          showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
         }
-      }
+      }  
 
-      const handleErrorResponse = (error: any) => {
-        if (error.response && error.response.data && error.response.data.errors) {
-          const errorMessages = error.response.data.errors
-            .map((err: { message: string }) => err.message)
-            .join(', ');
-            setErrorMessages(errorMessages);
-        } else {
-          setErrorMessages('Ocurrió un error inesperado');
-        }
-    
-        return errorMessages
-    };
-
-    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">

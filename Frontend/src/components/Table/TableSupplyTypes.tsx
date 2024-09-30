@@ -13,7 +13,7 @@ import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 import SupplyType from '../../pages/SupplyType/SupplyType';
 import ViewSupplyType from '../../pages/SupplyType/ViewSupplyType';
 
@@ -36,6 +36,8 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
 
     const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -120,11 +122,13 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`,
               },
-            });      
+            });
+            await createLog(userId, 'UPDATE', 'TIPO DE INSUMO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de insumo: ${selectedSupplyType?.name}`, currentToken?.token);
+            
             setIsChangedSupplyType(!isChangedSupplyType);
             showAlert('info', 'Info', message);
-          } catch (error) {
-            showAlert('warn', 'Error', handleErrorResponse(error));
+          } catch (err) {
+            showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
           }
         }
       }

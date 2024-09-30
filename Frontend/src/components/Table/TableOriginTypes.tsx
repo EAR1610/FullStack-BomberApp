@@ -15,7 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import OriginType from '../../pages/OriginType/OriginType';
 import ViewOriginType from '../../pages/OriginType/ViewOriginType';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginTypes, loading, isChangedOriginType, setIsChangedOriginType } : any) => {
     
@@ -35,6 +35,8 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext; 
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
 
     const onGlobalFilterChange = (e:any) => {
       const value = e.target.value;
@@ -116,10 +118,12 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
       });
   
       const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
+      await createLog(userId, 'UPDATE', 'TIPO DE ORIGEN', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de origen: ${selectedOriginType?.name}`, currentToken?.token);
+      
       setIsChangedOriginType(!isChangedOriginType);
       showAlert('info', 'Info', message);
     } catch (error) {
-      handleErrorResponse(error);
+      showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
     }
   }
 

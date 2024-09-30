@@ -4,6 +4,7 @@ import ToolType from './tool_type.js'
 import EquipmentType from './equipment_type.js'
 import OriginType from './origin_type.js'
 import EmergencyType from './emergency_type.js'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
 export default class Tool extends BaseModel {
   @column({ isPrimary: true })

@@ -9,6 +9,7 @@ import { Dropdown } from "primereact/dropdown"
 import { EmergencyCardProps, ViewStatusEmergency } from "../../helpers/Interfaces";
 import { io } from "socket.io-client";
 import { Toast } from "primereact/toast";
+import { handleErrorResponse } from "../../helpers/functions";
 
 
 export const FirefighterEmergencies = () => {
@@ -22,6 +23,7 @@ export const FirefighterEmergencies = () => {
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   const toast = useRef(null);
 
@@ -61,17 +63,19 @@ export const FirefighterEmergencies = () => {
             if (response) setEmergencies(response.data);
         } catch (error) {
             console.log(error);
+            showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
         }
     }
 
     getFirefighterEmergencies();
   }, [viewStatusEmergency]);
 
+  
   useEffect(() => {
     const socket = io(socketIoURL, {
       query: { firefighterId: currentToken?.firefighter?.id }
     });
-
+    
     socket.on('firefighterEmergencyCreated', () => {
       toast.current?.show({
         severity: 'info',
@@ -79,11 +83,11 @@ export const FirefighterEmergencies = () => {
         detail: `Se le ha asignado una nueva emergencia`,
       });
     });
-
+    
     return () => {
       socket.disconnect();
     };
-
+    
   }, []);
 
   const emergencyTypes = [
@@ -93,6 +97,7 @@ export const FirefighterEmergencies = () => {
     { name: "Atendidas", id: 3 },
   ];
   
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   const openModal = (emergency: any) => {
     setSelectedEmergency(emergency);

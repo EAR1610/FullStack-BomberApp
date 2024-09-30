@@ -10,6 +10,7 @@ import SetFirefighterEmergency from "../FireFighters/SetFirefighterEmergency"
 import SetVehicleEmergency from "./SetVehicleEmergency"
 import DetailEmergency from "./DetailEmergency"
 import SetSupplyEmergency from "./SetSupplyEmergency"
+import { createLog } from "../../helpers/functions"
 
 const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, changeStatusEmergency }: any) => {
 
@@ -21,6 +22,8 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
     const [selectedStatus, setSelectedStatus] = useState<string>(emergency?.status || 'Registrada');
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
     
     const toast = useRef(null);
     
@@ -34,7 +37,6 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      debugger;
     
       try {    
         const updateEmergencyFormData = new FormData();
@@ -53,6 +55,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
           }
         });
     
+        await createLog(userId, 'UPDATE', 'EMERGENCIA', `Se ha actualizado la emergencia: ${emergency.applicant} con estado: ${selectedStatus}`, currentToken?.token);
         showAlert('info', 'Info', 'Emergencia registrada correctamente!');
 
         if( selectedStatus == 'Rechazada' ) {

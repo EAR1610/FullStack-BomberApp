@@ -3,6 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
 const EquipmentType = ({ equipmentType, setVisible, isChangedEquipmentType, setIsChangedEquipmentType }: any) => {
 
@@ -13,6 +14,8 @@ const EquipmentType = ({ equipmentType, setVisible, isChangedEquipmentType, setI
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const [errorMessages, setErrorMessages] = useState<string>('');
   
   const toast = useRef(null);
 
@@ -52,12 +55,15 @@ const EquipmentType = ({ equipmentType, setVisible, isChangedEquipmentType, setI
         });
         showAlert('info', 'Info', 'Registro creado!');
       }
+      await createLog(userId, 'UPDATE', 'TIPO DE EQUIPO', `Se ha ${equipmentType ? 'actualizado' : 'creado'} el registro del tipo de equipo: ${name}`, currentToken?.token);
+      
       setIsChangedEquipmentType(!isChangedEquipmentType);
       setTimeout(() => {
         setVisible(false);          
       }, 1000);
     } catch (error) {
       console.log(error);
+      showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
     }
   }
 

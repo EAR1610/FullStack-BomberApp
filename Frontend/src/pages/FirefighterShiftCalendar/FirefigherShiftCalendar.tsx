@@ -7,7 +7,7 @@ import { Calendar, dayjsLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import "dayjs/locale/es"
 import dayjs from 'dayjs'
-import { handleErrorResponse } from "../../helpers/functions";
+import { createLog, handleErrorResponse } from "../../helpers/functions";
 dayjs.locale('es');
 
 const FirefigherShiftCalendar = () => {
@@ -16,6 +16,8 @@ const FirefigherShiftCalendar = () => {
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const [events, setEvents] = useState<Events[]>([]);
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   useEffect(() => {
     const getFirefighterShifts = async () => {
@@ -33,15 +35,18 @@ const FirefigherShiftCalendar = () => {
             end: dayjs(shift.shiftEnd).add(6, 'hour').toDate(),
             description: shift.description,
           }));
-          setEvents(transformedEvents);      
+          setEvents(transformedEvents);
         }
+        await createLog(userId, 'UPDATE', 'FIREFIGHTER', `Se ha establecido el turno del bombero: ${currentToken?.firefighter?.fullName}`, currentToken?.token);
       } catch (error) {
-        handleErrorResponse(error);
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }
     }
 
     getFirefighterShifts()
   }, [])
+
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
   
     const localizer = dayjsLocalizer(dayjs)
     const 

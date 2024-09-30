@@ -3,7 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
-import { handleErrorResponse } from "../../helpers/functions"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
 const OriginType = ({ originType, setVisible, isChangedOriginType, setIsChangedOriginType }: any) => {
 
@@ -14,6 +14,8 @@ const OriginType = ({ originType, setVisible, isChangedOriginType, setIsChangedO
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const [errorMessages, setErrorMessages] = useState<string>('');
   
   const toast = useRef(null);
 
@@ -54,12 +56,13 @@ const OriginType = ({ originType, setVisible, isChangedOriginType, setIsChangedO
         showAlert('info', 'Info', 'Herramienta Creada!');
       } 
 
+      await createLog(userId, 'UPDATE', 'TIPO DE ORIGEN', `Se ha ${originType ? 'actualizado' : 'creado'} el registro del tipo de origen: ${name}`, currentToken?.token);
       setIsChangedOriginType(!isChangedOriginType);
       setTimeout(() => {
         setVisible(false);
       }, 1500);
     } catch (error) {
-      handleErrorResponse(error);
+      showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
     }
   }
 

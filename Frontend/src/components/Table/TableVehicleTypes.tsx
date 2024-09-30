@@ -15,7 +15,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import VehicleType from '../../pages/VehicleType/VehicleType';
 import ViewVehicleType from '../../pages/VehicleType/ViewVehicleType';
-import { handleErrorResponse } from '../../helpers/functions';
+import { createLog, handleErrorResponse } from '../../helpers/functions';
 
 const TableVehicleTypes = ({ data, viewActiveVehiclesType, setViewActiveVehiclesType, loading, isChangedVehicleType, setIsChangedVehicleType }: any) => {
 
@@ -35,6 +35,8 @@ const TableVehicleTypes = ({ data, viewActiveVehiclesType, setViewActiveVehicles
       const authContext = useContext<AuthContextProps | undefined>(AuthContext);
       if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
       const { currentToken } = authContext; 
+      const userId = currentToken?.user?.id || 1;
+      const [errorMessages, setErrorMessages] = useState<string>('');
       
       const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -121,15 +123,15 @@ const TableVehicleTypes = ({ data, viewActiveVehiclesType, setViewActiveVehicles
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
+        await createLog(userId, 'UPDATE', 'TIPO VEHÍCULO', `Se ha actualizado la informacion del tipo de vehículo: ${selectedVehicleType.name}`, currentToken?.token);
         setIsChangedVehicleType(!isChangedVehicleType);
         showAlert('info' , 'Info', message);
-      } catch (error) {
-        handleErrorResponse(error); 
+      } catch (err) {
+        showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));
       }
     };
 
     const reject = () => showAlert('warn', 'Rechazado', 'Has rechazado el proceso');
-
     const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
     const optionsBodyTemplate = (rowData:any) => {

@@ -5,6 +5,7 @@ import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from 'primereact/toast';
 import TableFirefighters from "../../components/Table/TableFirefighters";
 import { useNavigate } from "react-router-dom";
+import { handleErrorResponse } from "../../helpers/functions";
 
 
 const FireFighters = () => {
@@ -16,6 +17,7 @@ const FireFighters = () => {
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const [errorMessages, setErrorMessages] = useState<string>('');
 
     const navigate = useNavigate();  
     const toast = useRef(null);
@@ -23,6 +25,7 @@ const FireFighters = () => {
     useEffect(() => {
 
       if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+      if( currentToken?.user.isUser ) navigate('/app/emergency-request');
       
       const getFirefighters = async () => {
           try {
@@ -44,11 +47,14 @@ const FireFighters = () => {
             setLoading(false);
           } catch (error) {
             console.log(error);
+            showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
           }
       }
 
       getFirefighters()
     }, [isChangedFirefighter, viewActiveFirefighters])
+    
+    const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
     
   return (
     <>

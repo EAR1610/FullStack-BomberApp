@@ -6,6 +6,7 @@ import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import MapComponent from "../../components/Maps/MapComponent"
 import { useNavigate } from "react-router-dom"
+import { createLog, handleErrorResponse } from "../../helpers/functions"
 
 const EmergencyRequestByAdmin = () => {
     const [emergenciesType, setEmergenciesType] = useState([]);
@@ -21,13 +22,14 @@ const EmergencyRequestByAdmin = () => {
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
 
     const navigate = useNavigate();
 
     const toast = useRef(null);
 
     useEffect(() => {
-
         const getEmergenciesType = async () => {
             try {
                 const response = await apiRequestAuth.get("/emergency-type", {
@@ -62,6 +64,7 @@ const EmergencyRequestByAdmin = () => {
               Authorization: `Bearer ${currentToken?.token}`,
             },
           });
+          await createLog(userId, 'UPDATE', 'EMERGENCIA', `Se ha registrado la emergencia: ${applicant} con la descripción: ${description} por parte del ADMINISTRADOR`, currentToken?.token);
           showAlert('info', 'Info', '¡Emergencia registrada correctamente!');
 
           setTimeout(() => {
@@ -69,6 +72,7 @@ const EmergencyRequestByAdmin = () => {
           }, 1000);
         } catch (error) {
           console.log(error);
+          showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
         }        
       };
 
@@ -169,7 +173,6 @@ const EmergencyRequestByAdmin = () => {
                                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                                     />
                                 </div>
-
                             </form>
                         </div>
                     </div>
