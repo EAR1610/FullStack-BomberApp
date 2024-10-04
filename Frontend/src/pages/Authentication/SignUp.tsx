@@ -211,7 +211,9 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
         }
         showAlert('info', 'Info', 'Usuario Creado!');
       }
-      setChangedAUser(!changedAUser);   
+      
+      if (user) setChangedAUser(!changedAUser);   
+
       setTimeout(() => {
         setVisible(false);
       }, 1500);

@@ -5,6 +5,7 @@ import MapComponent from '../Maps/MapComponent';
 import DetailEmergency from '../../pages/Emergency/DetailEmergency';
 import ToolsPerEmergency from '../../pages/Emergency/ToolsPerEmergency';
 import SuppliesEmergency from '../../pages/Emergency/SuppliesEmergency';
+import { formatDateTime } from '../../helpers/functions';
 
 /**
  * 
@@ -30,19 +31,6 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
   const [viewSupplyEmergency, setViewSupplyEmergency] = useState(false);
   const [viewToolsPerEmergencyType, setViewToolsPerEmergencyType] = useState(false);
   if( !isOpen ) return null;
-
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-  
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-  
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-  
-    return `${day}/${month}/${year} ${hours}:${minutes}`;
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">

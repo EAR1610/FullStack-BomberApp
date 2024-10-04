@@ -32,15 +32,15 @@ const Dashboard: React.FC = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-[70%,30%] gap-6">
         <div className="bg-gray-100 p-4 rounded-lg">          
-          <p>Gráfica 1 - 70%</p>
+          {/* <p>Gráfica 1 - 70%</p> */}
         </div>
         <div className="bg-gray-100 p-4 rounded-lg">          
-          <p>Gráfica 2 - 30%</p>
+          {/* <p>Gráfica 2 - 30%</p> */}
         </div>
       </div>
       
       <div className="w-full bg-gray-100 p-4 rounded-lg">        
-        <p>Última gráfica - 100% ancho</p>
+        {/* <p>Última gráfica - 100% ancho</p> */}
       </div>
     </div>
     </>

@@ -16,8 +16,6 @@ const VehicleType = ({ vehicleType, setVisible, isChangedVehicleType, setIsChang
     const { currentToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
-
-    const [errorMessages, setErrorMessages] = useState('');
     
     const toast = useRef(null);
     

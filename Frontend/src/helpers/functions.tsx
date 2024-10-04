@@ -10,6 +10,24 @@ export const handleErrorResponse = (error: any, setErrorMessages: (msg: string) 
   return errorMessages;
 };
 
+export const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString);
+
+  const formattedDate = date.toLocaleString('es-ES', {
+    timeZone: 'America/Guatemala',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
+  const [datePart, timePart] = formattedDate.split(', ');
+  const [day, month, year] = datePart.split('/');
+
+  return `${day}/${month}/${year} ${timePart}`;
+};
 
 export const createLog = async (
   userId: number, 

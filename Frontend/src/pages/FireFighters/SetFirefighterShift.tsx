@@ -5,6 +5,7 @@ import { AuthContextProps } from "../../interface/Auth"
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { Toast } from "primereact/toast"
 import { TableFirefightersProps } from "../../helpers/Interfaces";
+import { createLog, handleErrorResponse } from "../../helpers/functions";
 
 const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, setVisible }:any) => {
     const [date, setDate] = useState(null);
@@ -13,6 +14,8 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const [errorMessages, setErrorMessages] = useState<string>('');
   
     const toast = useRef(null);    
 
@@ -39,12 +42,13 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
                 Authorization: `Bearer ${currentToken?.token}`,
             },
         });
+        await createLog(userId, 'CREATE', 'TURNO', `Se ha creado el turno del bombero: ${firefighter.user.fullName}`, currentToken?.token);
         showAlert('info', 'Info', 'Turno registrado correctamente!');
         setTimeout(() => {
           setVisible(false);              
         }, 1500);
-      } catch (error) {
-        showAlert('error', 'Error', error.response.data.message);
+      } catch (err) {
+        showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
       }
     }
 

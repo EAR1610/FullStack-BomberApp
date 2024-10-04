@@ -1,5 +1,5 @@
 import SupplyEmergency from '#models/supply_emergency';
-import { createSupplyEmergencyValidator } from '#validators/supply_emergency';
+import { createSupplyEmergencyValidator, updateSupplyEmergencyValidator } from '#validators/supply_emergency';
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class SupplyEmergenciesController {
@@ -62,7 +62,7 @@ export default class SupplyEmergenciesController {
    * Handle form submission for the edit action
    */
   async update({ params, request, response }: HttpContext) {
-    const payload = await request.validateUsing(createSupplyEmergencyValidator,{
+    const payload = await request.validateUsing(updateSupplyEmergencyValidator,{
       meta: {
         id: params.id,
         supplyId: request.input('supplyId'),
