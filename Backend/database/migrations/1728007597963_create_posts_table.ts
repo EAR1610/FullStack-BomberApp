@@ -10,8 +10,7 @@ export default class extends BaseSchema {
       table.integer('category_id').unsigned().references('id').inTable('categories')
       table.string('title')
       table.string('desc')
-      table.string('img')
-      table.string('category')
+      table.string('img').nullable()
       table.enum('status', ['active', 'inactive']).defaultTo('active')
 
       table.timestamp('created_at')

@@ -30,7 +30,32 @@ import SuppliesController from '#controllers/supplies_controller';
 import SupplyEmergenciesController from '#controllers/supply_emergencies_controller';
 import SettingsController from '#controllers/settings_controller';
 import LogsController from '#controllers/logs_controller';
+import PostsController from '#controllers/posts_controller';
+import CategoriesController from '#controllers/categories_controller';
+import CommentsController from '#controllers/comments_controller';
 
+
+/**
+ * ? Routes for the application: POSTS 📝
+ */
+router.resource('users/posts', PostsController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/all-posts-by-category-id/:id', [PostsController, 'getAllPostsByCategoryId']);
+  router.post('/all-posts-by-user-id/:id', [PostsController, 'getAllPostsByUserId']);
+}).prefix('users/posts').use(middleware.auth());
+/**
+ * ? Routes for the application: CATEGORIES 📦
+ */
+router.resource('users/categories', CategoriesController).use('*', middleware.auth());
+
+/**
+ * ? Routes for the application: COMMENTS 💬
+*/
+router.resource('users/comments', CommentsController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/all-comments-by-post-id/:id', [CommentsController, 'getAllCommentsByPostId']);
+  router.post('/all-comments-by-user-id/:id', [CommentsController, 'getAllCommentsByUserId']);
+}).prefix('users/comments').use(middleware.auth());
 
 /**
  * ? Routes for the application: LOGS 📜

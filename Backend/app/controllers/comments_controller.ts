@@ -7,6 +7,16 @@ export default class CommentsController {
     const comments = await Comment.query().where('status', 'active')
     return comments
   }
+
+  async getAllCommentsByPostId({ params }: HttpContext) {
+    const comments = await Comment.query().where('postId', params.id).where('status', 'active');
+    return comments;
+  }
+
+  async getAllCommentsByUserId({ params }: HttpContext) {
+    const comments = await Comment.query().where('userId', params.id).where('status', 'active');
+    return comments;
+  }
   
   async create({}: HttpContext) {}
   
@@ -14,7 +24,7 @@ export default class CommentsController {
     const payload = await request.validateUsing(createCommentValidator);
     const comment = new Comment();
     comment.fill(payload);
-    await comment.save();
+    return await comment.save();
   }
   
   async show({ params }: HttpContext) {
@@ -30,7 +40,7 @@ export default class CommentsController {
     if ( !comment ) return response.status(404).json({ message: 'No se ha encontrado el comentario' });
 
     comment.merge(payload);
-    await comment.save();
+    return await comment.save();
   }
   
   async destroy({ params }: HttpContext) {}

@@ -98,7 +98,6 @@ export default class UsersController {
         }
     });
 
-    // * Extract only the fields relevant to the User model
     const userPayload = {
       username: payload.username,
       fullName: payload.fullName,
@@ -155,7 +154,6 @@ export default class UsersController {
     }
     const data = request.all();
 
-    // * Extract only the fields relevant to the User model
     const userPayload = {
       username: data.username,
       fullName: data.fullName,

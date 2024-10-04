@@ -14,7 +14,7 @@ export default class CategoriesController {
     const payload = await request.validateUsing(createCategoryValidator);
     const category = new Category();
     category.fill(payload);
-    await category.save();
+    return await category.save();
   }
   
   async show({ params }: HttpContext) {
@@ -26,11 +26,11 @@ export default class CategoriesController {
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createCategoryValidator);
     const category = await Category.findOrFail(params.id);
-    
+
     if ( !category ) return response.status(404).json({ message: 'No se ha encontrado la categoría' });
 
     category.merge(payload);
-    await category.save();
+    return await category.save();
   }
   
   async destroy({ params }: HttpContext) {}

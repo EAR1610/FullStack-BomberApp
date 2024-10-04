@@ -22,9 +22,6 @@ export default class Post extends BaseModel {
 
   @column()
   declare img: string
-
-  @column()
-  declare category: string
   
   @column()
   declare status: 'active' | 'inactive'
