@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { apiRequestAuth } from "../../lib/apiRequest";
 import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
+import { Editor } from 'primereact/editor';
 
 const ViewPost = ({ post }: any) => {
 
@@ -55,7 +56,7 @@ const ViewPost = ({ post }: any) => {
   
         {/* Descripción del post */}
         <div className="prose prose-lg max-w-none text-gray-800 dark:text-gray-300">
-          <p>{post.desc}</p>
+        <Editor value={post.desc} style={{ height: '320px' }} readOnly />
         </div>
       </div>
     );

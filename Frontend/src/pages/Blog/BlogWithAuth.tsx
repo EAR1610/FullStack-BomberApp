@@ -15,7 +15,7 @@ const BlogWithAuth = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>({});
   const [loadingImages, setLoadingImages] = useState(true);
-  
+
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
@@ -157,8 +157,7 @@ const BlogWithAuth = () => {
               </div>
             )}
             <div className="p-4">
-              <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
-              <p className="text-gray-700">{post.desc}</p>
+              <h2 className="text-xl font-semibold mb-2">{post.title}</h2>              
               <button
                 onClick={() => viewPostBlog(post)}
                 className="mt-4 inline-block bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition w-full"

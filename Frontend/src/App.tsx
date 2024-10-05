@@ -31,6 +31,7 @@ import SuppliesType from './pages/SupplyType/SuppliesType';
 import Supplies from './pages/Supply/Supplies';
 import Dashboard from './pages/Dashboard/ECommerce';
 import PenalizedUsers from './pages/Users/PenalizedUsers';
+import CreateBlog from './pages/Blog/CreateBlog';
 
 
 /**
@@ -234,6 +235,14 @@ function App() {
               element: (
                 <>                 
                   <BlogWithAuth />
+                </>
+              )
+            },                     
+            {
+              path: 'create-blog',
+              element: (
+                <>                 
+                  <CreateBlog />
                 </>
               )
             },                     
