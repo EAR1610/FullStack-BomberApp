@@ -69,7 +69,6 @@ export default class UsersController {
   
   async getProfile({ response, params }: HttpContext) {
     const filePath = app.makePath(`uploads/pictures/${params.file}`);
-
     response.download(filePath);
   }
 

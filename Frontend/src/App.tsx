@@ -10,7 +10,6 @@ import { Layout } from './routes/layout/Layout';
 import HomePage from './routes/homePage/HomePage';
 import RequireAuth from './pages/Authentication/RequireAuth';
 import User from './pages/Users/User';
-import Blog from './pages/Blog/Blog';
 import Emergency from './pages/Emergency/Emergency';
 import EmergencyWithAuth from './pages/Emergency/EmergencyWithAuth';
 import Tools from './pages/Tool/Tools';
@@ -62,10 +61,6 @@ function App() {
         {
           path: '/register',
           element: <SignUp />
-        },
-        {
-          path: '/blog',
-          element: <Blog />
         },
         {
           path: '/emergency',

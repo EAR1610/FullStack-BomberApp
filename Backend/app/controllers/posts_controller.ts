@@ -11,13 +11,18 @@ export default class PostsController {
   }
 
   async getAllPostsByCategoryId({ params }: HttpContext) {
-    const posts = await Post.query().where('categoryId', params.id).where('status', 'active');
+    const posts = await Post.query().where('categoryId', params.id).where('status', 'active').limit(10).orderBy('createdAt', 'desc');
     return posts;
   }
 
   async getAllPostsByUserId({ params }: HttpContext) {
-    const posts = await Post.query().where('userId', params.id).where('status', 'active');
+    const posts = await Post.query().where('userId', params.id).where('status', 'active').limit(10).orderBy('createdAt', 'desc');
     return posts;
+  }
+
+  async getImgPosts({ response, params }: HttpContext) {
+    const filePath = app.makePath(`uploads/blog/${params.file}`);
+    response.download(filePath);
   }
   
   async create({}: HttpContext) {}

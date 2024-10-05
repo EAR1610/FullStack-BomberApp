@@ -38,24 +38,25 @@ import CommentsController from '#controllers/comments_controller';
 /**
  * ? Routes for the application: POSTS 📝
  */
-router.resource('users/posts', PostsController).use('*', middleware.auth());
+router.resource('users/blog/posts', PostsController).use('*', middleware.auth());
 router.group(() => {
   router.post('/all-posts-by-category-id/:id', [PostsController, 'getAllPostsByCategoryId']);
   router.post('/all-posts-by-user-id/:id', [PostsController, 'getAllPostsByUserId']);
-}).prefix('users/posts').use(middleware.auth());
+  router.post('/img-posts/:file', [PostsController, 'getImgPosts']);
+}).prefix('users/blog/posts').use(middleware.auth());
 /**
  * ? Routes for the application: CATEGORIES 📦
  */
-router.resource('users/categories', CategoriesController).use('*', middleware.auth());
+router.resource('users/blog/categories', CategoriesController).use('*', middleware.auth());
 
 /**
  * ? Routes for the application: COMMENTS 💬
 */
-router.resource('users/comments', CommentsController).use('*', middleware.auth());
+router.resource('users/blog/comments', CommentsController).use('*', middleware.auth());
 router.group(() => {
   router.post('/all-comments-by-post-id/:id', [CommentsController, 'getAllCommentsByPostId']);
   router.post('/all-comments-by-user-id/:id', [CommentsController, 'getAllCommentsByUserId']);
-}).prefix('users/comments').use(middleware.auth());
+}).prefix('users/blog/comments').use(middleware.auth());
 
 /**
  * ? Routes for the application: LOGS 📜
