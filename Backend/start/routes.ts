@@ -48,6 +48,9 @@ router.group(() => {
  * ? Routes for the application: CATEGORIES 📦
  */
 router.resource('users/blog/categories', CategoriesController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/inactive-categories', [CategoriesController, 'inactiveCategories']);
+}).prefix('users/blog/categories').use(middleware.auth());
 
 /**
  * ? Routes for the application: COMMENTS 💬

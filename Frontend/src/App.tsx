@@ -32,6 +32,7 @@ import Supplies from './pages/Supply/Supplies';
 import Dashboard from './pages/Dashboard/ECommerce';
 import PenalizedUsers from './pages/Users/PenalizedUsers';
 import CreateBlog from './pages/Blog/CreateBlog';
+import BlogCategories from './pages/BlogCategories/BlogCategories';
 
 
 /**
@@ -243,6 +244,14 @@ function App() {
               element: (
                 <>                 
                   <CreateBlog />
+                </>
+              )
+            },                     
+            {
+              path: 'create-blog-category',
+              element: (
+                <>                 
+                  <BlogCategories />
                 </>
               )
             },                     
