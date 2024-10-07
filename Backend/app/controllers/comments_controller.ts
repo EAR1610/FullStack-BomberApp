@@ -9,15 +9,22 @@ export default class CommentsController {
     return comments
   }
 
-  async getAllCommentsByPostId({ params }: HttpContext) {
+  async getAllCommentsByPostId({ params, request }: HttpContext) {
+    const page = request.input('page', 1); // default to page 1
+    const limit = request.input('limit', 10); // default to 10 items per page
+  
     const comments = await Comment.query()
-    .whereHas('user', (query) => {
-      query.where('status', 'active');
-    })
-    .preload('user', (query) => {
-      query.select('fullName')
-    })
-    .where('postId', params.id).where('status', 'active').orderBy('id');
+      .whereHas('user', (query) => {
+        query.where('status', 'active');
+      })
+      .preload('user', (query) => {
+        query.select('fullName');
+      })
+      .where('postId', params.id)
+      .where('status', 'active')
+      .orderBy('id')
+      .paginate(page, limit);
+  
     return comments;
   }
 
@@ -32,19 +39,22 @@ export default class CommentsController {
     const payload = await request.validateUsing(createCommentValidator);
     const comment = new Comment();
     comment.fill(payload);
-
+  
+    await comment.save();
+    await comment.preload('user', (query) => {
+      query.select('fullName');
+    });
+  
     const io = Ws.io;
     if (io) {
-      io.emit('commentCreated', comment);
+      io.emit('commentCreated', {
+        ...comment.toJSON(),
+      });
     } else {
       console.error('WebSocket server is not initialized.');
     }
-
-    return await comment.save();
-  }
   
-  async show({ params }: HttpContext) {
-    return await Comment.find( params.id );
+    return comment;
   }
   
   async edit({ params }: HttpContext) {}
