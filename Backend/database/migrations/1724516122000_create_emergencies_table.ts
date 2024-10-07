@@ -9,10 +9,10 @@ export default class extends BaseSchema {
       table.integer('emergency_type_id').unsigned().references('id').inTable('emergency_types')
       table.integer('user_id').unsigned().references('id').inTable('users').nullable()
       table.string('applicant', 255).nullable()
-      table.string('address', 255).nullable()
+      table.text('address').nullable()
       table.double('latitude').nullable()
       table.double('longitude').nullable()
-      table.string('description', 255).nullable()      
+      table.text('description').nullable()      
       table.enu('status', ['Registrada', 'En proceso', 'Atendida', 'Cancelada', 'Rechazada']).defaultTo('Registrada')
 
       table.timestamp('created_at')

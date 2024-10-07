@@ -2,7 +2,7 @@ import vine from '@vinejs/vine'
 
 export const createSupplyTypeValidator = vine.compile(
     vine.object({        
-        name: vine.string().minLength(3).unique( async(db, value, field) => {
+        name: vine.string().minLength(3).maxLength(255).unique( async(db, value, field) => {
             const supplyType = await db
                 .from('supply_types')
                 .where('name', field.meta.name)
@@ -16,7 +16,7 @@ export const createSupplyTypeValidator = vine.compile(
 
 export const updateSupplyTypeValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(3).unique( async(db, value, field) => {
+        name: vine.string().minLength(3).maxLength(255).unique( async(db, value, field) => {
             const supplyType = await db
                 .from('supply_types')
                 .whereNot('id', field.meta.id)

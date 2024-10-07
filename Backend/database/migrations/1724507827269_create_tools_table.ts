@@ -17,8 +17,8 @@ export default class extends BaseSchema {
       table.string('serial_number', 255).notNullable()
       table.dateTime('date_of_purchase').notNullable()
       table.dateTime('date_of_leaving').nullable()
-      table.string('reason_of_leaving', 255).nullable()
-      table.string('reamarks', 255).nullable()
+      table.text('reason_of_leaving').nullable()
+      table.text('reamarks').nullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

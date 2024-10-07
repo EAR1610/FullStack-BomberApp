@@ -2,7 +2,7 @@ import vine from '@vinejs/vine'
 
 const createCategoryValidator = vine.compile(
     vine.object({
-        name: vine.string().unique( async (db, value, field) => {
+        name: vine.string().minLength(3).unique( async (db, value, field) => {
             const category = await db
                 .from('categories')
                 .where('name', value)
@@ -16,7 +16,7 @@ const createCategoryValidator = vine.compile(
 
 const updateCategoryValidator = vine.compile(
     vine.object({
-        name: vine.string().unique( async (db, value, field) => {
+        name: vine.string().minLength(3).unique( async (db, value, field) => {
             const category = await db
                 .from('categories')
                 .whereNot('id', field.meta.id)

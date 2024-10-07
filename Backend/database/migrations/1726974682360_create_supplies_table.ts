@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('supply_type_id').unsigned().references('id').inTable('supply_types')
-      table.string('name', 255).notNullable()
+      table.text('name').notNullable()
       table.enu('status', ['active', 'inactive', 'suspended']).defaultTo('active')
 
       table.timestamp('created_at')

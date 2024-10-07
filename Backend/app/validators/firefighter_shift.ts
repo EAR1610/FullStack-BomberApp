@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 
 export const createFirefighterShiftValidator = vine.compile(
   vine.object({
-    name: vine.string(),
+    name: vine.string().minLength(3).maxLength(255),
     description: vine.string().nullable(),
     shiftStart: vine.date(),
     shiftEnd: vine.date(),

@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('post_id').unsigned().references('id').inTable('posts')
       table.integer('user_id').unsigned().references('id').inTable('users')
-      table.string('content')
+      table.text('content')
       table.enum('status', ['active', 'inactive']).defaultTo('active')
 
       table.timestamp('created_at')

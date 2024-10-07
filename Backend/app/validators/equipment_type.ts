@@ -6,7 +6,7 @@ import vine from '@vinejs/vine'
 
 const createEquipmentTypeValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(3).unique( async (db, value, field) => {
+        name: vine.string().minLength(3).maxLength(255).unique( async (db, value, field) => {
             const equipmentType = await db
               .from('equipment_types')
               .where('name', value)
@@ -19,7 +19,7 @@ const createEquipmentTypeValidator = vine.compile(
 
 const updateEquipmentTypeValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(3).unique( async (db, value, field) => {
+        name: vine.string().minLength(3).maxLength(255).unique( async (db, value, field) => {
             const equipmentType = await db
                 .from('equipment_types')
                 .whereNot('id', field.meta.id)

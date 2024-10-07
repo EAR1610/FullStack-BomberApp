@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('firefighter_id').unsigned().references('id').inTable('firefighters')
       table.string('name', 255).notNullable()
-      table.string('description', 255).nullable()
+      table.text('description').nullable()
       table.datetime('shift_start').notNullable()
       table.datetime('shift_end').notNullable()
       table.enu('status', ['active', 'inactive', 'suspended']).defaultTo('active')

@@ -8,8 +8,8 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('user_id').unsigned().references('id').inTable('users')
       table.integer('category_id').unsigned().references('id').inTable('categories')
-      table.string('title')
-      table.string('desc')
+      table.text('title')
+      table.text('desc')
       table.string('img').nullable()
       table.enum('status', ['active', 'inactive']).defaultTo('active')
 

@@ -10,8 +10,8 @@ export default class CommentsController {
   }
 
   async getAllCommentsByPostId({ params, request }: HttpContext) {
-    const page = request.input('page', 1); // default to page 1
-    const limit = request.input('limit', 10); // default to 10 items per page
+    const page = request.input('page', 1);
+    const limit = request.input('limit', 10);
   
     const comments = await Comment.query()
       .whereHas('user', (query) => {
@@ -22,7 +22,7 @@ export default class CommentsController {
       })
       .where('postId', params.id)
       .where('status', 'active')
-      .orderBy('id')
+      .orderBy('id', 'desc')
       .paginate(page, limit);
   
     return comments;

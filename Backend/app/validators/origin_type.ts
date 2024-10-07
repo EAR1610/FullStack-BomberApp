@@ -5,7 +5,7 @@ import vine from '@vinejs/vine'
  */
 const createOriginTypeValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(3).unique( async (db, value, field) => {
+        name: vine.string().minLength(3).maxLength(255).unique( async (db, value, field) => {
             const originType = await db
               .from('origin_types')
               .where('name', value)
@@ -18,7 +18,7 @@ const createOriginTypeValidator = vine.compile(
 
 const updateOriginTypeValidator = vine.compile(
     vine.object({
-        name: vine.string().minLength(3).unique( async (db, value, field) => {
+        name: vine.string().minLength(3).maxLength(255).unique( async (db, value, field) => {
             const originType = await db
                 .from('origin_types')
                 .whereNot('id', field.meta.id)
