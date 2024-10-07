@@ -3,6 +3,7 @@ import { apiRequestAuth } from "../../lib/apiRequest";
 import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
 import { Editor } from 'primereact/editor';
+import CommentsByPost from "./CommentsByPost";
 
 const ViewPost = ({ post }: any) => {
 
@@ -35,7 +36,6 @@ const ViewPost = ({ post }: any) => {
 
     return (
       <div className="container mx-auto p-6">
-        {/* Título del post */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             {post.title}
@@ -45,7 +45,6 @@ const ViewPost = ({ post }: any) => {
           </p>
         </div>
   
-        {/* Imagen destacada */}
         <div className="mb-6">
           <img
             src={imagePreview}
@@ -54,10 +53,10 @@ const ViewPost = ({ post }: any) => {
           />
         </div>
   
-        {/* Descripción del post */}
         <div className="prose prose-lg max-w-none text-gray-800 dark:text-gray-300">
-        <Editor value={post.desc} style={{ height: '320px' }} readOnly />
+          <Editor value={post.desc} style={{ height: '320px' }} readOnly />
         </div>
+        <CommentsByPost postId={post.id} />
       </div>
     );
 };

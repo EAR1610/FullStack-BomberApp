@@ -146,3 +146,12 @@ export interface MapComponentProps extends MapProps {
   onLocationChange: (latitude: number, longitude: number) => void;
   isUser: boolean;
 }
+
+export interface Comment {
+  id: number;
+  postId: number;
+  userId: number;
+  user: User;
+  content: string;
+  createdAt: string;
+}

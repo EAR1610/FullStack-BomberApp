@@ -9,7 +9,14 @@ export default class CommentsController {
   }
 
   async getAllCommentsByPostId({ params }: HttpContext) {
-    const comments = await Comment.query().where('postId', params.id).where('status', 'active');
+    const comments = await Comment.query()
+    .whereHas('user', (query) => {
+      query.where('status', 'active');
+    })
+    .preload('user', (query) => {
+      query.select('fullName')
+    })
+    .where('postId', params.id).where('status', 'active');
     return comments;
   }
 

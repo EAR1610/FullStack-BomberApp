@@ -29,7 +29,6 @@ const BlogCategories = () => {
       const getCategories = async () => {
         try {
           let response;
-          console.log(viewActiveCategories);
           if (viewActiveCategories) {
               response = await apiRequestAuth.get("/blog/categories", {
                   headers: {
