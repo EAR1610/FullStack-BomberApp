@@ -34,6 +34,7 @@ const CommentsByPost = ({ postId }: { postId: number }) => {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
+        console.log(response.data.data);
         setComments(response.data.data); 
         setTotalRecords(response.data.meta.total);
       } catch (err) {

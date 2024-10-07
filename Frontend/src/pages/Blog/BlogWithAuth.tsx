@@ -1,17 +1,19 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
-import { apiRequestAuth } from '../../lib/apiRequest';
+import { apiRequestAuth, socketIoURL } from '../../lib/apiRequest';
 import { handleErrorResponse } from "../../helpers/functions";
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import ViewPost from "./ViewPost";
+import { io } from "socket.io-client";
 
 const BlogWithAuth = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Salud");
+  const [selectedCategory, setSelectedCategory] = useState<String>("Salud");
   const [selectedPost, setSelectedPost] = useState(null);
   const [errorMessages, setErrorMessages] = useState<string>('');
   const [posts, setPosts] = useState<any[]>([]);
+  const [postsChanged, setPostsChanged] = useState<boolean>(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>({});
   const [loadingImages, setLoadingImages] = useState(true);
@@ -35,7 +37,7 @@ const BlogWithAuth = () => {
       } catch (err) {
         showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
       }
-    };
+    };   
 
     const getPosts = async () => {
       try {
@@ -62,7 +64,21 @@ const BlogWithAuth = () => {
 
     getPosts();
     getCategories();
-  }, [currentToken]);
+  }, [postsChanged]);
+
+  useEffect(() => {
+    const socket = io(socketIoURL);
+    socket.on('postCreated', async (newPost) => {
+      setPostsChanged(!postsChanged);
+      // setPosts((prevPosts) => [newPost, ...prevPosts]);
+      // await fetchUserImage(newPost.img, newPost.id); // Fetch the image for the new post
+      showAlert('info', 'Info', 'Nuevo post creado');
+    });
+  
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
@@ -96,7 +112,12 @@ const BlogWithAuth = () => {
         },
       });
       setPosts(response.data);
+      
+      for (const post of response.data) {
+        await fetchUserImage(post.img, post.id);
+      }
     } catch (err) {
+      console.log(err);
       showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   };
@@ -110,7 +131,12 @@ const BlogWithAuth = () => {
         },
       });
       setPosts(response.data);
+      
+      for (const post of response.data) {
+        await fetchUserImage(post.img, post.id);
+      }
     } catch (err) {
+      console.log(err);
       showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   };

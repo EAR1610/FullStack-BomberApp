@@ -34,7 +34,6 @@ const CreateBlog = () => {
           },
         });
         setCategories(response.data);
-        console.log(response.data);
     }
     getCategories();
   }, []);
@@ -58,6 +57,8 @@ const CreateBlog = () => {
             },
         });
         showAlert('info', 'Info', 'Publicación creada exitosamente');
+        cleanData();
+        
     } catch (err) {
         console.log(err);
         showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
@@ -65,6 +66,14 @@ const CreateBlog = () => {
   };
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+
+  const cleanData = () => {
+    setTitle('');
+    setImage(null);
+    setImagePreview(null);
+    setDescription('');
+    setCategoryId(0);
+  }
 
   const selectedCategoryTemplate = (option:any, props:any) => {
     if (option) {

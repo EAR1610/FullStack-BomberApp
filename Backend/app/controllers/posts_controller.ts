@@ -1,4 +1,5 @@
 import Post from '#models/post'
+import Ws from '#services/Ws';
 import { createPostValidator } from '#validators/post';
 import { cuid } from '@adonisjs/core/helpers';
 import type { HttpContext } from '@adonisjs/core/http'
@@ -46,7 +47,15 @@ export default class PostsController {
     const post = new Post();
 
     post.fill(postPayload);
-    post.img = fileName;    
+    post.img = fileName;
+
+    const io = Ws.io;
+    if (io) {
+      io.emit('postCreated', post);
+    } else {
+      console.error('WebSocket server is not initialized.');
+    }
+
     return await post.save();
   }
   
