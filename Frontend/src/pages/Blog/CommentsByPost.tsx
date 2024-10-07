@@ -1,11 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
-import { apiRequestAuth } from "../../lib/apiRequest";
+import { apiRequestAuth, socketIoURL } from "../../lib/apiRequest";
 import { Comment } from "../../helpers/Interfaces";
-import toast from "react-hot-toast";
 import { Toast } from "primereact/toast";
 import { handleErrorResponse } from "../../helpers/functions";
+import { io } from 'socket.io-client';
 
 const CommentsByPost = ({ postId }: { postId: number }) => {
   const [comments, setComments] = useState<Comment[]>([]);
@@ -36,6 +36,18 @@ const CommentsByPost = ({ postId }: { postId: number }) => {
 
     getCommentsByPostId();
   }, [postId, currentToken, newCommentStatus]);
+
+  useEffect(() => {
+    const socket = io(socketIoURL);
+    socket.on('commentCreated', (newComment) => {
+      setComments([newComment, ...comments]);      
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+  
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

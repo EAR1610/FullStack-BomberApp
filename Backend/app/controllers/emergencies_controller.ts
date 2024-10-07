@@ -159,7 +159,6 @@ export default class EmergenciesController {
     emergency.fill(payload);
     await emergency.save();
   
-    // ? Emit event to all connected clients
     const io = Ws.io;
     if (io) {
       io.emit('emergencyCreated', emergency);

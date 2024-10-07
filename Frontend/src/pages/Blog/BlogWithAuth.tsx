@@ -173,7 +173,7 @@ const BlogWithAuth = () => {
         <ViewPost 
           post = {selectedPost}
         />
-      </Dialog>     
+      </Dialog>
     </div>
   );
 };

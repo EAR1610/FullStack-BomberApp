@@ -1,4 +1,5 @@
 import Comment from '#models/comment'
+import Ws from '#services/Ws';
 import { createCommentValidator } from '#validators/comment';
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -16,7 +17,7 @@ export default class CommentsController {
     .preload('user', (query) => {
       query.select('fullName')
     })
-    .where('postId', params.id).where('status', 'active');
+    .where('postId', params.id).where('status', 'active').orderBy('id');
     return comments;
   }
 
@@ -31,6 +32,14 @@ export default class CommentsController {
     const payload = await request.validateUsing(createCommentValidator);
     const comment = new Comment();
     comment.fill(payload);
+
+    const io = Ws.io;
+    if (io) {
+      io.emit('commentCreated', comment);
+    } else {
+      console.error('WebSocket server is not initialized.');
+    }
+
     return await comment.save();
   }
   
