@@ -1,6 +1,6 @@
 import Post from '#models/post'
 import Ws from '#services/Ws';
-import { createPostValidator } from '#validators/post';
+import { createPostValidator, updatePostValidator } from '#validators/post';
 import { cuid } from '@adonisjs/core/helpers';
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app';
@@ -30,8 +30,6 @@ export default class PostsController {
   
   async store({ request }: HttpContext) {
     const payload = await request.validateUsing(createPostValidator);
-
-    console.log(payload);
 
     const postPayload ={
       userId: payload.userId,
@@ -68,26 +66,17 @@ export default class PostsController {
   async update({ params, request, response }: HttpContext) {
     const post = await Post.findOrFail(params.id);
     if ( !post ) return response.status(404).json({ message: 'No se ha encontrado la post' });
-    const file = request.file('img');
+    
+    const payload = await request.validateUsing(updatePostValidator);
+    post?.merge(payload);
 
-    if (file) {
-        await file.move(app.makePath('uploads/blog'), {
-            name: `${cuid()}.${file.extname}`
-        });
-        
-        post.img = file.fileName;
+    const io = Ws.io;
+    if (io) {
+      io.emit('postUpdated', post);
+    } else {
+      console.error('WebSocket server is not initialized.');
     }
-    const data = request.all();
-
-    const postPayload = {
-      userId: data.userId,
-      categoryId: data.categoryId,
-      title: data.title,
-      desc: data.desc,
-      status: data.status,
-    }
-
-    post?.merge(postPayload);
+    
     return await post?.save();
   }
   

@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContextProps } from '../../interface/Auth';
 import { AuthContext } from '../../context/AuthContext';
 import { apiRequestAuth, socketIoURL } from '../../lib/apiRequest';
-import { handleErrorResponse } from "../../helpers/functions";
+import { createLog, handleErrorResponse } from "../../helpers/functions";
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import ViewPost from "./ViewPost";
@@ -21,6 +21,7 @@ const BlogWithAuth = () => {
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
   const [viewPost, setViewPost] = useState(false);
   const toast = useRef(null);
 
@@ -61,21 +62,34 @@ const BlogWithAuth = () => {
         showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
       }
     };
-
+    
     getPosts();
     getCategories();
   }, [postsChanged]);
 
   useEffect(() => {
     const socket = io(socketIoURL);
-    socket.on('postCreated', async (newPost) => {
-      setPostsChanged(!postsChanged);
-      // setPosts((prevPosts) => [newPost, ...prevPosts]);
-      // await fetchUserImage(newPost.img, newPost.id); // Fetch the image for the new post
+  
+    const handlePostCreated = async (newPost:any) => {
+      setPosts((prevPosts) => [newPost, ...prevPosts]);
       showAlert('info', 'Info', 'Nuevo post creado');
-    });
+
+      if (newPost.img) await fetchUserImage(newPost.img, newPost.id);    
+    };
+  
+    const handlePostUpdated = (updatedPost:any) => {
+      setPosts((prevPosts) =>
+        prevPosts.filter(post => post.id !== updatedPost.id || updatedPost.status !== 'inactive')
+      );
+      showAlert('info', 'Info', 'Post actualizado');
+    };
+  
+    socket.on('postCreated', handlePostCreated);
+    socket.on('postUpdated', handlePostUpdated);
   
     return () => {
+      socket.off('postCreated', handlePostCreated);
+      socket.off('postUpdated', handlePostUpdated);
       socket.disconnect();
     };
   }, []);
@@ -146,6 +160,30 @@ const BlogWithAuth = () => {
     setSelectedPost(post);
   };
 
+  const deletePost = async (post: any) => {
+    try {
+      const formData = new FormData();
+      formData.append('userId', JSON.stringify(post.userId));
+      formData.append('categoryId', JSON.stringify(post.categoryId));
+      formData.append('title', post.title);
+      formData.append('desc', post.desc);
+      formData.append('img', post.img);
+      formData.append('status', 'inactive');
+      await apiRequestAuth.put(`/blog/posts/${post.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+      showAlert('info', 'Info', 'Post borrado');
+      setPostsChanged(!postsChanged);
+      createLog(userId, 'DELETE', 'POST', `Se ha borrado el post: ${post.title}`, currentToken?.token);
+    } catch (error) {
+      console.log(error);
+      showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+    }
+  };
+
   return (
     <div className="container mx-auto p-6">
       <Toast ref={toast} />
@@ -170,7 +208,6 @@ const BlogWithAuth = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts?.map((post) => (
           <div key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-            {/* Mostrar la imagen si ya se ha cargado */}
             {imagePreviews[post.id] ? (
               <img
                 src={imagePreviews[post.id]} 
@@ -190,6 +227,14 @@ const BlogWithAuth = () => {
               >
                 Ver post
               </button>
+              { currentToken?.user.isAdmin && (
+                <button
+                  onClick={() => deletePost(post)}
+                  className="mt-4 inline-block bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition w-full"
+                >
+                  Borrar post
+                </button>
+              )}
             </div>
           </div>
         ))}
