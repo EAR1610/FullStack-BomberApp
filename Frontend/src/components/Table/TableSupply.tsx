@@ -60,7 +60,7 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
             onHide: () => setIsInactiveSupply(false),
           });
         }
-      }, [selectedSupply]);
+      }, [selectedSupply, isInactiveSupply]);
 
       const renderHeader = () => {
         return (

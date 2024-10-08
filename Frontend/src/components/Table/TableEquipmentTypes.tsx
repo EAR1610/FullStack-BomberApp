@@ -60,8 +60,7 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
           onHide: () => setIsInactiveEquipmentType(false),
         });
       }
-    }, [selectedEquipmentType])
-    
+    }, [selectedEquipmentType, isInactiveEquipmentType]);    
     
     const renderHeader = () => {
         return (

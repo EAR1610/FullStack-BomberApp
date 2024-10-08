@@ -65,7 +65,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
         onHide: () => setIsInactiveUser(false)
       });
     }
-  }, [selectedUser]);
+  }, [selectedUser, isInactiveUser]);
 
   const onGlobalFilterChange = (e:any) => {
     const value = e.target.value;

@@ -82,8 +82,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
           onHide: () => setIsInactiveFirefighter(false)
         });
       }
-    }, [selectedFirefighter])
-    
+    }, [selectedFirefighter, isInactiveFirefighter]);    
 
     const viewActiveOrInactiveFirefighters = () => setViewActiveFirefighters(!viewActiveFirefighters);
 

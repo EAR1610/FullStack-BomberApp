@@ -80,8 +80,7 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
             onHide: () => setIsInactiveEmergencyType(false)
           });
         }
-      }, [selectedEmergencyType])
-      
+      }, [selectedEmergencyType, isInactiveEmergencyType]);      
 
       const newEmergencyType = () => {
         setVisible(true);

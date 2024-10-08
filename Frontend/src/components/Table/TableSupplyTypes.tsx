@@ -61,7 +61,7 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
             onHide: () => setIsInactiveSupplyType(false),
           });
         }
-      }, [selectedSupplyType])
+      }, [selectedSupplyType, isInactiveSupplyType]);
 
       const renderHeader = () => {
         return (

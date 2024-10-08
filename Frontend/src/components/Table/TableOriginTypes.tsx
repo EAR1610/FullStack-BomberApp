@@ -58,8 +58,7 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
           onHide: () => setIsInactiveOriginType(false)
         });
       }
-    }, [selectedOriginType]);
-    
+    }, [selectedOriginType, isInactiveOriginType]);    
 
   const renderHeader = () => {
     return (

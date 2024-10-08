@@ -52,8 +52,8 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
         });
         const toolTypesData = response.data;
 
-        const toolsWithTypeName = data.map(tool => {
-          const toolType = toolTypesData.find(type => type.id === tool.toolTypeId);
+        const toolsWithTypeName = data.map((tool: any) => {
+          const toolType = toolTypesData.find((type: any) => type.id === tool.toolTypeId);
           return {
             ...tool,
             toolTypeName: toolType ? toolType.name : 'Unknown'
@@ -81,8 +81,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
         onHide: () => setIsInactiveTool(false)
       });  
     }
-  }, [selectedTool]);
-  
+  }, [selectedTool, isInactiveTool]);
 
   const onGlobalFilterChange = (e:any) => {
     const value = e.target.value;
@@ -137,6 +136,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
   };
 
   const accept = async () => {
+
     if (!selectedTool) return;
   
     const formData = new FormData();
@@ -152,9 +152,9 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
       });
   
       const message = status === 'active' ? 'Se ha activado la herramienta' : 'Se ha desactivado la herramienta';
-      setIsInactiveTool(!isChangedTool);
       showAlert('info', 'Info', message);
       await createLog(userId, 'UPDATE', 'TOOL', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} la herramienta: ${selectedTool?.name}`, currentToken?.token);
+      setIsChangedTool(!isChangedTool);
     } catch (error) {
       showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
     }

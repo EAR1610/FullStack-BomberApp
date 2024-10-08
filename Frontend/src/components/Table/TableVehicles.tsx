@@ -65,7 +65,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
               onHide: () => setIsInactiveVehicle(false)
           });
       }
-    }, [selectedVehicle])
+    }, [selectedVehicle, isInactiveVehicle]);
     
 
     const renderHeader = () => {
