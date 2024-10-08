@@ -51,20 +51,55 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
         const attendedEmergency = 4;
 
         return (
-          <div className="flex justify-content-between">
-              <IconField iconPosition="left">
-                  <InputIcon className="pi pi-search" />
-                  <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Búsqueda" />
-              </IconField>
-              <IconField iconPosition="left" className='ml-2'>                
-                    <InputIcon className="pi pi-search" />
-                    <Button label="Solicitadas" icon="pi pi-check" loading={loading} onClick={() => setViewStatusEmergency(registeredemergency)} className='' />
-                    <Button label='En proceso' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(inProcessEmergency)} className='p-button-info ml-2' />
-                    <Button label='Canceladas' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(cancelledEmergency)} className='p-button-warning ml-2' />
-                    <Button label='Rechazadas' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(rejectedEmergency)} className='p-button-danger ml-2' />
-                    <Button label='Atendidas' icon="pi pi-eye" loading={loading} onClick={() => setViewStatusEmergency(attendedEmergency)} className='p-button-success ml-2' />                    
-              </IconField>
-          </div>
+          <div className="flex flex-wrap justify-between items-center space-y-2 sm:space-y-0 mb-4">
+            <IconField iconPosition="left" className="flex-1 sm:max-w-xs">
+                <InputIcon className="pi pi-search"/>
+                <InputText
+                    value={globalFilterValue}
+                    onChange={onGlobalFilterChange}
+                    placeholder="Búsqueda"
+                    className="w-full"
+                />
+            </IconField>
+
+            <div className="flex flex-wrap justify-end gap-2">
+                <Button
+                    label="Solicitadas"
+                    icon="pi pi-check"
+                    loading={loading}
+                    onClick={() => setViewStatusEmergency(registeredemergency)}
+                    className="w-full sm:w-auto"
+                />
+                <Button
+                    label="En proceso"
+                    icon="pi pi-eye"
+                    loading={loading}
+                    onClick={() => setViewStatusEmergency(inProcessEmergency)}
+                    className="p-button-info w-full sm:w-auto"
+                />
+                <Button
+                    label="Canceladas"
+                    icon="pi pi-eye"
+                    loading={loading}
+                    onClick={() => setViewStatusEmergency(cancelledEmergency)}
+                    className="p-button-warning w-full sm:w-auto"
+                />
+                <Button
+                    label="Rechazadas"
+                    icon="pi pi-eye"
+                    loading={loading}
+                    onClick={() => setViewStatusEmergency(rejectedEmergency)}
+                    className="p-button-danger w-full sm:w-auto"
+                />
+                <Button
+                    label="Atendidas"
+                    icon="pi pi-eye"
+                    loading={loading}
+                    onClick={() => setViewStatusEmergency(attendedEmergency)}
+                    className="p-button-success w-full sm:w-auto"
+                />
+            </div>
+        </div>
         );
       };
 

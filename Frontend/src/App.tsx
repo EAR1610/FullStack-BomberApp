@@ -33,6 +33,7 @@ import Dashboard from './pages/Dashboard/ECommerce';
 import PenalizedUsers from './pages/Users/PenalizedUsers';
 import CreateBlog from './pages/Blog/CreateBlog';
 import BlogCategories from './pages/BlogCategories/BlogCategories';
+import ReportEmergency from './pages/Report/Emergency/ReportEmergency';
 
 
 /**
@@ -103,9 +104,17 @@ function App() {
               )
             },
             {
+              path: 'report-emergency',
+              element: (
+                <>
+                  <ReportEmergency />
+                </>
+              )
+            },
+            {
               path: 'emergencies',
               element: (
-                <>                 
+                <>
                   <Emergency />
                 </>
               )

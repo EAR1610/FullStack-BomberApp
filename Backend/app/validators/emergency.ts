@@ -12,3 +12,10 @@ export const createEmergencyValidator = vine.compile(
         status: vine.enum(['Registrada', 'En proceso', 'Atendida', 'Cancelada', 'Rechazada']),
     })
 )
+
+export const getEmergenciesByDateValidator = vine.compile(
+    vine.object({
+        startDate: vine.date(),
+        endDate: vine.date(),
+    })
+)

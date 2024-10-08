@@ -115,6 +115,7 @@ router.group(() => {
   router.post('/my-emergencies/rejected-emergencies/:id', [EmergenciesController, 'myRejectedEmergencies']);
   router.post('/my-emergencies/attended-emergencies/:id', [EmergenciesController, 'myAttendedEmergencies']);
   router.post('/my-emergencies/:id', [EmergenciesController, 'myEmergencies']);
+  router.post('/emergencies-by-date', [EmergenciesController, 'getEmergenciesByDate']);
 }).prefix('users/emergencies').use(middleware.auth());
 
 router.resource('users/emergency-type', EmergencyTypesController).use('*', middleware.auth());

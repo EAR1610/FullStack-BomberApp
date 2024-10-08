@@ -1,5 +1,5 @@
 import Emergency from '#models/emergency';
-import { createEmergencyValidator } from '#validators/emergency';
+import { createEmergencyValidator, getEmergenciesByDateValidator } from '#validators/emergency';
 import type { HttpContext } from '@adonisjs/core/http'
 import Ws from '#services/Ws';
 /**
@@ -148,6 +148,21 @@ export default class EmergenciesController {
     })
     .where('status', 'Rechazada')
     .limit(10);
+    return emergency
+  }
+
+  async getEmergenciesByDate ({ request }: HttpContext) {
+    const payload = await request.validateUsing(getEmergenciesByDateValidator);
+    const emergency = await Emergency.query()
+      .whereBetween('createdAt', [payload.startDate, payload.endDate])
+      .whereHas('emergencyType', (query) => {
+        query.where('status', 'active');
+      })
+      .preload('emergencyType', (query) => {
+        query.select('name');
+      })
+      .where('status', 'Atendida');
+    
     return emergency
   }
 
