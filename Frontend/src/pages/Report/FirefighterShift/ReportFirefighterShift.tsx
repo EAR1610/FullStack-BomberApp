@@ -12,11 +12,12 @@ import { handleErrorResponse } from "../../../helpers/functions";
 import TableEmergenciesReport from "../../../components/Table/TableEmergenciesReport";
 import { ColumnMeta } from "../../../helpers/Interfaces";
 import { useNavigate } from "react-router-dom";
+import TableFirefighterShiftsReport from "../../../components/Table/TableFirefighterShiftsReport";
 
-const ReportEmergency = () => {
-  const [emergencies, setEmergencies] = useState<any[]>([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+const ReportFirefighterShift = () => {
+
+  const [firefighterShifts, setFirefighterShifts] = useState<any[]>([]);
+  const [monthDate, setMonthDate] = useState(null);
   const [errorMessages, setErrorMessages] = useState<string>('');  
   const [viewGenerateReport, setViewGenerateReport] = useState<boolean>(false);
   const [typeReport, setTypeReport] = useState<string>('Pdf');
@@ -32,7 +33,7 @@ const ReportEmergency = () => {
     if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
     if( currentToken?.user.isUser ) navigate('/app/emergency-request');
   }, []);
-  
+
   const cols: ColumnMeta[] = [
     { field: 'fullName', header: 'Nombre' },
     { field: 'username', header: 'DPI' },
@@ -49,7 +50,7 @@ const ReportEmergency = () => {
         import('jspdf-autotable').then(() => {
             const doc = new jsPDF.default(0, 0);
 
-            doc.autoTable(exportColumns, emergencies);
+            doc.autoTable(exportColumns, firefighterShifts);
             doc.save('emergencias.pdf');
         });
     });
@@ -58,40 +59,34 @@ const ReportEmergency = () => {
   const exportExcel = () => {
     import('xlsx').then((xlsx) => {
           const worksheet = xlsx.utils.json_to_sheet([]); // Inicializa la hoja de trabajo
-          const formattedStartDate = startDate ? formatDate(startDate) : 'N/A';
-          const formattedEndDate = endDate ? formatDate(endDate) : 'N/A';
+          const formattedStartDate = monthDate ? 'GenerarMes' : 'N/A';
           
-          // Añadir título centrado y en negrita
           xlsx.utils.sheet_add_aoa(worksheet, [
-              [`Reporte de emergencias desde ${formattedStartDate} hasta ${formattedEndDate}`],
+              [`Reporte de emergencias desde ${formattedStartDate}`],
               []
           ], { origin: 'A1' });
           
-          // Configurar el estilo del título (centrado y negrita)
           const titleCell = worksheet['A1'];
           if (titleCell) {
               titleCell.s = {
-                  font: { bold: true }, // Negrita
-                  alignment: { horizontal: 'center' } // Centramos el texto
+                  font: { bold: true }, 
+                  alignment: { horizontal: 'center' } 
               };
               const rangeTitle = { s: { c: 0, r: 0 }, e: { c: exportColumns.length - 1, r: 0 } };
               worksheet['!merges'] = worksheet['!merges'] || [];
-              worksheet['!merges'].push(rangeTitle); // Merge para centrar el título
+              worksheet['!merges'].push(rangeTitle); 
           }
   
-          // Añadir datos de las emergencias
-          xlsx.utils.sheet_add_json(worksheet, emergencies, { origin: 'A3', skipHeader: false });
-          console.log(emergencies);
+          xlsx.utils.sheet_add_json(worksheet, firefighterShifts, { origin: 'A3', skipHeader: false });
           
-          // Dar formato a los encabezados de las columnas
-          const headerRow = 2; // Fila donde están los encabezados
+          const headerRow = 2; 
           exportColumns.forEach((col, idx) => {
               const cell = worksheet[xlsx.utils.encode_cell({ r: headerRow, c: idx })];
               if (cell) {
                   cell.s = {
-                      font: { bold: true }, // Negrita
-                      alignment: { horizontal: 'center' }, // Centrar encabezados
-                      border: { // Aplicar bordes a los encabezados
+                      font: { bold: true }, 
+                      alignment: { horizontal: 'center' }, 
+                      border: { 
                           top: { style: 'thin' },
                           bottom: { style: 'thin' },
                           left: { style: 'thin' },
@@ -101,7 +96,6 @@ const ReportEmergency = () => {
               }
           });
   
-          // Aplicar borde a todas las celdas de la tabla
           const range = xlsx.utils.decode_range(worksheet['!ref']);
           for (let R = range.s.r; R <= range.e.r; ++R) {
               for (let C = range.s.c; C <= range.e.c; ++C) {
@@ -118,11 +112,10 @@ const ReportEmergency = () => {
               }
           }
   
-          // Configurar el workbook y guardarlo como archivo Excel
           const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
           const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
   
-          saveAsExcelFile(excelBuffer, `reporte de emergencias de ${formattedStartDate}`);
+          saveAsExcelFile(excelBuffer, `reporte de asignación de turnos de ${formattedStartDate}`);
     });
   };
   
@@ -141,50 +134,41 @@ const ReportEmergency = () => {
     });
   };
 
-  const formatDate = (date: any) => {
-    if (!date) return null;
+  const formatMonth = (date: Date) => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    return `${year}-${month}-${day}`;
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const formattedDate = `${year}-${month}`;
+    return formattedDate;
   };
-  
+
   const handleSearch = async () => {
   
-    const formattedStartDate = formatDate(startDate);
-    const formattedEndDate = formatDate(endDate);
-    
+    const formatedMonth = formatMonth(monthDate);
     try {
-        if( formattedEndDate == null || formattedStartDate == null ){
+        if( formatedMonth == null ){
           showAlert('warn', 'Error', 'La fecha de inicio y la fecha de fin son obligatorias');
           return;
         }
-
-        if( formattedEndDate < formattedStartDate ){
-          showAlert('warn', 'Error', 'La fecha de fin debe ser mayor a la fecha de inicio');
-          return;
-        }
-                 
+            
         const formData = new FormData();
-        formData.append('startDate', String(formattedStartDate));
-        formData.append('endDate', String(formattedEndDate));
-        const response = await apiRequestAuth.post("/emergencies/emergencies-by-date", formData, {
+        formData.append('monthYear', String(formatedMonth));
+        const response = await apiRequestAuth.post("/firefighter-shift/firefighter-shift-by-month", formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        setEmergencies(response.data);
-        if( response.data.length === 0 ) showAlert('warn', 'Error', 'No hay emergencias para generar el reporte');
+        setFirefighterShifts(response.data);
+        if( response.data.length === 0 ) showAlert('warn', 'Error', 'No hay asignaciones de turnos para el mes seleccionado');
 
     } catch (err) {
         showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+        setFirefighterShifts([]);
     }
   };
 
   const handleReportType = async () => {
-    if (emergencies.length < 1) {
-        showAlert('warn', 'Error', 'No hay emergencias para generar el reporte');
+    if (firefighterShifts.length < 1) {
+        showAlert('warn', 'Error', 'No hay asignaciones de turnos para generar el reporte');
         return;
     }
     setViewGenerateReport(true);
@@ -206,38 +190,24 @@ const ReportEmergency = () => {
      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         
         <div className="flex-auto">
-            <label htmlFor="startDate" className="font-bold block mb-2 text-gray-700 dark:text-gray-300">
-            Fecha de inicio
+            <label htmlFor="monthDate" className="font-bold block mb-2 text-gray-700 dark:text-gray-300">
+            Mes a generar
             </label>
             <Calendar
-            id="startDate"
-            value={startDate}
-            onChange={(e) => setStartDate(e.value)}
+            id="monthDate"
+            value={monthDate}
+            onChange={(e) => setMonthDate(e.value)}
             showIcon
             className="w-full"
-            placeholder="Selecciona la fecha de inicio"
-            dateFormat="dd/mm/yy"
-            />
-        </div>
-
-        <div className="flex-auto">
-            <label htmlFor="endDate" className="font-bold block mb-2 text-gray-700 dark:text-gray-300">
-            Fecha de fin
-            </label>
-            <Calendar
-            id="endDate"
-            value={endDate}
-            onChange={(e) => setEndDate(e.value)}
-            showIcon
-            className="w-full"
-            placeholder="Selecciona la fecha de fin"
-            dateFormat="dd/mm/yy"
+            placeholder="Selecciona el mes a generar"
+            view="month"
+            dateFormat="mm/yy"
             />
         </div>
 
         <div className="flex-auto md:flex-none flex flex-col space-y-2">
             <Button
-            label="Buscar Emergencias"
+            label="Buscar asignaciones de turnos"
             icon="pi pi-search"
             className="w-full md:w-auto bg-blue-500 text-white hover:bg-blue-600 transition-colors"
             onClick={handleSearch}
@@ -252,7 +222,6 @@ const ReportEmergency = () => {
     </div>
 
       <div>
-
         <Dialog header="Generar reporte" visible={viewGenerateReport} onHide={() => setViewGenerateReport(false)}
           style={{ width: '35vw' }} breakpoints={{ '641px': '90vw' }}>
           <div className="flex flex-wrap items-center justify-between gap-2 mb-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
@@ -267,10 +236,10 @@ const ReportEmergency = () => {
             <Button label="Generar" icon="pi pi-file" className="w-full md:w-auto bg-blue-500 text-white hover:bg-blue-600 transition-colors" onClick={handleReport} />
           </div>
         </Dialog>
-        <TableEmergenciesReport data={emergencies} />
+        <TableFirefighterShiftsReport data={firefighterShifts} />
       </div>
     </div>
   )
 }
 
-export default ReportEmergency
+export default ReportFirefighterShift

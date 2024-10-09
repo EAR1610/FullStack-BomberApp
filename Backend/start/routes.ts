@@ -132,6 +132,7 @@ router.group(() => {
   router.post('/suspended-firefighter-shifts', [FirefighterShiftsController, 'suspendedFirefighterShifts']);
   router.post('/get-shift-by-firefighter/:id', [FirefighterShiftsController, 'getShiftByFirefighterId']);
   router.post('/on-shift', [FirefighterShiftsController, 'getFirefightersOnShiftForDate']);
+  router.post('/firefighter-shift-by-month', [FirefighterShiftsController, 'getFirefightersOnShiftForMonth']);
 }).prefix('users/firefighter-shift').use(middleware.auth());
 
 /**

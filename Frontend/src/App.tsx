@@ -34,6 +34,7 @@ import PenalizedUsers from './pages/Users/PenalizedUsers';
 import CreateBlog from './pages/Blog/CreateBlog';
 import BlogCategories from './pages/BlogCategories/BlogCategories';
 import ReportEmergency from './pages/Report/Emergency/ReportEmergency';
+import ReportFirefighterShift from './pages/Report/FirefighterShift/ReportFirefighterShift';
 
 
 /**
@@ -156,6 +157,14 @@ function App() {
               element: (
                 <>                 
                   <FirefigherShiftCalendar />
+                </>
+              )
+            },
+            {
+              path: 'report-firefighter-shift',
+              element: (
+                <>                 
+                  <ReportFirefighterShift />
                 </>
               )
             },
