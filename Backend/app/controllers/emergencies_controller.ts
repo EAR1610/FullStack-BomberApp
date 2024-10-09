@@ -168,8 +168,19 @@ export default class EmergenciesController {
 
   async create({}: HttpContext) {}
 
-  async store({ request }: HttpContext) {
+  async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createEmergencyValidator);
+  
+    const existingEmergencies = await Emergency.query()
+      .where('userId', payload.userId)
+      .whereIn('status', ['Registrada', 'En proceso']);
+  
+    if (existingEmergencies.length > 0) {
+      return response.status(400).json({
+        errors: [{ message: `Ya tiene una emergencia pendiente, cuyo estado es: ${existingEmergencies[0].status}` }]
+      });
+    }
+  
     const emergency = new Emergency();
     emergency.fill(payload);
     await emergency.save();

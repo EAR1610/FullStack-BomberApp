@@ -72,16 +72,16 @@ const EmergencyRequest = () => {
                 });
                 await createLog(userId, 'UPDATE', 'EMERGENCIA', `Se ha registrado la emergencia: ${applicant} con la descripción: ${description}`, currentToken?.token);
                 showAlert('info', 'Info', '¡Emergencia registrada correctamente!');
+                if( currentToken?.user.id ){
+                  setTimeout(() => {
+                    navigate('/app/my-emergencies');
+                  }, 1500);
+                }
               } catch (error) {
                 console.log(error);
                 showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
               }        
               
-              if( currentToken?.user.id ){
-                setTimeout(() => {
-                  navigate('/app/my-emergencies');
-                }, 1500);
-              }
             },
             (error) => {
               console.log(error);
