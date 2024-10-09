@@ -161,6 +161,9 @@ export default class EmergenciesController {
       .preload('emergencyType', (query) => {
         query.select('name');
       })
+      .preload('user', (query) => {
+        query.select('fullName', 'dpi');
+      })
       .where('status', 'Atendida');
     
     return emergency
@@ -210,7 +213,6 @@ export default class EmergenciesController {
     await emergency.save();
       
     const userId = emergency.userId;
-    // ? Emit event to one user only (the user who requested the emergency)
     const io = Ws.io;
     
     if (io) io.to(`user_${userId}`).emit('emergencyUpdated', emergency);

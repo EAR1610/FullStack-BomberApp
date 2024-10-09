@@ -155,3 +155,8 @@ export interface Comment {
   content: string;
   createdAt: string;
 }
+
+export interface ColumnMeta{
+  field: string;
+  header: string;
+}

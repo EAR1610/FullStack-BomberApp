@@ -6,7 +6,6 @@ import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import 'primeicons/primeicons.css';    
 
@@ -16,11 +15,11 @@ const TableEmergenciesReport = ({ data }: any) => {
         applicant: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         address: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        status: { value: null, matchMode: FilterMatchMode.EQUALS },
+        "emergencyType.name": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
-    const [loading, setLoading] = useState(true);
-    const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [loading, setLoading] = useState<boolean>(true);
+    const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
 
     const toast = useRef(null);
 
@@ -38,6 +37,24 @@ const TableEmergenciesReport = ({ data }: any) => {
         setGlobalFilterValue(value);
     };
 
+    const renderHeader = () => {
+      return (
+        <div className="flex flex-wrap justify-between items-center space-y-2 sm:space-y-0 mb-4">
+          <IconField iconPosition="left" className="flex-1 sm:max-w-xs">
+              <InputIcon className="pi pi-search"/>
+              <InputText
+                  value={globalFilterValue}
+                  onChange={onGlobalFilterChange}
+                  placeholder="Búsqueda"
+                  className="w-full"
+              />
+          </IconField>
+        </div>
+      );
+    };
+
+    const header = renderHeader();
+
   return (
     <div className="card p-4 bg-gray-100 rounded-lg shadow-md">
       <Toast ref={toast} />
@@ -51,13 +68,14 @@ const TableEmergenciesReport = ({ data }: any) => {
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['applicant', 'address', 'description', 'status']}
+        header={header}
+        globalFilterFields={['applicant', 'address', 'description', 'emergencyType.name']}
         emptyMessage="Emergencias no encontradas."
       >
         <Column field="applicant" header="Solicitante"  style={{ minWidth: '8rem' }}  align={'center'}/>
         <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column field="description" header="Descripción" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="emergencyType.name" header="Tipo" style={{ minWidth: '12rem' }} align={'center'}/>
       </DataTable>
     </div>
   )
