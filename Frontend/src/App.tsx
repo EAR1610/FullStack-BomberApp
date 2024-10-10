@@ -169,6 +169,14 @@ function App() {
               )
             },
             {
+              path: 'report-log',
+              element: (
+                <>                 
+                  <ReportFirefighterShift />
+                </>
+              )
+            },
+            {
               path: 'firefighter-emergencies',
               element: (
                 <>                 
