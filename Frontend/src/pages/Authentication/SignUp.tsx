@@ -124,7 +124,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     }
   };  
   
-  const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {    
+  const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();
     const formData = new FormData();
 
@@ -211,8 +211,8 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
         }
         showAlert('info', 'Info', 'Usuario Creado!');
       }
-      
-      if (user) setChangedAUser(!changedAUser);   
+
+      if ( user !== undefined ) setChangedAUser(!changedAUser);
 
       setTimeout(() => {
         setVisible(false);

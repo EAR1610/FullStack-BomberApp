@@ -1,5 +1,6 @@
 import Emergency from '#models/emergency';
 import { createEmergencyValidator, getEmergenciesByDateValidator } from '#validators/emergency';
+import { DateTime } from 'luxon';
 import type { HttpContext } from '@adonisjs/core/http'
 import Ws from '#services/Ws';
 /**
@@ -151,10 +152,14 @@ export default class EmergenciesController {
     return emergency
   }
 
-  async getEmergenciesByDate ({ request }: HttpContext) {
-    const payload = await request.validateUsing(getEmergenciesByDateValidator);
-    const emergency = await Emergency.query()
-      .whereBetween('createdAt', [payload.startDate, payload.endDate])
+  async getEmergenciesByDate({ request }: HttpContext) {
+    const { startDate, endDate, emergencyStatus } = request.only(['startDate', 'endDate', 'emergencyStatus']);
+  
+    const start = DateTime.fromISO(startDate, { zone: 'America/Guatemala' }).startOf('day').toUTC().toISO();
+    const end = DateTime.fromISO(endDate, { zone: 'America/Guatemala' }).endOf('day').toUTC().toISO();
+  
+    const emergencies = await Emergency.query()
+      .whereBetween('createdAt', [start, end])
       .whereHas('emergencyType', (query) => {
         query.where('status', 'active');
       })
@@ -164,9 +169,9 @@ export default class EmergenciesController {
       .preload('user', (query) => {
         query.select('fullName', 'dpi');
       })
-      .where('status', 'Atendida');
-    
-    return emergency
+      .where('status', emergencyStatus);
+  
+    return emergencies;
   }
 
   async create({}: HttpContext) {}

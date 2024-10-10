@@ -7,6 +7,7 @@ import { Toast } from 'primereact/toast';
 import { Calendar } from 'primereact/calendar';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
+import { Dropdown } from 'primereact/dropdown';
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
 import { handleErrorResponse } from "../../../helpers/functions";
 import TableEmergenciesReport from "../../../components/Table/TableEmergenciesReport";
@@ -18,6 +19,7 @@ const ReportEmergency = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [errorMessages, setErrorMessages] = useState<string>('');  
+  const [emergencyStatus, setEmergencyStatus] = useState<string>('Registrada');
   const [viewGenerateReport, setViewGenerateReport] = useState<boolean>(false);
   const [typeReport, setTypeReport] = useState<string>('Pdf');
 
@@ -27,6 +29,37 @@ const ReportEmergency = () => {
 
   const navigate = useNavigate();
   const toast = useRef(null); 
+
+  const emergenciesStatus = [
+    { name: 'Registrada', code: 'Registrada' },
+    { name: 'En proceso', code: 'En proceso' },
+    { name: 'Atendida', code: 'Atendida' },
+    { name: 'Cancelada', code: 'Cancelada' },
+    { name: 'Rechazada', code: 'Rechazada' },
+  ];
+
+  const selectedEmergencyStatusTemplate = (option:any, props:any) => {
+    if (option) {
+        return (
+            <div className="flex align-items-center">
+                <span className="mr-2">{option.name}</span>
+            </div>
+        );
+    }
+
+    return <span>{props.placeholder}</span>;
+  };
+
+  const emergencyStatusOptionTemplate = (option:any) => {
+      return (
+          <div className="flex align-items-center">
+              <span className="mr-2">{option.name}</span>
+          </div>
+      );
+  };
+
+  const handleEmergencyStatusChange = (e:any) => setEmergencyStatus(e.value.code);
+  const selectedEmergencyStatus = emergenciesStatus.find(status => status.code === emergencyStatus);
 
   useEffect(() => {
     if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
@@ -169,6 +202,7 @@ const ReportEmergency = () => {
         const formData = new FormData();
         formData.append('startDate', String(formattedStartDate));
         formData.append('endDate', String(formattedEndDate));
+        formData.append('emergencyStatus', emergencyStatus);
         const response = await apiRequestAuth.post("/emergencies/emergencies-by-date", formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
@@ -236,17 +270,29 @@ const ReportEmergency = () => {
         </div>
 
         <div className="flex-auto md:flex-none flex flex-col space-y-2">
-            <Button
-            label="Buscar Emergencias"
-            icon="pi pi-search"
-            className="w-full md:w-auto bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-            onClick={handleSearch}
+            <Dropdown
+              value={selectedEmergencyStatus}
+              onChange={handleEmergencyStatusChange}
+              options={emergenciesStatus}
+              optionLabel="name"
+              placeholder="Selecciona el estado de la emergencia"
+              filter
+              valueTemplate={selectedEmergencyStatusTemplate}
+              itemTemplate={emergencyStatusOptionTemplate}
+              className="w-full md:w-14rem"
+              required
             />
             <Button
-            label="Generar reporte"
-            icon="pi pi-file"
-            className="w-full md:w-auto bg-red-500 text-white hover:bg-red-600 transition-colors"
-            onClick={handleReportType}
+              label="Buscar Emergencias"
+              icon="pi pi-search"
+              className="w-full md:w-auto bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+              onClick={handleSearch}
+            />
+            <Button
+              label="Generar reporte"
+              icon="pi pi-file"
+              className="w-full md:w-auto bg-red-500 text-white hover:bg-red-600 transition-colors"
+              onClick={handleReportType}
             />
         </div>
     </div>
