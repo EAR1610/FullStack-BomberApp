@@ -212,11 +212,11 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       <Column field="vehicleNumber" header="No. Vehículo" style={{ minWidth: '8rem' }} align={'center'} />
       <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '8rem' }} />
     </DataTable>
-    <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
+    <Dialog header="Gestión de unidades" visible={visible} onHide={() => setVisible(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <Vehicle vehicle={selectedVehicle} setVisible={setVisible} isChangedVehicle={isChangedVehicle} setIsChangedVehicle={setIsChangedVehicle} />
     </Dialog>
-    <Dialog header="Header" visible={visibleVehicle} onHide={() => setVisibleVehicle(false)}
+    <Dialog header="Información de la unidad" visible={visibleVehicle} onHide={() => setVisibleVehicle(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <ViewVehicle vehicle={selectedVehicle} />
     </Dialog>

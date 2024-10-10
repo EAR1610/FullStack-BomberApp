@@ -126,7 +126,7 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
                   Turno
                 </label>
                 <Dropdown value={selectedShiftPreference} onChange={(e) => setSelectedShiftPreference(e.value)} options={shiftPreferences} optionLabel="name"
-                placeholder="Selecciona el turno" className="w-full md:w-14rem" required/>
+                placeholder="Selecciona el turno" className="w-full md:w-14rem" filter required/>
               </div>
 
               <div className="mb-5">

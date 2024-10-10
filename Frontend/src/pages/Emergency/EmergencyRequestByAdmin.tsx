@@ -107,6 +107,7 @@ const EmergencyRequestByAdmin = () => {
                                     optionValue="id"
                                     placeholder="Seleccione el tipo de emergencia"
                                     className="w-full"
+                                    filter
                                     required
                                     />
                                     </div>

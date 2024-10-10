@@ -304,6 +304,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
                     optionValue="id"
                     placeholder="Seleccione un tipo de herramienta"
                     className="w-full"
+                    filter
                   />
                   </div>
                 </div> 
@@ -321,6 +322,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
                     optionValue="id"
                     placeholder="Seleccione el origen de la herramienta"
                     className="w-full"
+                    filter
                   />
                   </div>
                 </div>               
@@ -338,6 +340,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
                     optionValue="id"
                     placeholder="Seleccione el tipo de equipo de la herramienta"
                     className="w-full"
+                    filter
                   />
                   </div>
                 </div>               
@@ -355,6 +358,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
                     optionValue="id"
                     placeholder="Seleccione el tipo de emergencia para la herramienta"
                     className="w-full"
+                    filter
                   />
                   </div>
                 </div>               

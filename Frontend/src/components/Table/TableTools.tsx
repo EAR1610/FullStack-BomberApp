@@ -216,11 +216,11 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
         <Column field="model" header="Modelo" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
-      <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
+      <Dialog header="Gestión de herramientas" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <Tool tool={selectedTool} setVisible={setVisible} isChangedTool={isChangedTool} setIsChangedTool={setIsChangedTool} />
       </Dialog>
-      <Dialog header="Header" visible={visibleTool} onHide={() => setVisibleTool(false)}
+      <Dialog header="Información de la herramienta" visible={visibleTool} onHide={() => setVisibleTool(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewTool tool={selectedTool} setVisible={setVisible} />
       </Dialog>

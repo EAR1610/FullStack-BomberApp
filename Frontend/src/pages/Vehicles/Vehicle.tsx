@@ -280,6 +280,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
                   optionValue="id"
                   placeholder="Seleccione un tipo de unidad"
                   className="w-full"
+                  filter
                 />
                 </div>
               </div>
@@ -297,6 +298,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
                   optionValue="id"
                   placeholder="Seleccione el tipo de origen"
                   className="w-full"
+                  filter
                 />
                 </div>
               </div>
