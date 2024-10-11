@@ -123,7 +123,7 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
                 Authorization: `Bearer ${currentToken?.token}`,
               },
             });
-            await createLog(userId, 'UPDATE', 'TIPO DE INSUMO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de insumo: ${selectedSupplyType?.name}`, currentToken?.token);
+            await createLog(userId, 'ACTUALIZAR', 'TIPO DE INSUMO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de insumo: ${selectedSupplyType?.name}`, currentToken?.token);
             
             setIsChangedSupplyType(!isChangedSupplyType);
             showAlert('info', 'Info', message);

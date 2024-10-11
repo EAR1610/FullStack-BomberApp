@@ -65,6 +65,9 @@ router.group(() => {
  * ? Routes for the application: LOGS 📜
  */
 router.resource('users/logs', LogsController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/logs-by-date', [LogsController, 'getLogsByDate']);
+}).prefix('users/logs').use(middleware.auth());
 
 /** 
  * ? Routes for the application: SETTINGS 🔧 

@@ -64,7 +64,7 @@ const EmergencyRequestByAdmin = () => {
               Authorization: `Bearer ${currentToken?.token}`,
             },
           });
-          await createLog(userId, 'UPDATE', 'EMERGENCIA', `Se ha registrado la emergencia: ${applicant} con la descripción: ${description} por parte del ADMINISTRADOR`, currentToken?.token);
+          await createLog(userId, 'CREAR', 'EMERGENCIA', `Se ha registrado la emergencia: ${applicant} con la descripción: ${description} por parte del ADMINISTRADOR`, currentToken?.token);
           showAlert('info', 'Info', '¡Emergencia registrada correctamente!');
 
           setTimeout(() => {

@@ -35,6 +35,7 @@ import CreateBlog from './pages/Blog/CreateBlog';
 import BlogCategories from './pages/BlogCategories/BlogCategories';
 import ReportEmergency from './pages/Report/Emergency/ReportEmergency';
 import ReportFirefighterShift from './pages/Report/FirefighterShift/ReportFirefighterShift';
+import ReportLog from './pages/Report/Log/ReportLog';
 
 
 /**
@@ -172,7 +173,7 @@ function App() {
               path: 'report-log',
               element: (
                 <>                 
-                  <ReportFirefighterShift />
+                  <ReportLog />
                 </>
               )
             },

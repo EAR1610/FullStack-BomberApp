@@ -177,7 +177,7 @@ const BlogWithAuth = () => {
       });
       showAlert('info', 'Info', 'Post borrado');
       setPostsChanged(!postsChanged);
-      createLog(userId, 'DELETE', 'POST', `Se ha borrado el post: ${post.title}`, currentToken?.token);
+      createLog(userId, 'ELIMINACIÓN', 'POST', `Se ha borrado el post: ${post.title}`, currentToken?.token);
     } catch (error) {
       console.log(error);
       showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));

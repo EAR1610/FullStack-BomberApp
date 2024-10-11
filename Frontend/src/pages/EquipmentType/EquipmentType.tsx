@@ -55,7 +55,7 @@ const EquipmentType = ({ equipmentType, setVisible, isChangedEquipmentType, setI
         });
         showAlert('info', 'Info', 'Registro creado!');
       }
-      await createLog(userId, 'UPDATE', 'TIPO DE EQUIPO', `Se ha ${equipmentType ? 'actualizado' : 'creado'} el registro del tipo de equipo: ${name}`, currentToken?.token);
+      await createLog(userId, 'ACTUALIZAR', 'TIPO DE EQUIPO', `Se ha ${equipmentType ? 'actualizado' : 'creado'} el registro del tipo de equipo: ${name}`, currentToken?.token);
       
       setIsChangedEquipmentType(!isChangedEquipmentType);
       setTimeout(() => {

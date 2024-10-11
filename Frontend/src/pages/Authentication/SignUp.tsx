@@ -194,7 +194,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
           })
         }
 
-        await createLog(userId, 'UPDATE', 'USUARIO', `Se ha actualizado la informacion del usuario: ${user.fullName} con dpi: ${dpi}`, currentToken?.token);
+        await createLog(userId, 'ACTUALIZAR', 'USUARIO', `Se ha actualizado la informacion del usuario: ${user.fullName} con dpi: ${dpi}`, currentToken?.token);
         showAlert('info', 'Info', 'Usuario Actualizado!');
 
       } else {

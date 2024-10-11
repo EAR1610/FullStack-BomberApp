@@ -120,7 +120,7 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
           },
         });    
         const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
-        await createLog(userId, 'UPDATE', 'TIPO EMERGENCIA', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro de tipo de emergencia: ${selectedEmergencyType.name}`, currentToken?.token);
+        await createLog(userId, 'ACTUALIZAR', 'TIPO EMERGENCIA', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro de tipo de emergencia: ${selectedEmergencyType.name}`, currentToken?.token);
 
         showAlert('info', 'Confirmado', message);
         setIsChangedEmergencyType(!isChangedEmergencyType);

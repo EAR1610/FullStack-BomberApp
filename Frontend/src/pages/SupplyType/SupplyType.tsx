@@ -55,7 +55,7 @@ const SupplyType = ({ supplyType, setVisible, isChangedSupplyType, setIsChangedS
             });
             showAlert('info', 'Info', 'Registro creado!');
           }
-          await createLog(userId, 'UPDATE', 'TIPO DE INSUMO', `Se ha ${supplyType ? 'actualizado' : 'creado'} el registro del tipo de insumo: ${name}`, currentToken?.token);
+          await createLog(userId, 'ACTUALIZAR', 'TIPO DE INSUMO', `Se ha ${supplyType ? 'actualizado' : 'creado'} el registro del tipo de insumo: ${name}`, currentToken?.token);
           setIsChangedSupplyType(!isChangedSupplyType);
           setTimeout(() => {
             setVisible(false);

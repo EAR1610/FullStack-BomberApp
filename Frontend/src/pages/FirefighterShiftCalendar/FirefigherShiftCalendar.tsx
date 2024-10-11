@@ -37,7 +37,7 @@ const FirefigherShiftCalendar = () => {
           }));
           setEvents(transformedEvents);
         }
-        await createLog(userId, 'UPDATE', 'FIREFIGHTER', `Se ha establecido el turno del bombero: ${currentToken?.firefighter?.fullName}`, currentToken?.token);
+        await createLog(userId, 'ACTUALIZAR', 'FIREFIGHTER', `Se ha establecido el turno del bombero: ${currentToken?.firefighter?.fullName}`, currentToken?.token);
       } catch (error) {
         showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }

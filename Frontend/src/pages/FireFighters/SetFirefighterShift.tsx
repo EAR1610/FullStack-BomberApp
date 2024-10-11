@@ -42,7 +42,7 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
                 Authorization: `Bearer ${currentToken?.token}`,
             },
         });
-        await createLog(userId, 'CREATE', 'TURNO', `Se ha creado el turno del bombero: ${firefighter.user.fullName}`, currentToken?.token);
+        await createLog(userId, 'CREAR', 'TURNO', `Se ha creado el turno del bombero: ${firefighter.user.fullName}`, currentToken?.token);
         showAlert('info', 'Info', 'Turno registrado correctamente!');
         setTimeout(() => {
           setVisible(false);              

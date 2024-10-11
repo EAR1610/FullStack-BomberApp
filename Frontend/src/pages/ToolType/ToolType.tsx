@@ -55,7 +55,7 @@ const ToolType = ({ toolType, setVisible, isChangedToolType, setIsChangedToolTyp
         showAlert('info', 'Info', 'Registro Creado!');
       }
 
-      await createLog(userId, 'UPDATE', 'TIPO DE HERRAMIENTA', `Se ha ${toolType ? 'actualizado' : 'creado'} el registro del tipo de herramienta: ${name}`, currentToken?.token);
+      await createLog(userId, 'ACTUALIZAR', 'TIPO DE HERRAMIENTA', `Se ha ${toolType ? 'actualizado' : 'creado'} el registro del tipo de herramienta: ${name}`, currentToken?.token);
       setIsChangedToolType(!isChangedToolType);
 
       setTimeout(() => {

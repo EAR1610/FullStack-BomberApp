@@ -117,7 +117,7 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
       });
   
       const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
-      await createLog(userId, 'UPDATE', 'TIPO DE ORIGEN', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de origen: ${selectedOriginType?.name}`, currentToken?.token);
+      await createLog(userId, 'ACTUALIZAR', 'TIPO DE ORIGEN', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de origen: ${selectedOriginType?.name}`, currentToken?.token);
       
       setIsChangedOriginType(!isChangedOriginType);
       showAlert('info', 'Info', message);

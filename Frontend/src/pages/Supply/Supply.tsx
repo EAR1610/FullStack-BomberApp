@@ -88,7 +88,7 @@ const Supply = ({ supply, setVisible, isChangedSupply, setIsChangedSupply }: any
             showAlert('info', 'Info', 'Registro creado!');
           }
 
-          await createLog(userId, `${supply ? 'UPDATE' : 'CREATE'}`, 'INSUMO', `Se ha ${supply ? 'actualizado' : 'creado'} el registro de insumo: ${name}`, currentToken?.token);
+          await createLog(userId, `${supply ? 'ACTUALIZAR' : 'CREAR'}`, 'INSUMO', `Se ha ${supply ? 'actualizado' : 'creado'} el registro de insumo: ${name}`, currentToken?.token);
           setIsChangedSupply(!isChangedSupply);
           
           setTimeout(() => {

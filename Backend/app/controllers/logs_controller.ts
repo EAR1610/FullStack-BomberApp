@@ -1,5 +1,5 @@
 import Log from '#models/log'
-import { createLogValidator } from '#validators/log'
+import { createLogValidator, getLogsByDateValidator } from '#validators/log'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class LogsController {
@@ -9,6 +9,20 @@ export default class LogsController {
       query.where('username', 'dpi')
     })
     return logs
+  }
+
+  async getLogsByDate({ request }: HttpContext) {
+    const { startDate, endDate } = await request.validateUsing(getLogsByDateValidator);
+    const logs = await Log.query()
+      .whereBetween('createdAt', [startDate, endDate])
+      .whereHas('user', (query) => {
+        query.where('status', 'active');
+      })
+      .preload('user', (query) => {
+        query.select('fullName', 'dpi');
+      })
+    
+    return logs;
   }
   
   async create({}: HttpContext) {}

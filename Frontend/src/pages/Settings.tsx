@@ -39,7 +39,7 @@ const Settings = () => {
           Authorization: `Bearer ${currentToken?.token}`
         }
       });
-      await createLog(userId, 'UPDATE', 'CONFIGURACION', `Se ha actualizado la configuracion del sistema`, currentToken?.token);
+      await createLog(userId, 'ACTUALIZAR', 'CONFIGURACION', `Se ha actualizado la configuracion del sistema`, currentToken?.token);
       showAlert('info', 'Info', 'Configuraciones guardadas correctamente');      
     } catch (err) {
       showAlert('warn', 'Error', handleErrorResponse(err, setErrorMessages));

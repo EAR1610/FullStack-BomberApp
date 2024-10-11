@@ -129,7 +129,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
             });
             toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
           }
-          await createLog(userId, 'UPDATE', 'FIREFIGHTER', `Se ha ${viewActiveFirefighters ? 'activado' : 'desactivado'} el registro del bombero: ${selectedFirefighter?.user?.fullName}`, currentToken?.token);
+          await createLog(userId, 'ACTUALIZAR', 'FIREFIGHTER', `Se ha ${viewActiveFirefighters ? 'activado' : 'desactivado'} el registro del bombero: ${selectedFirefighter?.user?.fullName}`, currentToken?.token);
           setIsChangedFirefighter(!isChangedFirefighter);
         } catch (error) {
           console.log(error);
@@ -139,6 +139,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
     }; 
 
     const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });  
+    
     const reject = () =>  toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'Has rechazado el proceso', life: 3000 });
 
     const optionsBodyTemplate = (rowData:any) => {

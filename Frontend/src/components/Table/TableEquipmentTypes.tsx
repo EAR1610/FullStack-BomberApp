@@ -121,7 +121,7 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
                 Authorization: `Bearer ${currentToken?.token}`,
               },
             });
-            await createLog(userId, 'UPDATE', 'TIPO DE EQUIPO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de equipo: ${selectedEquipmentType?.name}`, currentToken?.token);
+            await createLog(userId, 'ACTUALIZAR', 'TIPO DE EQUIPO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de equipo: ${selectedEquipmentType?.name}`, currentToken?.token);
             setIsChangedEquipmentType(!isChangedEquipmentType);
             showAlert('info', 'Info', message);
           } catch (error) {

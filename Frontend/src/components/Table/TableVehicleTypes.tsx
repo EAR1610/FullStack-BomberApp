@@ -122,7 +122,8 @@ const TableVehicleTypes = ({ data, viewActiveVehiclesType, setViewActiveVehicles
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        await createLog(userId, 'UPDATE', 'TIPO VEHÍCULO', `Se ha actualizado la informacion del tipo de vehículo: ${selectedVehicleType.name}`, currentToken?.token);
+        await createLog(userId, 'ACTUALIZAR', 'TIPO VEHÍCULO', `Se ha actualizado la informacion del tipo de vehículo: ${selectedVehicleType.name}`, currentToken?.token);
+        
         setIsChangedVehicleType(!isChangedVehicleType);
         showAlert('info' , 'Info', message);
       } catch (err) {

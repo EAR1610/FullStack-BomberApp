@@ -199,7 +199,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
             });
             showAlert('info', 'Info', 'Registro creado!');
           }
-          await createLog(userId, 'UPDATE', 'TOOL', `Se ha ${tool ? 'actualizado' : 'creado'} la herramienta: ${name}`, currentToken?.token);
+          await createLog(userId, 'ACTUALIZAR', 'HERRAMIENTA', `Se ha ${tool ? 'actualizado' : 'creado'} la herramienta: ${name}`, currentToken?.token);
           setIsChangedTool(!isChangedTool);
 
           setTimeout(() => {

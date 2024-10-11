@@ -138,7 +138,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
         });
 
         showAlert('info', 'Info', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario`);      
-        await createLog(userId, 'UPDATE', 'USUARIO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario: ${selectedUser?.username} con el dpi: ${selectedUser?.dpi}`, currentToken?.token);
+        await createLog(userId, 'ACTUALIZAR', 'USUARIO', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el usuario: ${selectedUser?.username} con el dpi: ${selectedUser?.dpi}`, currentToken?.token);
         
         setChangedAUser(!changedAUser);
       } catch (err) {

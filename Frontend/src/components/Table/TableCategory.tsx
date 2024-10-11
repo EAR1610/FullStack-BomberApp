@@ -124,7 +124,7 @@ const TableCategory = ({ data, viewActiveCategories, setViewActiveCategories, lo
                 Authorization: `Bearer ${currentToken?.token}`,
               },
             });
-            await createLog(userId, 'UPDATE', 'CATEGORIA', `Se ha actualizado la informacion de la categoría: ${selectedCategory.name}`, currentToken?.token);
+            await createLog(userId, 'ACTUALIZAR', 'CATEGORIA', `Se ha actualizado la informacion de la categoría: ${selectedCategory.name}`, currentToken?.token);
             setIsChangedCategory(!isChangedCategory);
             showAlert('info', 'Info', message);
           } catch (err) {

@@ -153,7 +153,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
   
       const message = status === 'active' ? 'Se ha activado la herramienta' : 'Se ha desactivado la herramienta';
       showAlert('info', 'Info', message);
-      await createLog(userId, 'UPDATE', 'TOOL', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} la herramienta: ${selectedTool?.name}`, currentToken?.token);
+      await createLog(userId, 'ACTUALIZAR', 'HERRAMIENTA', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} la herramienta: ${selectedTool?.name}`, currentToken?.token);
       setIsChangedTool(!isChangedTool);
     } catch (error) {
       showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));

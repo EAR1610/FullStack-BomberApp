@@ -55,7 +55,7 @@ const VehicleType = ({ vehicleType, setVisible, isChangedVehicleType, setIsChang
             });
             showAlert('info', 'Info', 'Registro Creado!');
           }
-          await createLog(userId, 'CREATE', 'TIPO VEHÍCULO', `Se ha ${vehicleType ? 'actualizado' : 'creado'} el registro de tipo de vehículo: ${name}`, currentToken?.token);
+          await createLog(userId, 'CREAR', 'TIPO VEHÍCULO', `Se ha ${vehicleType ? 'actualizado' : 'creado'} el registro de tipo de vehículo: ${name}`, currentToken?.token);
           setIsChangedVehicleType(!isChangedVehicleType);
           setTimeout(() => {
             setVisible(false);            

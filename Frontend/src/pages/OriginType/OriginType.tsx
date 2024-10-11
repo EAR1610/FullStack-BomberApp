@@ -56,7 +56,7 @@ const OriginType = ({ originType, setVisible, isChangedOriginType, setIsChangedO
         showAlert('info', 'Info', 'Herramienta Creada!');
       } 
 
-      await createLog(userId, 'UPDATE', 'TIPO DE ORIGEN', `Se ha ${originType ? 'actualizado' : 'creado'} el registro del tipo de origen: ${name}`, currentToken?.token);
+      await createLog(userId, 'ACTUALIZAR', 'TIPO DE ORIGEN', `Se ha ${originType ? 'actualizado' : 'creado'} el registro del tipo de origen: ${name}`, currentToken?.token);
       setIsChangedOriginType(!isChangedOriginType);
       setTimeout(() => {
         setVisible(false);

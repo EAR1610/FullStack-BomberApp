@@ -55,7 +55,7 @@ export const EmergencyType = ({ emergencyType, setVisible, isChangedEmergencyTyp
           showAlert('info', 'Info', 'Registro creado!');
         }
 
-        await createLog(userId, 'CREATE', 'TIPO EMERGENCIA', `Se ha ${emergencyType ? 'actualizado' : 'creado'} el registro de tipo de emergencia: ${name}`, currentToken?.token);
+        await createLog(userId, 'CREAR', 'TIPO EMERGENCIA', `Se ha ${emergencyType ? 'actualizado' : 'creado'} el registro de tipo de emergencia: ${name}`, currentToken?.token);
         setIsChangedEmergencyType(!isChangedEmergencyType);
         setTimeout(() => {
           setVisible(false);          

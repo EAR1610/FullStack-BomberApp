@@ -60,7 +60,7 @@ const BlogCategory = ({ category, setVisible, isChangedCategory, setIsChangedCat
             showAlert('info', 'Info', 'Registro creado!');
           }
 
-          await createLog(userId, `${category ? 'UPDATE' : 'CREATE'}`, 'CATEGORIA BLOG', `Se ha ${category ? 'actualizado' : 'creado'} la categoría: ${name}`, currentToken?.token);
+          await createLog(userId, `${category ? 'ACTUALIZAR' : 'CREAR'}`, 'CATEGORIA BLOG', `Se ha ${category ? 'actualizado' : 'creado'} la categoría: ${name}`, currentToken?.token);
           setIsChangedCategory(!isChangedCategory);
           
           setTimeout(() => {

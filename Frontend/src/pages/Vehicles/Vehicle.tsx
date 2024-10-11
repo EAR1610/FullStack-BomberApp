@@ -142,7 +142,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
         });
         showAlert('info', 'Info', 'Registro creado!');
       }
-      await createLog(userId, 'CREATE', 'VEHÍCULO', `Se ha creado el registro de vehículo: ${brand} ${model}`, currentToken?.token);
+      await createLog(userId, 'CREAR', 'VEHÍCULO', `Se ha creado el registro de vehículo: ${brand} ${model}`, currentToken?.token);
       setIsChangedVehicle(!isChangedVehicle);
       setTimeout(() => {
         setVisible(false);        

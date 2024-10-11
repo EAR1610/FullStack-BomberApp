@@ -78,7 +78,8 @@ const TablePenalizedUsers = ({ data, changedAPenalizedUser, setChangedAPenalized
           });
         }
         showAlert('info', 'Info', `Se ha ${addOrRestPenalizationUser === true ? 'agregado' : 'restado'} la penalización al usuario`);
-        await createLog(userId, 'UPDATE', 'USUARIO', `Se ha ${addOrRestPenalizationUser === true ? 'agregado' : 'restado'} la penalización al usuario: ${selectedUser?.username} con el dpi: ${selectedUser?.dpi}`, currentToken?.token);
+        
+        await createLog(userId, 'ACTUALIZAR', 'USUARIO', `Se ha ${addOrRestPenalizationUser === true ? 'agregado' : 'restado'} la penalización al usuario: ${selectedUser?.username} con el dpi: ${selectedUser?.dpi}`, currentToken?.token);
         
         setChangedAPenalizedUser(!changedAPenalizedUser);
       } catch (err) {        

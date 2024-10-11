@@ -119,7 +119,7 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
       });
   
       const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
-      await createLog(userId, 'UPDATE', 'TIPO DE HERRAMIENTA', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de herramienta: ${selectedToolType?.name}`, currentToken?.token);
+      await createLog(userId, 'ACTUALIZAR', 'TIPO DE HERRAMIENTA', `Se ha ${status === 'active' ? 'activado' : 'desactivado'} el registro del tipo de herramienta: ${selectedToolType?.name}`, currentToken?.token);
       setIsChangedToolType(!isChangedToolType);
       showAlert('info', 'Info', message);
     } catch (error) {

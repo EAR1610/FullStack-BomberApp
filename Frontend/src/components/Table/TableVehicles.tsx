@@ -145,7 +145,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       });
   
       const message = status === 'active' ? 'Se ha activado el registro' : 'Se ha desactivado el registro';
-      await createLog(userId, 'UPDATE', 'VEHÍCULO', `Se ha actualizado la informacion del vehículo: ${selectedVehicle.brand} ${selectedVehicle.model}`, currentToken?.token);
+      await createLog(userId, 'ACTUALIZAR', 'VEHÍCULO', `Se ha actualizado la informacion del vehículo: ${selectedVehicle.brand} ${selectedVehicle.model}`, currentToken?.token);
       
       setIsChangedVehicle(!isChangedVehicle);
       showAlert('info', 'Info', `${message}`);

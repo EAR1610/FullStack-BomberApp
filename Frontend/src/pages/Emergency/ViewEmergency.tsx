@@ -55,7 +55,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
           }
         });
     
-        await createLog(userId, 'UPDATE', 'EMERGENCIA', `Se ha actualizado la emergencia: ${emergency.applicant} con estado: ${selectedStatus}`, currentToken?.token);
+        await createLog(userId, 'ACTUALIZAR', 'EMERGENCIA', `Se ha actualizado la emergencia: ${emergency.applicant} con estado: ${selectedStatus}`, currentToken?.token);
         showAlert('info', 'Info', 'Emergencia registrada correctamente!');
 
         if( selectedStatus == 'Rechazada' ) {

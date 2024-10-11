@@ -122,7 +122,7 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
                 Authorization: `Bearer ${currentToken?.token}`,
               },
             });
-            await createLog(userId, 'UPDATE', 'INSUMO', `Se ha actualizado la informacion del insumo: ${selectedSupply.name}`, currentToken?.token);
+            await createLog(userId, 'ACTUALIZAR', 'INSUMO', `Se ha actualizado la informacion del insumo: ${selectedSupply.name}`, currentToken?.token);
             setIsChangedSupply(!isChangedSupply);
             showAlert('info', 'Info', message);
           } catch (err) {

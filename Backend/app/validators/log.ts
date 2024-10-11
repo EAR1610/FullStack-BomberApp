@@ -9,3 +9,10 @@ export const createLogValidator = vine.compile(
         date: vine.date()
     })
 )
+
+export const getLogsByDateValidator = vine.compile(
+    vine.object({
+        startDate: vine.date(),
+        endDate: vine.date(),
+    })
+)
