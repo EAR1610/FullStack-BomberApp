@@ -1,5 +1,5 @@
 import User from '#models/user';
-import { changePasswordValidator } from '#validators/user';
+import { changePasswordValidator, updateUserValidator } from '#validators/user';
 import { createUserValidator } from '#validators/user';
 import hash from '@adonisjs/core/services/hash'
 import { cuid } from '@adonisjs/core/helpers';
@@ -28,10 +28,8 @@ export default class UsersController {
     const { oldPassword, newPassword } = await changePasswordValidator.validate(request.all());
     const user = auth.user!;
     
-    // ? Verify if the current password is correct 🗝 
-    if( !(await hash.verify(user.password, oldPassword)) ) return response.badRequest({ message: 'La contraseña actual no coincide' });
-  
-    // ? Update the password 🔄
+    if( !(await hash.verify(user.password, oldPassword)) ) return response.status(404).json({ errors: [{ message: 'La contraseña actual no coincide' }] })
+
     user.password = newPassword;
     await user.save();
     
@@ -101,6 +99,7 @@ export default class UsersController {
       username: payload.username,
       fullName: payload.fullName,
       email: payload.email,
+      dpi: payload.dpi,
       password: payload.password,
       address: payload.address,
       roleId: payload.roleId,
@@ -142,7 +141,14 @@ export default class UsersController {
   async update({ request, params, response }: HttpContext) {
     const user = await User.find( params.id );
     if( !user ) return response.notFound({ message: 'No se encontro el usuario' });
-    const file = request.file('photography');    
+    const payload =  await request.validateUsing(updateUserValidator,
+      {
+        meta: {
+            id: user!.id
+        }
+    });
+
+    const file = request.file('photography');
 
     if (file) {
         await file.move(app.makePath('uploads/pictures'), {
@@ -151,36 +157,37 @@ export default class UsersController {
         
         user.photography = file.fileName;
     }
-    const data = request.all();
 
     const userPayload = {
-      username: data.username,
-      fullName: data.fullName,
-      email: data.email,
-      password: data.password,
-      address: data.address,
-      roleId: data.roleId,
-      status: data.status,
+      username: payload.username,
+      fullName: payload.fullName,
+      email: payload.email,
+      address: payload.address,
+      dpi: payload.dpi,
+      roleId: payload.roleId,
+      status: payload.status,
     }
 
-     // ? Handle the Firefighter relationship
-    if (user.roleId === 2 || data.roleId === 2) {
+    if (user.roleId === 2 || payload.roleId === 2) {
       const firefighter = await Firefighter.findBy('userId', user.id)
       
       if (firefighter) {
-        firefighter.shiftPreference = data.shiftPreference || firefighter.shiftPreference
+        firefighter.shiftPreference = payload.shiftPreference || firefighter.shiftPreference
         await firefighter.save()
+
       } else {
         await Firefighter.create({
           userId: user.id,
-          shiftPreference: data.shiftPreference || 'Par',
+          shiftPreference: payload.shiftPreference || 'Par',
         })
+
       }
-    } else if (user.roleId !== 2 && data.roleId === 2) {     
+    } else if (user.roleId !== 2 && payload.roleId === 2) {     
       await Firefighter.create({
         userId: user.id,
-        shiftPreference: data.shiftPreference || 'Par',
+        shiftPreference: payload.shiftPreference || 'Par',
       })
+
     }
 
     user?.merge(userPayload);

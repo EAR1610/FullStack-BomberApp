@@ -22,7 +22,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
   const toast = useRef(null);
   
   const [username, setUsername] = useState('');
-  const [fullName, setFullName] = useState('');  
+  const [fullName, setFullName] = useState('');
   const [dpi, setDpi] = useState('');
   const [penalizations, setPenalizations] = useState(0);
   const [email, setEmail] = useState('');
