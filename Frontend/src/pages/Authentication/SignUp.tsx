@@ -577,7 +577,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                         Inicia sesión
                       </Link>
                     </p>
-                  </div>                  
+                  </div>
                 )}
               </form>
             </div>

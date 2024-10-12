@@ -5,7 +5,6 @@ import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
-import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import 'primeicons/primeicons.css';    
 
@@ -16,6 +15,7 @@ const TableEmergenciesReport = ({ data }: any) => {
         address: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         "emergencyType.name": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        "user.fullName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
     const [loading, setLoading] = useState<boolean>(true);
@@ -69,9 +69,10 @@ const TableEmergenciesReport = ({ data }: any) => {
         filterDisplay="row"
         loading={loading}
         header={header}
-        globalFilterFields={['applicant', 'address', 'description', 'emergencyType.name']}
+        globalFilterFields={['applicant', 'address', 'description', 'emergencyType.name', 'user.fullName']}
         emptyMessage="Emergencias no encontradas."
       >
+        <Column field="user.fullName" header="Nombre"  style={{ minWidth: '8rem' }}  align={'center'}/>
         <Column field="applicant" header="Solicitante"  style={{ minWidth: '8rem' }}  align={'center'}/>
         <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column field="description" header="Descripción" style={{ minWidth: '12rem' }} align={'center'}/>

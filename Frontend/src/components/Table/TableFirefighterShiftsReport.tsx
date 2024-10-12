@@ -76,6 +76,7 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
         <Column field="user.dpi" header="DPI" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column field="user.email" header="Correo" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column field="shiftPreference" header="Turno" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="shiftPreference" header="Cantidad de emergenicas atendidas" style={{ minWidth: '12rem' }} align={'center'}/>
       </DataTable>
     </div>
   )

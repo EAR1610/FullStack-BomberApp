@@ -187,10 +187,10 @@ const Profile = () => {
   const showAlert = (severity: string, summary: string, detail: string) => toast.current.show({ severity, summary, detail });
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex flex-col lg:flex-row gap-6">
+    <div className="container mx-auto p-2">
+      <div className="flex flex-col lg:flex-row gap-2">
         {/* Div para la información personal del usuario */}
-        <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-lg">
+        <div className="w-full md:w-2/3 bg-white p-2 rounded-lg shadow-lg">
           <h2 className="text-xl font-semibold mb-4 text-center">Información Personal</h2>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
             <Toast ref={toast} />
@@ -447,7 +447,7 @@ const Profile = () => {
         </div>
 
         {/* Div para cambiar la contraseña */}
-        <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-lg">
+        <div className="w-full md:w-1/3 bg-white p-2 rounded-lg shadow-lg">
           <h2 className="text-xl font-semibold mb-4 text-center">Cambiar Contraseña</h2>  
           <form onSubmit={handleChangePassword}>
             <div className="mb-4 w-full">

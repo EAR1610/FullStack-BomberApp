@@ -117,7 +117,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLoca
 
   return (
     <div>
-      <div ref={mapContainerRef} id="map" className="h-45 xl:h-60 w-full"></div>
+      <div ref={mapContainerRef} id="map" className="h-65 xl:h-60 w-full"></div>
       {/* { !isUser && (
         <button
           onClick={ e => {

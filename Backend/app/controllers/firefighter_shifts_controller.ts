@@ -69,9 +69,8 @@ export default class FirefighterShiftsController {
   async getFirefightersOnShiftForMonth({ request, response }: HttpContext) {
     const { monthYear } = request.only(['monthYear']);
   
-    if (!monthYear || !DateTime.fromFormat(monthYear, 'yyyy-MM').isValid) {
-      return response.badRequest({ message: 'Formato de fecha no válido, use yyyy-MM' });
-    }
+    if (!monthYear || !DateTime.fromFormat(monthYear, 'yyyy-MM').isValid) return response.badRequest({ message: 'Formato de fecha no válido, use yyyy-MM' });
+
   
     const startDate = DateTime.fromFormat(monthYear, 'yyyy-MM').startOf('month').toISO();
     const endDate = DateTime.fromFormat(monthYear, 'yyyy-MM').endOf('month').toISO();
