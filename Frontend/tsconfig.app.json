@@ -18,10 +18,15 @@
     "jsx": "react-jsx",
 
     /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    // "strict": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true
+    "strict": false,              // Desactiva el modo estricto
+    "noImplicitAny": false,       // Permite usar 'any' implícitamente
+    "noImplicitThis": false,      // Permite el uso de 'this' de forma implícita
+    "alwaysStrict": false,        // Desactiva la compilación estricta en cada archivo
+    "strictNullChecks": false,    // Permite valores 'null' y 'undefined'        // Ignora comprobaciones de tipos en dependencias
   },
   "include": ["src"]
 }

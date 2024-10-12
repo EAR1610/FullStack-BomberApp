@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import apiRequest from "./apiRequest.tsx";
 import { NotificationStore } from "../interface/NotificationStore.tsx";
+import { apiRequest } from "./apiRequest.tsx";
 
 export const useNotificationStore = create<NotificationStore>((set) => ({
   number: 0,

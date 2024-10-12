@@ -1,18 +1,18 @@
 import axios from "axios";
-const localDevelopment = 'localhost';
-const remoteDevelopment = '82.197.65.247';
+const localDevelopment = `http://localhost:3333`;
+const remoteDevelopment = `https://api.bomberapp-peten.com`;
 
 const apiRequest = axios.create({
-  baseURL: `http://${localDevelopment}:3333/user`,
+  baseURL: `${localDevelopment}/user`,
   withCredentials: true,
 });
 
 const apiRequestAuth = axios.create({
-  baseURL: `http://${localDevelopment}:3333/users`,
+  baseURL: `${localDevelopment}/users`,
   withCredentials: true,
 });
 
-const socketIoURL = `http://${localDevelopment}:3333`;
+const socketIoURL = `${localDevelopment}`;
 
 export {
   apiRequest,

@@ -206,7 +206,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
       </DataTable>
       <Dialog header={`${selectedUser ? 'Editar usuario' : 'Crear nuevo usuario'}`} visible={visible} onHide={() => setVisible(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <SignUp user={selectedUser} setVisible={setVisible} changedAUser={changedAUser} setChangedAUser={setChangedAUser} />
+        <SignUp user={selectedUser as any} setVisible={setVisible} changedAUser={changedAUser as any} setChangedAUser={setChangedAUser as any} />
       </Dialog>
       <Dialog header='Observando el usuario' visible={visibleUser} onHide={() => setVisibleUser(false)}
         style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

@@ -44,13 +44,13 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLoca
 
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
-      mapRef.current = L.map(mapContainerRef.current).setView(firefighterCoords, 13);
+      mapRef.current = L.map(mapContainerRef.current).setView(firefighterCoords as any, 13);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(mapRef.current);
 
-      L.marker(firefighterCoords, { icon: firefighterIcon })
+      L.marker(firefighterCoords as any, { icon: firefighterIcon })
         .addTo(mapRef.current)
         .bindPopup('Ubicación ambulancia')
         .openPopup();

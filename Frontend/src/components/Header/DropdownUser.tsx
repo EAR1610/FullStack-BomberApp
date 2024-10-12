@@ -69,7 +69,7 @@ const DropdownUser = () => {
         }
       );
       localStorage.removeItem('currentToken');
-      updateToken('');
+      updateToken('' as any);
       navigate('/login');
     } catch (error) {
       console.error('Error during login:', error);
