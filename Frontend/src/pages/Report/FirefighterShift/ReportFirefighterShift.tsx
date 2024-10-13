@@ -189,7 +189,7 @@ const ReportFirefighterShift = () => {
      <Toast ref={toast} />
      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         
-        <div className="flex-auto">
+        <div className="flex-auto text-center">
             <label htmlFor="monthDate" className="font-bold block mb-2 text-gray-700 dark:text-gray-300">
             Mes a generar
             </label>

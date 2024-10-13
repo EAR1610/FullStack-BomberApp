@@ -223,6 +223,11 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     }
   };
 
+  const handleDPIChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d{0,13}$/.test(value)) setDpi(value);    
+  };
+
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
@@ -296,14 +301,14 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                   <div className="relative">
                     <input
                       id='dpi'
-                      type="number"
+                      type="text"
                       placeholder="Ingresa el DPI"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
                       min={0}
                       maxLength={13}
                       value={ dpi }
-                      onChange={ e => setDpi( e.target.value ) }
+                      onChange={ handleDPIChange }
                     />
 
                     <span className="absolute right-4 top-4">
