@@ -8,6 +8,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
+import { InputText } from 'primereact/inputtext';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
         
 const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:any) => {
@@ -122,7 +123,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
       };
       reader.readAsDataURL(file);
     }
-  };  
+  }; 
   
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();
@@ -260,10 +261,11 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                     Usuario
                   </label>
                   <div className="relative">
-                    <input
+                    <InputText
                       id='username'
                       type="text"
                       placeholder="Ingresa tu nombre de usuario"
+                      tooltip="Mínimo 3 dígitos" tooltipOptions={{ position: 'top' }}
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
                       value={ username }
@@ -299,9 +301,10 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                     DPI
                   </label>
                   <div className="relative">
-                    <input
+                    <InputText
                       id='dpi'
                       type="text"
+                      tooltip="Corresponden a 13 dígitos" tooltipOptions={{ position: 'top' }}
                       placeholder="Ingresa el DPI"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
@@ -340,9 +343,10 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                     Nombre completo
                   </label>
                   <div className="relative">
-                    <input
+                    <InputText
                       id='fullName'
                       type="text"
+                      tooltip="Mínimo 5 dígitos" tooltipOptions={{ position: 'top' }}
                       placeholder="Ingresa tu nombre completo"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
@@ -416,7 +420,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                     </label>
                     <div className="relative">
                        <Password
-                          id='password'
+                          id='password'                          
                           required
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           value={password} 
@@ -460,9 +464,10 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                     Dirección
                   </label>
                   <div className="relative">
-                    <input
+                    <InputText
                       id='address'
                       type="text"
+                      tooltip="Mínimo 5 dígitos" tooltipOptions={{ position: 'top' }}
                       placeholder="Ingresa tu dirección"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
@@ -496,7 +501,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
 
                 <div className="mb-4">
                   <label htmlFor='photography' className="mb-2.5 block font-medium text-black dark:text-white">
-                    Fotografía
+                    Fotografía (jpg, png, jpeg)
                   </label>
                   <div className="relative">
                     {imagePreview && (
@@ -504,7 +509,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                         <img src={imagePreview} alt="Preview" className="max-w-xs h-auto rounded-lg" />
                       </div>
                     )}
-                  <input
+                  <InputText
                     id="photography"
                     type="file"
                     accept="image/jpeg, image/png"

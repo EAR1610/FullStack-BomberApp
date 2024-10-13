@@ -23,7 +23,7 @@ export const createUserValidator = vine.compile(
         password: vine.string().minLength(8),
         address: vine.string().minLength(5),
         photography: vine.file({
-            size: '10mb',
+            size: '5mb',
             extnames: ['jpg', 'png', 'jpeg']
         }),
         roleId: vine.number(),
@@ -53,6 +53,10 @@ export const updateUserValidator = vine.compile(
               return !existingUserWithDpi;
           }),
         address: vine.string().minLength(5),
+        photography: vine.file({
+            size: '5mb',
+            extnames: ['jpg', 'png', 'jpeg']
+        }),
         roleId: vine.number(),
         shiftPreference: vine.enum(['Par', 'Impar']).nullable(),
         status: vine.enum(['active', 'inactive', 'suspended']),
