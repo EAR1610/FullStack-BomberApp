@@ -91,7 +91,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
         setSelectedFirefighter(firefighter);
     }
 
-    const deleteFirefighters = async (rowData:any) => {    
+    const deleteFirefighters = async (rowData:any) => {
         setSelectedFirefighter(rowData);
         setIsInactiveFirefighter(true);            
     };
@@ -108,7 +108,16 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
 
     const accept = async () => {
       if (selectedFirefighter) {
-        const formData = new FormData();
+        console.log(selectedFirefighter);
+        const formData = new FormData();        
+        formData.append('username', selectedFirefighter.user.username);
+        formData.append('fullName', selectedFirefighter.user.fullName);
+        formData.append('email', selectedFirefighter.user.email);
+        formData.append('address', selectedFirefighter.user.address);
+        formData.append('dpi', selectedFirefighter.user.dpi);
+        formData.append('roleId', selectedFirefighter.user.roleId);
+        formData.append('shiftPreference', selectedFirefighter.shiftPreference);
+
         try {
           if(!viewActiveFirefighters){
             formData.append('status', 'active');

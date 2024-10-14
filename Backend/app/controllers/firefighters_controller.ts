@@ -24,7 +24,7 @@ export default class FirefightersController {
         query.where('status', 'active')
       })
       .preload('user', (query) => {
-        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status', 'address')
+        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status', 'address', 'dpi')
       });
 
       return firefighters.map(firefighter => {        
@@ -40,7 +40,7 @@ export default class FirefightersController {
         query.where('status', 'inactive')
       })
       .preload('user', (query) => {
-        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status', 'address')
+        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status', 'address', 'dpi')
       });
 
       return firefighters.map(firefighter => {        
@@ -57,7 +57,7 @@ export default class FirefightersController {
       })
       .where('shiftPreference', 'Par')
       .preload('user', (query) => {
-        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status')
+        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status', 'dpi')
       });
 
       return parFirefighters.map(firefighter => {        
@@ -74,7 +74,7 @@ export default class FirefightersController {
       })
       .where('shiftPreference', 'Impar')
       .preload('user', (query) => {
-        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status')
+        query.select('id', 'roleId', 'username', 'fullName', 'email', 'status', 'dpi')
       });
 
       return imparFirefighters.map(firefighter => {        

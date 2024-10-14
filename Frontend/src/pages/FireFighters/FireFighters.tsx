@@ -43,6 +43,7 @@ const FireFighters = () => {
                 },
               });
             }
+            console.log(response);
             if (response) setFirefighters(response.data);
             setLoading(false);
           } catch (error) {
