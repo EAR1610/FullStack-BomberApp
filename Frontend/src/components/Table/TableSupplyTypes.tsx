@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
 import SupplyType from '../../pages/SupplyType/SupplyType';
 import ViewSupplyType from '../../pages/SupplyType/ViewSupplyType';
+import { useNavigate } from 'react-router-dom';
 
 const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesType, loading, isChangedSupplyType, setIsChangedSupplyType }: any) => {
 
@@ -37,7 +38,8 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
     const userId = currentToken?.user?.id || 1;
-    const [errorMessages, setErrorMessages] = useState<string>('');
+    const [errorMessages, setErrorMessages] = useState<string>('');    
+    const navigate = useNavigate();
 
     const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -48,6 +50,17 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
+      }
+      verificarToken();
+    }, [])
+    
 
     useEffect(() => {
         if( selectedSupplyType && isInactiveSupplyType ){

@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
 import BlogCategory from '../../pages/BlogCategories/BlogCategory';
 import ViewCategory from '../../pages/BlogCategories/ViewCategory';
+import { useNavigate } from 'react-router-dom';
 
 const TableCategory = ({ data, viewActiveCategories, setViewActiveCategories, loading, isChangedCategory, setIsChangedCategory }: any) => {
 
@@ -38,6 +39,8 @@ const TableCategory = ({ data, viewActiveCategories, setViewActiveCategories, lo
     const { currentToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const navigate = useNavigate();
+
 
     const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -48,6 +51,17 @@ const TableCategory = ({ data, viewActiveCategories, setViewActiveCategories, lo
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
+      }
+      verificarToken();
+    }, []);
+    
 
     useEffect(() => {
         if( selectedCategory && isInactiveCategory ){

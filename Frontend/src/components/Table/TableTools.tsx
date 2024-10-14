@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import Tool from '../../pages/Tool/Tool';
 import ViewTool from '../../pages/Tool/ViewTool';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { useNavigate } from 'react-router-dom';
 
 const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, setIsChangedTool }:any) => {
   const [tools, setTools] = useState(null);
@@ -41,8 +42,15 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
   const { currentToken } = authContext;  
   const [errorMessages, setErrorMessages] = useState<string>('');
   const userId = currentToken?.user?.id || 1;
+  const navigate = useNavigate();
   
   useEffect(() => {
+    const verificarToken = async () => {
+      if( currentToken) {
+        if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+        if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+      }
+    }
     const getToolTypes = async () => {
       try {
         const response = await apiRequestAuth.get("/tool-type", {
@@ -59,8 +67,11 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
             toolTypeName: toolType ? toolType.name : 'Unknown'
           };
         });
+
+        verificarToken();
         setTools(toolsWithTypeName);
         setLoading(false);
+
       } catch (error) {
         showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }

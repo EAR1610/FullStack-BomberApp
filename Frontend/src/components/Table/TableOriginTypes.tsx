@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import OriginType from '../../pages/OriginType/OriginType';
 import ViewOriginType from '../../pages/OriginType/ViewOriginType';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { useNavigate } from 'react-router-dom';
 
 const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginTypes, loading, isChangedOriginType, setIsChangedOriginType } : any) => {
     
@@ -37,6 +38,7 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
     const { currentToken } = authContext; 
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const navigate = useNavigate();
 
     const onGlobalFilterChange = (e:any) => {
       const value = e.target.value;
@@ -45,6 +47,16 @@ const TableOriginTypes = ({ data, viewActiveOriginTypes, setViewActiveOriginType
       setFilters(_filters);
       setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
+      }
+      verificarToken();
+    }, [])    
 
     useEffect(() => {
       if( selectedOriginType && isInactiveOriginType ){

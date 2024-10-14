@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ViewVehicle from '../../pages/Vehicles/ViewVehicle';
 import Vehicle from '../../pages/Vehicles/Vehicle';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { useNavigate } from 'react-router-dom';
 
 const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loading, isChangedVehicle, setIsChangedVehicle }: any) => {
     const [filters, setFilters] = useState({
@@ -42,6 +43,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       const { currentToken } = authContext; 
       const userId = currentToken?.user?.id || 1;
       const [errorMessages, setErrorMessages] = useState<string>('');
+      const navigate = useNavigate();
 
       const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -52,6 +54,17 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
+      }
+      verificarToken();
+    }, [])
+    
 
     useEffect(() => {
       if( selectedVehicle && isInactiveVehicle ) {

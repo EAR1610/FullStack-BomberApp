@@ -4,6 +4,7 @@ import { AuthContextProps } from "../interface/Auth";
 import { apiRequestAuth } from "../lib/apiRequest";
 import { Toast } from "primereact/toast";
 import { createLog, handleErrorResponse } from "../helpers/functions";
+import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
   const [settings, setSettings] = useState(null);
@@ -13,10 +14,17 @@ const Settings = () => {
   const { currentToken } = authContext;
   const userId = currentToken?.user?.id || 1;  
   const [errorMessages, setErrorMessages] = useState<string>('');
+  const navigate = useNavigate();
 
   const toast = useRef(null);
 
   useEffect(() => {
+    const verificarToken = async () => {
+      if( currentToken) {
+        if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+        if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+      }
+    }
     const getSettings = async () => {
       const response = await apiRequestAuth.get(`/settings`, {
         headers: {
@@ -25,6 +33,7 @@ const Settings = () => {
       });
       setSettings(response.data);
     }
+    verificarToken();
     getSettings();
   }, []);
 

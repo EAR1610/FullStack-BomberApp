@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { EmergencyType } from '../../pages/EmergencyType/EmergencyType';
 import ViewEmergencyType from '../../pages/EmergencyType/ViewEmergencyType';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { useNavigate } from 'react-router-dom';
 
 const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEmergenciesType, loading, isChangedEmergencyType, setIsChangedEmergencyType }:any) => {
 
@@ -37,6 +38,7 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
       const { currentToken } = authContext;
       const userId = currentToken?.user?.id || 1;
       const [errorMessages, setErrorMessages] = useState<string>('');
+      const navigate = useNavigate();
 
       const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -67,6 +69,17 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
           </div>
         );
       };
+
+      useEffect(() => {
+        const verificarToken = async () => {
+          if( currentToken) {
+            if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+            if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+          }
+        }
+        verificarToken();
+      }, []);
+      
 
       useEffect(() => {
         if( selectedEmergencyType && isInactiveEmergencyType ){

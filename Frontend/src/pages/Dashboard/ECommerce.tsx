@@ -12,6 +12,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+    if( currentToken?.user.isUser ) navigate('/app/emergency-request');
   }, []);
   
   return (

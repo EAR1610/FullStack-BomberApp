@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
 import Supply from '../../pages/Supply/Supply';
 import ViewSupply from '../../pages/Supply/ViewSupply';
+import { useNavigate } from 'react-router-dom';
 
 const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading, isChangedSupply, setIsChangedSupply }: any) => {
     const [filters, setFilters] = useState({
@@ -37,6 +38,7 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
     const { currentToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const navigate = useNavigate();
 
     const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -47,6 +49,17 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
+      }
+      verificarToken();
+    }, [])
+    
 
     useEffect(() => {
         if( selectedSupply && isInactiveSupply ){

@@ -16,6 +16,7 @@ import { apiRequestAuth } from '../../lib/apiRequest';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ViewUser from '../../pages/Users/ViewUser';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { useNavigate } from 'react-router-dom';
 
 const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setChangedAUser }:any) => {
   const [customers, setCustomers] = useState(null);
@@ -43,14 +44,28 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;  
   const userId = currentToken?.user?.id || 1;
+  const navigate = useNavigate();
+
   
   useEffect(() => {
-    const transformedData = data.map((customer: any) => ({
-      ...customer,
-      rol: roleMap[customer.roleId]
-    }));
-    setCustomers(transformedData);
-    setLoading(false);
+    const verificarToken = async () => {
+      if( currentToken) {
+        if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+        if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+      }
+    }
+    
+    const transformData = async() => {
+      const transformedData = data.map((customer: any) => ({
+        ...customer,
+        rol: roleMap[customer.roleId]
+      }));
+      setCustomers(transformedData);
+      setLoading(false);
+    }
+    
+    verificarToken();
+    transformData();
   }, [data]);
 
   useEffect(() => {

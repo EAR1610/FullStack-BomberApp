@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import ToolType from '../../pages/ToolType/ToolType';
 import ViewToolType from '../../pages/ToolType/ViewToolType';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { useNavigate } from 'react-router-dom';
 
 const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loading, isChangedToolType, setIsChangedToolType } :any) => {
  
@@ -37,6 +38,18 @@ const TableToolTypes = ({ data, viewActiveToolsType, setViewActiveToolsType, loa
   const { currentToken } = authContext;
   const userId = currentToken?.user?.id || 1;
   const [errorMessages, setErrorMessages] = useState<string>('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const verificarToken = async () => {
+      if( currentToken) {
+        if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+        if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+      }
+    }
+    verificarToken();
+  }, [])
+  
 
   useEffect(() => {
     if( selectedToolType && isInactiveToolType ) {

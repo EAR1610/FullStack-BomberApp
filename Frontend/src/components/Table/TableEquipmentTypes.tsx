@@ -37,6 +37,8 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
     const { currentToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const navigate = useNavigate();
+
 
     const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -47,6 +49,17 @@ const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEqui
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+
+    useEffect(() => {
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
+      }
+      verificarToken();
+    }, []);
+    
 
     useEffect(() => {
       if( selectedEquipmentType && isInactiveEquipmentType ){

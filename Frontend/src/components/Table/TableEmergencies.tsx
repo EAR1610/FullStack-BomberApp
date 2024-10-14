@@ -11,6 +11,9 @@ import { Toast } from 'primereact/toast';
 import 'primeicons/primeicons.css';     
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import ViewEmergency from '../../pages/Emergency/ViewEmergency';
+import { AuthContextProps } from '../../interface/Auth';
+import { AuthContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergency, changeStatusEmergency }:any) => {
 
@@ -25,11 +28,25 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
     const [globalFilterValue, setGlobalFilterValue] = useState('');      
     const [selectedEmergency, setSelectedEmergency] = useState(null);
     const [viewEmergency, setViewEmergency] = useState(false);
+
+    const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+    if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
+    const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const navigate = useNavigate();
+
     
     const toast = useRef(null);
     
     useEffect(() => {
-        setLoading(false);        
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
+      }
+      verificarToken();
+      setLoading(false);        
     }, []);    
 
     const onGlobalFilterChange = (e:any) => {

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo  from '../../assets/Logo.png';
 import { apiRequest } from '../../lib/apiRequest';
@@ -21,10 +21,22 @@ const SignIn: React.FC = () => {
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { updateToken } = authContext;
+  const { currentToken, updateToken } = authContext;
   const navigate = useNavigate();
 
   const toast = useRef(null);
+
+  useEffect(() => {
+    const verificarToken = async () => {
+      if( currentToken) {
+        if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+        if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        if( currentToken?.user.isAdmin ) navigate('/app/dashboard');
+      }
+    }
+    verificarToken();
+  }, []);
+  
 
   // ? Define the handleSubmit function to handle form submission
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {

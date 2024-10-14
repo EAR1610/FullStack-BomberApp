@@ -10,6 +10,9 @@ import 'primeicons/primeicons.css';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import EmergenciesByFirefighterShift from '../../pages/Emergency/EmergenciesByFirefighterShift';
+import { AuthContext } from '../../context/AuthContext';
+import { AuthContextProps } from '../../interface/Auth';
+import { useNavigate } from 'react-router-dom';
 
 const TableFirefighterShiftsReport = ({ data }: any) => {
 
@@ -25,9 +28,23 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
   const [selectedFirefighterShift, setSelectedFirefighterShift] = useState(null);
   const [viewEmergenciesByFirefighterShift, setViewEmergenciesByFirefighterShift] = useState(false);
 
+  const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+    if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
+    const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const navigate = useNavigate();
+
+
   const toast = useRef(null);
 
   useEffect(() => {
+    const verificarToken = async () => {
+      if( currentToken) {
+        if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+        if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+      }
+    }
+    verificarToken();
     setLoading(false);        
   }, []); 
   

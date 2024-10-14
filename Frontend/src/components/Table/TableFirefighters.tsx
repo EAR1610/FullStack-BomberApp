@@ -18,6 +18,7 @@ import ViewFireFighter from '../../pages/FireFighters/ViewFireFighter';
 import SetFirefighterShift from '../../pages/FireFighters/SetFirefighterShift';
 import { TableFirefightersProps } from '../../helpers/Interfaces';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { useNavigate } from 'react-router-dom';
 
 
 const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveFirefighters, setViewActiveFirefighters, loading, isChangedFirefighter, setIsChangedFirefighter }) => {
@@ -44,6 +45,8 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       const { currentToken } = authContext; 
       const userId = currentToken?.user?.id || 1;
       const [errorMessages, setErrorMessages] = useState<string>('');
+      const navigate = useNavigate();
+
 
       const onGlobalFilterChange = (e:any) => {
         const value = e.target.value;
@@ -69,6 +72,17 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
           </div>
         );
       };
+
+      useEffect(() => {
+        const verificarToken = async () => {
+          if( currentToken) {
+            if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+            if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+          }
+        }
+        verificarToken();
+      }, []);
+      
 
     useEffect(() => {
       if( selectedFirefighter && isInactiveFirefighter ) {

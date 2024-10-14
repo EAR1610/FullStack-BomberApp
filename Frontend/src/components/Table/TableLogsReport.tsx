@@ -8,6 +8,9 @@ import { InputIcon } from 'primereact/inputicon';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import 'primeicons/primeicons.css';  
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import { AuthContextProps } from '../../interface/Auth';
 
 const TableLogsReport = ({ data }: any) => {
     const [filters, setFilters] = useState({
@@ -21,11 +24,23 @@ const TableLogsReport = ({ data }: any) => {
     });
     const [loading, setLoading] = useState<boolean>(true);
     const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
+    const authContext = useContext<AuthContextProps | undefined>(AuthContext);
+    if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
+    const { currentToken } = authContext;
+    const userId = currentToken?.user?.id || 1;
+    const navigate = useNavigate();
 
     const toast = useRef(null);
 
     useEffect(() => {
-        setLoading(false);        
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
+      }
+      verificarToken();
+      setLoading(false);        
     }, []);    
 
     const onGlobalFilterChange = (e:any) => {
