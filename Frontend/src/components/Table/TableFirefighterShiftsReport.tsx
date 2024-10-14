@@ -7,6 +7,9 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Toast } from 'primereact/toast';
 import 'primeicons/primeicons.css';  
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import EmergenciesByFirefighterShift from '../../pages/Emergency/EmergenciesByFirefighterShift';
 
 const TableFirefighterShiftsReport = ({ data }: any) => {
 
@@ -19,13 +22,14 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
+  const [selectedFirefighterShift, setSelectedFirefighterShift] = useState(null);
+  const [viewEmergenciesByFirefighterShift, setViewEmergenciesByFirefighterShift] = useState(false);
 
   const toast = useRef(null);
 
   useEffect(() => {
     setLoading(false);        
-  }, []);    
-  console.log(data);
+  }, []); 
   
   const onGlobalFilterChange = (e:any) => {
       const value = e.target.value;
@@ -53,6 +57,24 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
     );
   };
 
+  const showFirefighterShift = (rowData:any) => {
+    setSelectedFirefighterShift(rowData);
+    setViewEmergenciesByFirefighterShift(true);
+  }
+
+  const optionsBodyTemplate = (rowData:any) => {
+    return (
+      <div className="flex items-center">
+          <Button
+              size='small'
+              icon="pi pi-eye"
+              className="p-button-rounded p-button-success p-button-sm"
+              onClick={() => showFirefighterShift(rowData)}
+              style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
+          />          
+      </div>
+  )};
+
   const header = renderHeader();
 
   return (
@@ -72,12 +94,19 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
         globalFilterFields={['user.fullName', 'user.dpi', 'user.email', 'shiftPreference']}
         emptyMessage="No hay turnos asignados."
       >
-        <Column field="user.fullName" header="Nombre"  style={{ minWidth: '8rem' }}  align={'center'}/>
+        <Column field="user.fullName" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
         <Column field="user.dpi" header="DPI" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column field="user.email" header="Correo" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="shiftPreference" header="Turno" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="shiftPreference" header="Cantidad de emergenicas atendidas" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="shiftPreference" header="Turno" style={{ minWidth: '8rem' }} align={'center'}/>
+        <Column header="Emergencias asignadas" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} align='left' />
       </DataTable>
+      <Dialog header="Emergencias asignadas a un bombero" visible={viewEmergenciesByFirefighterShift} onHide={() => setViewEmergenciesByFirefighterShift(false)}
+        style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        <EmergenciesByFirefighterShift 
+          firefighterShift={selectedFirefighterShift}
+          setViewEmergenciesByFirefighterShift={setViewEmergenciesByFirefighterShift}
+        />
+        </Dialog>
     </div>
   )
 }

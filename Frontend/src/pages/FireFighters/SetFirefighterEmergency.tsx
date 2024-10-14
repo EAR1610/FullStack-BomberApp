@@ -11,6 +11,7 @@ import { IconField } from "primereact/iconfield"
 import { InputIcon } from "primereact/inputicon"
 import { InputText } from "primereact/inputtext"
 import { FilterMatchMode } from "primereact/api"
+import { handleErrorResponse } from "../../helpers/functions"
 
 const SetFirefighterEmergency = ({ idEmergency }: any) => {
   const [firefighters, setFirefighters] = useState([]);
@@ -27,6 +28,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [updateTableFirefighterEmergency, setUpdateTableFirefighterEmergency] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<string>('');  
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");  const { currentToken } = authContext;
@@ -61,13 +63,8 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
 
         if (response) setFirefighters(response.data);
         console.log(response.data);
-      } catch (error) {
-        console.log(error);
-        if (error.response.status === 404) {
-          showAlert("error", "Error", `${error.response.data.message}`);
-        } else {
-          showAlert("error", "Error", "Ocurrió un error al obtener los bomberos");
-        }
+      } catch (err) {
+        showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
       }
     }
 

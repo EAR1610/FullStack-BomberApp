@@ -3,7 +3,6 @@ import FirefighterShift from '#models/firefighter_shift';
 import { createFirefighterShiftValidator, transformValidator } from '#validators/firefighter_shift';
 import type { HttpContext } from '@adonisjs/core/http'
 import { generateShiftsForMonthForFirefighter } from '../helpers/generateFirefighterShiftForMonth.js';
-import Firefighter from '#models/firefighter';
 
 /**
  * * This class definition is for a `FirefighterShiftsController` in an AdonisJS application. Here's a succinct explanation of what each class method does:
@@ -69,11 +68,12 @@ export default class FirefighterShiftsController {
   async getFirefightersOnShiftForMonth({ request, response }: HttpContext) {
     const { monthYear } = request.only(['monthYear']);
   
-    if (!monthYear || !DateTime.fromFormat(monthYear, 'yyyy-MM').isValid) return response.badRequest({ message: 'Formato de fecha no válido, use yyyy-MM' });
-
+    if (!monthYear || !DateTime.fromFormat(monthYear, 'yyyy-MM').isValid) return response.status(404).json({ errors: [{ message: 'Formato de fecha no válido, use yyyy-MM' }] });
   
     const startDate = DateTime.fromFormat(monthYear, 'yyyy-MM').startOf('month').toISO();
     const endDate = DateTime.fromFormat(monthYear, 'yyyy-MM').endOf('month').toISO();
+
+    if( startDate === null || endDate === null ) return response.status(404).json({ errors: [{ message: 'Formato de fecha no válido, use yyyy-MM' }] });
   
     const shifts = await FirefighterShift.query()
       .where('shiftStart', '>=', startDate)
@@ -81,7 +81,7 @@ export default class FirefighterShiftsController {
       .preload('firefighter', (query) => {
         query.preload('user')
         .whereHas('user', (query) => {
-          query.where('status', 'active');
+          query.where('status', 'active')
         })
       });
   
@@ -95,12 +95,10 @@ export default class FirefighterShiftsController {
   
     const uniqueFirefighters = Object.values(firefighterMap);
   
-    if (uniqueFirefighters.length === 0) {
-      return response.status(404).json({ errors: [{ message: 'No hay bomberos en turno para el mes y año especificado' }] });
-    }
+    if (uniqueFirefighters.length === 0) return response.status(404).json({ errors: [{ message: 'No hay bomberos en turno para el mes y año especificado' }] });
   
     return uniqueFirefighters;
-  }
+  } 
     
   async create({}: HttpContext) {}
   

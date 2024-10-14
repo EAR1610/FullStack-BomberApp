@@ -52,11 +52,7 @@ export const updateUserValidator = vine.compile(
               .first();
               return !existingUserWithDpi;
           }),
-        address: vine.string().minLength(5),
-        photography: vine.file({
-            size: '5mb',
-            extnames: ['jpg', 'png', 'jpeg']
-        }),
+        address: vine.string().minLength(5),        
         roleId: vine.number(),
         shiftPreference: vine.enum(['Par', 'Impar']).nullable(),
         status: vine.enum(['active', 'inactive', 'suspended']),

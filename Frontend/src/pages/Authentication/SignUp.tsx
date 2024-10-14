@@ -46,10 +46,10 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
           <Divider />
           <p className="mt-2">Sugerencias</p>
           <ul className="pl-2 ml-2 mt-0 line-height-3">
+              <li>Mínimo 8 caracteres</li>
               <li>Al menos una letra minúscula</li>
               <li>Al menos una letra mayúscula</li>
               <li>Al menos un número</li>
-              <li>Mínimo 8 caracteres</li>
           </ul>
       </>
     );
@@ -265,7 +265,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                       id='username'
                       type="text"
                       placeholder="Ingresa tu nombre de usuario"
-                      tooltip="Mínimo 3 dígitos" tooltipOptions={{ position: 'top' }}
+                      tooltip="Mínimo 3 caracteres" tooltipOptions={{ position: 'top' }}
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
                       value={ username }
@@ -346,7 +346,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                     <InputText
                       id='fullName'
                       type="text"
-                      tooltip="Mínimo 5 dígitos" tooltipOptions={{ position: 'top' }}
+                      tooltip="Mínimo 5 caracteres" tooltipOptions={{ position: 'top' }}
                       placeholder="Ingresa tu nombre completo"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
@@ -467,7 +467,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                     <InputText
                       id='address'
                       type="text"
-                      tooltip="Mínimo 5 dígitos" tooltipOptions={{ position: 'top' }}
+                      tooltip="Mínimo 5 caracteres" tooltipOptions={{ position: 'top' }}
                       placeholder="Ingresa tu dirección"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required

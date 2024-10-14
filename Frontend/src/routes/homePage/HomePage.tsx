@@ -60,7 +60,7 @@ export default function Homepage() {
               { src: motobomba, alt: "Motobomba" },
               { src: ambulancia, alt: "Ambulancia" },
             ].map((image, index) => (
-              <div key={index} className="h-64 xl:h-96 flex items-center justify-center">
+              <div key={index} className="h-64 xl:h-96 flex items-center justify-center shadow-md hover:shadow-lg">
                 <img
                   src={image.src}
                   alt={image.alt}

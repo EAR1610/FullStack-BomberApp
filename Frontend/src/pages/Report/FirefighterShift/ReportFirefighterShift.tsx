@@ -9,7 +9,6 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
 import { handleErrorResponse } from "../../../helpers/functions";
-import TableEmergenciesReport from "../../../components/Table/TableEmergenciesReport";
 import { ColumnMeta } from "../../../helpers/Interfaces";
 import { useNavigate } from "react-router-dom";
 import TableFirefighterShiftsReport from "../../../components/Table/TableFirefighterShiftsReport";

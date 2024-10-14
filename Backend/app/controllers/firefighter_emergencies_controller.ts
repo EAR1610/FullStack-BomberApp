@@ -2,7 +2,7 @@ import FirefighterEmergency from '#models/firefighter_emergency';
 import Ws from '#services/Ws';
 import { createFirefighterEmergencyValidator } from '#validators/firefighter_emergency';
 import type { HttpContext } from '@adonisjs/core/http'
-
+import { DateTime } from 'luxon';
 
 /**
  * 
@@ -194,6 +194,52 @@ export default class FirefighterEmergenciesController {
       .where('firefighterId', params.id)
   
     return firefighter_emergency
+  }
+
+  async getEmergenciesByFirefightersForMonth({ request, response }: HttpContext) {
+    const { monthYear, firefighterId } = request.only(['monthYear', 'firefighterId']);
+
+    if (!monthYear || !DateTime.fromFormat(monthYear, 'yyyy-MM').isValid) return response.status(404).json({ errors: [{ message: 'Formato de fecha no válido, use yyyy-MM' }] });
+  
+    const startDate = DateTime.fromFormat(monthYear, 'yyyy-MM').startOf('month').toISO();
+    const endDate = DateTime.fromFormat(monthYear, 'yyyy-MM').endOf('month').toISO();
+
+    if( startDate === null || endDate === null ) return response.status(404).json({ errors: [{ message: 'Formato de fecha no válido, use yyyy-MM' }] });
+
+    const firefighterEmergencies = await FirefighterEmergency.query()
+      .where('createdAt', '>=', startDate)
+      .andWhere('createdAt', '<=', endDate)
+      .whereHas('firefighter', (query) => {
+        query.where('id', firefighterId)
+      })
+      .preload('firefighter', (query) => {
+        query.select('id', 'userId', 'shiftPreference')
+          .whereHas('user', (query) => {
+            query.where('status', 'active')
+          })
+          .preload('user', (query) => {
+            query.select('id', 'username', 'fullName', 'address')
+          })
+      })
+      .preload('emergency', (query) => {
+        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+          .preload('emergencyType', (query) => {
+            query.select('id', 'name')
+          })
+      })
+
+    const formatedFirefighterEmergencies = firefighterEmergencies.map(firefighterEmergency => {
+      const firefighterEmergenciesData = firefighterEmergency.toJSON();
+      
+      return {
+        ...firefighterEmergenciesData,
+        createdAt: DateTime.fromISO(firefighterEmergenciesData.createdAt, { zone: 'America/Guatemala' })
+          .setZone('America/Guatemala')
+          .toFormat('dd/MM/yyyy'),
+      };
+    });
+  
+    return formatedFirefighterEmergencies;
   }
 
   async show({ params }: HttpContext) {

@@ -58,7 +58,6 @@ const SetSupplyEmergency = ({ idEmergency }:any) => {
         })
         if( response ) setSupplies(response.data);
       } catch (error) {
-        console.log(error);
         showAlert("error", "Error", "Error al obtener los insumos");
       }
     }
@@ -71,10 +70,8 @@ const SetSupplyEmergency = ({ idEmergency }:any) => {
           },
         })
         if( response ) setSuppliesEmergency(response.data);
-        console.log(response.data);
         setLoading(false);
       } catch (error) {
-        console.log(error);
         showAlert("error", "Error", "Error al obtener los insumos de emergencias");
       }
     }
@@ -91,6 +88,11 @@ const SetSupplyEmergency = ({ idEmergency }:any) => {
       
       if( quantity <= 0 ) {
         showAlert("error", "Error", "La cantidad del insumo debe ser mayor a cero");
+        return;
+      }
+      
+      if( selectedSupply === null ) {
+        showAlert("error", "Error", "Debe seleccionar un insumo");
         return;
       }
 
