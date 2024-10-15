@@ -3,6 +3,7 @@ import { createEmergencyValidator, getEmergenciesByDateValidator } from '#valida
 import { DateTime } from 'luxon';
 import type { HttpContext } from '@adonisjs/core/http'
 import Ws from '#services/Ws';
+import { error } from 'console';
 /**
  * * This class definition is for an `EmergenciesController` in an AdonisJS application. Here's a brief explanation of what each class method does:
 * `index`: Displays a list of emergencies with a status of 'Registrada'.
@@ -152,7 +153,7 @@ export default class EmergenciesController {
     return emergency
   }
 
-  async getEmergenciesByDate({ request }: HttpContext) {
+  async getEmergenciesByDate({ request }: HttpContext) {r
     const { startDate, endDate, emergencyStatus } = request.only(['startDate', 'endDate', 'emergencyStatus']);
   
     const start = DateTime.fromISO(startDate, { zone: 'America/Guatemala' }).startOf('day').toUTC().toISO();
@@ -176,17 +177,25 @@ export default class EmergenciesController {
 
   async create({}: HttpContext) {}
 
-  async store({ request, response }: HttpContext) {
+  async store({ auth, request, response }: HttpContext) {
+    const user = auth.user;    
     const payload = await request.validateUsing(createEmergencyValidator);
+    if (!user) return response.status(401).json({ errors: [ { message: 'No tienes permisos para crear una emergencia' } ]} );
   
-    const existingEmergencies = await Emergency.query()
-      .where('userId', payload.userId)
-      .whereIn('status', ['Registrada', 'En proceso']);
+    if (!user.isAdmin) {
+      const existingEmergencies = await Emergency.query()
+        .where('userId', payload.userId)
+        .whereIn('status', ['Registrada', 'En proceso']);
   
-    if (existingEmergencies.length > 0) {
-      return response.status(400).json({
-        errors: [{ message: `Ya tiene una emergencia pendiente, cuyo estado es: ${existingEmergencies[0].status}` }]
-      });
+      if (existingEmergencies.length > 0) {
+        return response.status(400).json({
+          errors: [
+            {
+              message: `Ya tiene una emergencia pendiente, cuyo estado es: ${existingEmergencies[0].status}`,
+            },
+          ],
+        });
+      }
     }
   
     const emergency = new Emergency();
@@ -202,6 +211,7 @@ export default class EmergenciesController {
   
     return emergency;
   }
+  
 
   async show({ params }: HttpContext) {
     return await Emergency.find( params.id );

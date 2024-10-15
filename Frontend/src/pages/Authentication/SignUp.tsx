@@ -85,7 +85,6 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
   }, [user]);
 
   const roles = [
-    { id: 1, name: "Administrador" },
     { id: 2, name: "Bombero" },
     { id: 3, name: "Usuario" }
   ];
