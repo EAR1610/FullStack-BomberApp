@@ -43,9 +43,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         },
       });
     
-      if (response.data.length === 0) {
-        throw new Error("No hay bomberos asignados a la emergencia");
-      }
+      if (response.data.length === 0) throw new Error("No hay bomberos asignados a la emergencia");      
     };
     
     const verifyVehicleEmergency = async () => {
@@ -55,13 +53,11 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         },
       });
     
-      if (response.data.length === 0) {
-        throw new Error("No hay unidades asignadas a la emergencia");
-      }
+      if (response.data.length === 0) throw new Error("No hay unidades asignadas a la emergencia");    
 
-      for (const vehicle of response.data) {
-        if (vehicle.mileageInbound === vehicle.mileageOutput) {
-          throw new Error(`El vehículo con placa ${vehicle.vehicle.plateNumber} tiene el mismo kilometraje de entrada y salida.`);
+      if( selectedStatus === 'Atendida' || selectedStatus === 'Cancelada' || selectedStatus === 'Rechazada' ){
+        for (const vehicle of response.data) {
+          if (vehicle.mileageInbound === vehicle.mileageOutput) throw new Error(`El vehículo con placa ${vehicle.vehicle.plateNumber} tiene el mismo kilometraje de entrada y salida.`);        
         }
       }
     };
@@ -73,9 +69,17 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         },
       });
       
-      if (response.data.length === 0) {
-        throw new Error("No hay insumos asignados a la emergencia");
-      }
+      if (response.data.length === 0) throw new Error("No hay insumos asignados a la emergencia");    
+    }
+
+    const verifyDetailEmergency = async () => {
+      const response = await apiRequestAuth.get(`/detail-emergency/${emergency.id}`, {
+        headers: {
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+
+      if (response.data.length === 0) throw new Error("No hay detalles de la emergencia");      
     }
 
     const validateProcess = async () => {
@@ -83,6 +87,8 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         await verifyFirefighterEmergency();
         await verifyVehicleEmergency();
         await verifySupplyEmergency();
+        await verifyDetailEmergency();
+
       } catch (error) {
         showAlert("error", "Error", error.message);
         throw error;
@@ -268,7 +274,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
       </Dialog>
       <Dialog header="Asignación de insumos a la emergencia" visible={viewSupplyEmergency} onHide={() => setViewSupplyEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <SetSupplyEmergency idEmergency={emergency?.id} />
+        <SetSupplyEmergency idEmergency={emergency?.id} statusEmergency={emergency.status} />
       </Dialog>
       <Dialog
           header="Detalle Emergencia"

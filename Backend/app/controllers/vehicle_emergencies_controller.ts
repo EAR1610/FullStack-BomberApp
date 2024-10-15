@@ -21,7 +21,7 @@ export default class VehicleEmergenciesController {
       query.select('brand', 'model', 'plate_number')
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'description')      
+      query.select('id', 'applicant', 'address', 'description', 'status')
     })
     
     return vehicle_emergency
@@ -50,7 +50,7 @@ export default class VehicleEmergenciesController {
       query.select('brand', 'model', 'plate_number')
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'description')      
+      query.select('id', 'applicant', 'address', 'description', 'status')
     })
     .where('emergencyId', params.id)
 

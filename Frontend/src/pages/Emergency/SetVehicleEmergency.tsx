@@ -25,7 +25,8 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
     const [isUpdateVehicleEmergency, setIsUpdateVehicleEmergency] = useState(false);
     const [filters, setFilters] = useState({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      shiftPreference: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      mileageInbound: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      mileageOutput: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       "vehicle.brand": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       "vehicle.model": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       "emergency.description": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -60,7 +61,6 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
           })
           if( response ) setVehicles(response.data);
         } catch (error) {
-          console.log(error);
           showAlert("error", "Error", "Error al obtener los vehículos");
         }
       }
@@ -73,9 +73,9 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
             },
           })
           if( response ) setVechiclesEmergency(response.data);
+          console.log(response.data);
           setLoading(false);
         } catch (error) {
-          console.log(error);
           showAlert("error", "Error", "Error al obtener los vehículos de emergencias");
         }
       }
@@ -273,13 +273,15 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
                 filters={filters}
                 filterDisplay="row"
                 loading={loading}
-                globalFilterFields={['vehicle.plateNumber', 'vehicle.brand', 'vehicle.model', 'emergency.description']}
+                globalFilterFields={['vehicle.plateNumber', 'vehicle.brand', 'vehicle.model', 'emergency.description', 'mileageInbound', 'mileageOutput']}
                 header={header}
                 emptyMessage="Registro no encontrado."
               >
                 <Column field="vehicle.brand" header="Marca"  style={{ minWidth: '4rem' }} align={'center'} />
                 <Column field="vehicle.model" header="Modelo"  style={{ minWidth: '4rem' }} align={'center'} />
                 <Column field="vehicle.plateNumber" header="Placa"  style={{ minWidth: '4rem' }} align={'center'} />
+                <Column field="mileageInbound" header="Kilometraje entrada"  style={{ minWidth: '4rem' }} align={'center'} />
+                <Column field="mileageOutput" header="Kilometraje salida"  style={{ minWidth: '4rem' }} align={'center'} />
                 <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} />
               </DataTable>
             </div>

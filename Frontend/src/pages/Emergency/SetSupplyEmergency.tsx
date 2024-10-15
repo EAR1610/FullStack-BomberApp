@@ -13,7 +13,7 @@ import { Column } from 'primereact/column';
 import { ConfirmDialog } from "primereact/confirmdialog"
 import { Button } from 'primereact/button';
 
-const SetSupplyEmergency = ({ idEmergency }:any) => {
+const SetSupplyEmergency = ({ idEmergency, statusEmergency }:any) => {
 
     const [supplies, setSupplies] = useState([]);
     const [suppliesEmergency, setSuppliesEmergency] = useState<any[]>([]);
@@ -80,6 +80,17 @@ const SetSupplyEmergency = ({ idEmergency }:any) => {
     getSuppliesEmergency();
   }, [updateTableSupplyEmergency]);
 
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    const numericValue = parseInt(value, 10);
+    
+    if (!isNaN(numericValue) && numericValue <= 99) {
+      setQuantity(numericValue);
+    } else if (value === '') {
+      setQuantity(0); 
+    }
+  };
+
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
@@ -93,6 +104,11 @@ const SetSupplyEmergency = ({ idEmergency }:any) => {
       
       if( selectedSupply === null ) {
         showAlert("error", "Error", "Debe seleccionar un insumo");
+        return;
+      }
+
+      if( statusEmergency === 'Atendida' || statusEmergency === 'Cancelada' || statusEmergency === 'Rechazada' ){
+        showAlert("error", "Error", "No se puede asignar un insumo a una emergencia que ya está en estado: " + statusEmergency);
         return;
       }
 
@@ -220,7 +236,8 @@ const SetSupplyEmergency = ({ idEmergency }:any) => {
                       required
                       value={quantity}
                       min={0}
-                      onChange={ (e) => setQuantity(parseFloat(e.target.value) || 0) }
+                      max={99}
+                      onChange={handleQuantityChange}
                     />
                   </div>
                 </div> 

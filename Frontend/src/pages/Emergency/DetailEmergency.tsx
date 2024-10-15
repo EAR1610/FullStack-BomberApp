@@ -17,6 +17,17 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
 
     const toast = useRef(null);
 
+    const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/[^0-9]/g, '');
+      const numericValue = parseInt(value, 10);
+      
+      if ( !isNaN(numericValue) && numericValue <= 600 && numericValue >= 0) {
+        setDuration(numericValue);
+      } else if (value === '') {
+        setDuration(0); 
+      }
+    };
+
     useEffect(() => {
         const getDetailEmergency = async () => {
             const response = await apiRequestAuth.get(`detail-emergency/${idEmergency}`, {
@@ -95,19 +106,20 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
                   </div>   
 
                   <div className="mb-4">
-                    <label htmlFor='vehicle_number' className="mb-2.5 block font-medium text-black dark:text-white">
+                    <label htmlFor='duration_emergency' className="mb-2.5 block font-medium text-black dark:text-white">
                       Duración en minutos
                     </label>
                     <div className="relative">
                       <input
-                        id='vehicle_number'
+                        id='duration_emergency'
                         type="number"
                         min={0}
+                        max={600}
                         placeholder="Ingresa el tiempo de la emergencia"
                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         required
                         value={ duration }
-                        onChange={ e => setDuration( parseInt(e.target.value )) }
+                        onChange={ handleDurationChange }
                       />
                     </div>
                   </div>
