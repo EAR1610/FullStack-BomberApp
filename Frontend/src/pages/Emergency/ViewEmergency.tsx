@@ -3,6 +3,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
+import { InputTextarea } from 'primereact/inputtextarea';      
 import MapComponent from "../../components/Maps/MapComponent"
 import { apiRequestAuth } from "../../lib/apiRequest"
 import { Dialog } from "primereact/dialog"
@@ -127,17 +128,9 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                   Descripción
                 </label>
                 <div className="relative">
-                  <input
-                    id='description'
-                    type="text"
-                    placeholder="Ingresa la línea de la unidad"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ emergency?.description }
-                    disabled                    
-                  />
+                  <InputTextarea disabled value={ emergency?.description } rows={5} cols={30} className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary font-bold text-lg" />
                 </div>
-              </div>              
+              </div>
 
               <div className="mb-4">
                 <label className="mb-2.5 block font-medium text-black dark:text-white">
@@ -183,8 +176,9 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                     options={emergencyStatuses}
                     onChange={(e) => setSelectedStatus(e.value)}
                     placeholder="Selecciona el estado de la emergencia"
+                    filter
                     className="w-full"
-                    disabled={emergency.status === 'Atendida' || emergency.status === 'Cancelada'}
+                    disabled={emergency.status === 'Atendida' || emergency.status === 'Cancelada' || emergency.status === 'Rechazada'}
                   />
                 </div>
               </div>
