@@ -13,7 +13,7 @@ import { Column } from 'primereact/column';
 import { ConfirmDialog } from "primereact/confirmdialog"
 import { Button } from 'primereact/button';
 
-const SetVehicleEmergency = ({ idEmergency }:any ) => {
+const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
 
     const [vehicles, setVehicles] = useState([]);
     const [vechiclesEmergency, setVechiclesEmergency] = useState([]);
@@ -89,9 +89,14 @@ const SetVehicleEmergency = ({ idEmergency }:any ) => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      if( statusEmergency === 'Atendida' || statusEmergency === 'Cancelada' || statusEmergency === 'Rechazada' ){
+        showAlert("error", "Error", "No se puede asignar una unidad a una emergencia que ya está en estado: " + statusEmergency);
+        return;
+      }
       
       if( mileageInbound < mileageOutput ) {
-        showAlert("error", "Error", "El kilometro de entrada debe ser mayor al de salida");
+        showAlert("error", "Error", "El kilometro de entrada debe ser mayor o igual que el de salida");
         return;
       }
 

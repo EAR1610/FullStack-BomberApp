@@ -46,21 +46,12 @@ export default class SupplyEmergenciesController {
     return await supplyEmergency.save();
   }
 
-  /**
-   * Show individual record
-   */
   async show({ params }: HttpContext) {
     return await SupplyEmergency.find( params.id );
   }
 
-  /**
-   * Edit individual record
-   */
   async edit({ params }: HttpContext) {}
 
-  /**
-   * Handle form submission for the edit action
-   */
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(updateSupplyEmergencyValidator,{
       meta: {
@@ -75,9 +66,6 @@ export default class SupplyEmergenciesController {
     supplyEmergency.merge(payload);
     return await supplyEmergency.save();
   }
-
-  /**
-   * Delete record
-   */
+  
   async destroy({ params }: HttpContext) {}
 }

@@ -34,12 +34,66 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
       { label: 'Atendida', value: 'Atendida' },
       { label: 'Cancelada', value: 'Cancelada' },
       { label: 'Rechazada', value: 'Rechazada' }
-  ];
+    ];
+
+    const verifyFirefighterEmergency = async () => {
+      const response = await apiRequestAuth.get(`/firefighter-emergency/${emergency.id}`, {
+        headers: {
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+    
+      if (response.data.length === 0) {
+        throw new Error("No hay bomberos asignados a la emergencia");
+      }
+    };
+    
+    const verifyVehicleEmergency = async () => {
+      const response = await apiRequestAuth.get(`/vehicle-emergency/${emergency.id}`, {
+        headers: {
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+    
+      if (response.data.length === 0) {
+        throw new Error("No hay unidades asignadas a la emergencia");
+      }
+
+      for (const vehicle of response.data) {
+        if (vehicle.mileageInbound === vehicle.mileageOutput) {
+          throw new Error(`El vehículo con placa ${vehicle.vehicle.plateNumber} tiene el mismo kilometraje de entrada y salida.`);
+        }
+      }
+    };
+
+    const verifySupplyEmergency = async () => {
+      const response = await apiRequestAuth.post(`/supply-emergency/supplies-per-emergency/${emergency.id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${currentToken?.token}`,
+        },
+      });
+      
+      if (response.data.length === 0) {
+        throw new Error("No hay insumos asignados a la emergencia");
+      }
+    }
+
+    const validateProcess = async () => {
+      try {
+        await verifyFirefighterEmergency();
+        await verifyVehicleEmergency();
+        await verifySupplyEmergency();
+      } catch (error) {
+        showAlert("error", "Error", error.message);
+        throw error;
+      }
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-    
-      try {    
+      
+      try {
+        await validateProcess();
         const updateEmergencyFormData = new FormData();
         updateEmergencyFormData.append('emergencyTypeId', String(emergency.emergencyTypeId));
         updateEmergencyFormData.append('applicant', emergency.applicant);
@@ -73,7 +127,6 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
           setViewEmergency(false);
         }, 1500);
       } catch (error) {
-        showAlert('error', 'Error', 'No se pudo registrar la emergencia');
       }
     }
     
@@ -207,11 +260,11 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
       </div>
       <Dialog header="Asignación de bomberos a la emergencia" visible={viewFirefighterToSetEmergency} onHide={() => setViewFirefighterToSetEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <SetFirefighterEmergency idEmergency={emergency?.id} />
+        <SetFirefighterEmergency idEmergency={emergency?.id} statusEmergency={emergency.status} />
       </Dialog>    
       <Dialog header="Asignación de unidades a la emergencia" visible={viewVehicleSetEmergency} onHide={() => setViewVehicleSetEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <SetVehicleEmergency idEmergency={emergency?.id} />
+        <SetVehicleEmergency idEmergency={emergency?.id}  statusEmergency={emergency.status} />
       </Dialog>
       <Dialog header="Asignación de insumos a la emergencia" visible={viewSupplyEmergency} onHide={() => setViewSupplyEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

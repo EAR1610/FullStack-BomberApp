@@ -13,7 +13,7 @@ import { InputText } from "primereact/inputtext"
 import { FilterMatchMode } from "primereact/api"
 import { handleErrorResponse } from "../../helpers/functions"
 
-const SetFirefighterEmergency = ({ idEmergency }: any) => {
+const SetFirefighterEmergency = ({ idEmergency, statusEmergency }: any) => {
   const [firefighters, setFirefighters] = useState([]);
   const [firefightersEmergency, setFirefightersEmergency] = useState([]);
   const [selectedFirefighter, setSelectedFirefighter] = useState(null);
@@ -42,7 +42,7 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
 
     setFilters(_filters);
     setGlobalFilterValue(value);
-}; 
+  };
 
   useEffect(() => {
     const getFirefighters = async () => {
@@ -62,7 +62,6 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
         })
 
         if (response) setFirefighters(response.data);
-        console.log(response.data);
       } catch (err) {
         showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
       }
@@ -91,20 +90,26 @@ const SetFirefighterEmergency = ({ idEmergency }: any) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-      try {
-        const createFirefighterEmergencyFormData = new FormData();
-        createFirefighterEmergencyFormData.append('firefighterId', selectedFirefighter?.firefighter.id);
-        createFirefighterEmergencyFormData.append('emergencyId', idEmergency);
+
+    if( statusEmergency === 'Atendida' || statusEmergency === 'Cancelada' || statusEmergency === 'Rechazada' ){
+      showAlert("error", "Error", "No se puede asignar un bombero a una emergencia que ya está en estado: " + statusEmergency);
+      return;
+    }
     
-        await apiRequestAuth.post('/firefighter-emergency', createFirefighterEmergencyFormData, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`,
-          }
-        });
-        showAlert("success", "Asignación exitosa", "Se ha asignado el bombero a la emergencia");
-        setUpdateTableFirefighterEmergency(!updateTableFirefighterEmergency);
+    try {
+      const createFirefighterEmergencyFormData = new FormData();
+      createFirefighterEmergencyFormData.append('firefighterId', selectedFirefighter?.firefighter.id);
+      createFirefighterEmergencyFormData.append('emergencyId', idEmergency);
+  
+      await apiRequestAuth.post('/firefighter-emergency', createFirefighterEmergencyFormData, {
+        headers: {
+          Authorization: `Bearer ${currentToken?.token}`,
+        }
+      });
+      showAlert("success", "Asignación exitosa", "Se ha asignado el bombero a la emergencia");
+      setUpdateTableFirefighterEmergency(!updateTableFirefighterEmergency);
+
     } catch (error) {
-        console.log(error);
         showAlert("error", "Error", `${error.response.data.error}`);
     }
   }
