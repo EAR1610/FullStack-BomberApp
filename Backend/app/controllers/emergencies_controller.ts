@@ -153,11 +153,13 @@ export default class EmergenciesController {
     return emergency
   }
 
-  async getEmergenciesByDate({ request }: HttpContext) {r
+  async getEmergenciesByDate({ request, response }: HttpContext) {
     const { startDate, endDate, emergencyStatus } = request.only(['startDate', 'endDate', 'emergencyStatus']);
   
     const start = DateTime.fromISO(startDate, { zone: 'America/Guatemala' }).startOf('day').toUTC().toISO();
     const end = DateTime.fromISO(endDate, { zone: 'America/Guatemala' }).endOf('day').toUTC().toISO();
+
+    if( start === null || end === null ) return response.status(404).json({ errors: [{ message: 'Formato de fecha no válido, use yyyy-MM' }] });
   
     const emergencies = await Emergency.query()
       .whereBetween('createdAt', [start, end])

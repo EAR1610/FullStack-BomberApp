@@ -124,6 +124,7 @@ export const FirefighterEmergencies = () => {
               onChange={(e) => setViewStatusEmergency(e.value)}
               optionLabel="name"
               optionValue="id"
+              filter
               placeholder="Seleccione el tipo de emergencia"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300"
               required

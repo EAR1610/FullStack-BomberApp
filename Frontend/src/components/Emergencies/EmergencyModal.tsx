@@ -34,12 +34,12 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 w-11/12 max-w-md lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl transform transition-all">
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-1">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl transform transition-all">
+        <h2 className="text-2xl font-semibold text-gray-80 mb-1">
           Detalles de la Emergencia
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-gray-700 dark:text-gray-300 mb-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-gray-700 mb-2">
           <p><strong>Hora de la solicitud:</strong> {formatDateTime(emergencyData.createdAt)}</p>
           <p><strong>Usuario:</strong> {emergencyData.firefighter.user.fullName}</p>
           <p><strong>Solicitante:</strong> {emergencyData.emergency.applicant}</p>

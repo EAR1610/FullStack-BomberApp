@@ -74,13 +74,12 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
 
     const verifyDetailEmergency = async () => {
       const response = await apiRequestAuth.get(`/detail-emergency/${emergency.id}`, {
-        headers: {
-          Authorization: `Bearer ${currentToken?.token}`,
-        },
+        headers: { Authorization: `Bearer ${currentToken?.token}` },
       });
 
-      if (response.data.length === 0) throw new Error("No hay detalles de la emergencia");      
-    }
+      const statusesNeedingDetails = ['Atendida', 'Cancelada', 'Rechazada'];
+      if (statusesNeedingDetails.includes(selectedStatus) && response.data.length === 0) throw new Error(`Para la emergencia con estado: ${selectedStatus}, se requiere un detalle`);
+    };
 
     const validateProcess = async () => {
       try {
