@@ -3,6 +3,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { TableFirefightersProps } from "../../helpers/Interfaces"
+import { InputTextarea } from "primereact/inputtextarea"
 
 const ViewFireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible} ) => {
 
@@ -10,6 +11,7 @@ const ViewFireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVis
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [address, setAddress] = useState('');
+  const [dpi, setDpi] = useState('');
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -24,6 +26,7 @@ const ViewFireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVis
         setUsername(firefighter.user.username);
         setFullName(firefighter.user.fullName);
         setAddress(firefighter.user.address);
+        setDpi(firefighter.user.dpi);
       }
     }
 
@@ -96,19 +99,28 @@ const ViewFireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVis
               </div>
 
               <div className="mb-4">
+                <label htmlFor='dpi' className="mb-2.5 block font-medium text-black dark:text-white">
+                  DPI
+                </label>
+                <div className="relative">
+                  <input
+                    id='dpi'
+                    type="text"
+                    placeholder="Ingresa el DPI del bombero"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    required
+                    value={ dpi }
+                    disabled                    
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
                 <label htmlFor='address' className="mb-2.5 block font-medium text-black dark:text-white">
                   Dirección
                 </label>
                 <div className="relative">
-                  <input
-                    id='address'
-                    type="text"
-                    placeholder="Ingresa la dirección del bombero"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ address }
-                    disabled                    
-                  />
+                <InputTextarea required value={ address } onChange={(e) => setAddress(e.target.value)} rows={5} cols={30} maxLength={200} autoResize className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-nonedark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary text-lg" />
                 </div>
               </div>
             </form>

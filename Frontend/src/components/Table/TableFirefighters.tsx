@@ -27,6 +27,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         shiftPreference: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         "user.userName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        "user.dpi": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         "user.fullName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         "user.address": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
@@ -214,15 +215,16 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       filters={filters}
       filterDisplay="row"
       loading={loading}
-      globalFilterFields={['shiftPreference', 'user.userName', 'user.fullName', 'user.email']}
+      globalFilterFields={['shiftPreference', 'user.userName', 'user.fullName', 'user.email', 'user.dpi']}
       header={header}
       emptyMessage="Registro no encontrado."
     >
       <Column field="user.username" header="Usuario"  style={{ minWidth: '4rem' }}  align={'center'} />
       <Column field="user.fullName" header="Nombre Completo"  style={{ minWidth: '4rem' }}  align={'center'} />
+      <Column field="user.dpi" header="DPI"  style={{ minWidth: '4rem' }}  align={'center'} />
       <Column field="user.email" header="Correo"  style={{ minWidth: '4rem' }}  align={'center'} />
-      <Column field="shiftPreference" header="Tipo Turno"  style={{ minWidth: '4rem' }}  align={'center'} />
-      <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} />
+      <Column field="shiftPreference" header="Turno"  style={{ minWidth: '4rem' }}  align={'center'} />
+      <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} align={'center'} />
     </DataTable>
     <Dialog header={`${selectedFirefighter}` ? 'Actualizar Bombero' : 'Crear Bombero'} visible={visible} onHide={() => setVisible(false)}
       style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

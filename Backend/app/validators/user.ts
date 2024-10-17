@@ -44,7 +44,7 @@ export const updateUserValidator = vine.compile(
               .first()
               return !user
           }),
-          dpi: vine.string().minLength(13).unique(async (db, value, field) => {
+        dpi: vine.string().minLength(13).unique(async (db, value, field) => {
             const existingUserWithDpi = await db
               .from('users')
               .whereNot('id', field.meta.id)

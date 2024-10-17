@@ -141,6 +141,9 @@ export default class UsersController {
   async update({ request, params, response }: HttpContext) {
     const user = await User.find( params.id );
     if( !user ) return response.notFound({ message: 'No se encontro el usuario' });
+    console.log(user);
+    console.log("=========request=========")
+    console.log(request)
     const payload =  await request.validateUsing(updateUserValidator,
       {
         meta: {
@@ -148,8 +151,9 @@ export default class UsersController {
         }
     });
 
-    const file = request.file('photography');
+    console.log(payload);
 
+    const file = request.file('photography');
     if (file) {
         await file.move(app.makePath('uploads/pictures'), {
             name: `${cuid()}.${file.extname}`
@@ -157,7 +161,6 @@ export default class UsersController {
         
         user.photography = file.fileName;
     }
-
     const userPayload = {
       username: payload.username,
       fullName: payload.fullName,
@@ -167,10 +170,8 @@ export default class UsersController {
       roleId: payload.roleId,
       status: payload.status,
     }
-
-    if (user.roleId === 2 || payload.roleId === 2) {
+    if ( user.roleId === 2 || payload.roleId === 2 ) {
       const firefighter = await Firefighter.findBy('userId', user.id)
-      
       if (firefighter) {
         firefighter.shiftPreference = payload.shiftPreference || firefighter.shiftPreference
         await firefighter.save()
@@ -180,14 +181,12 @@ export default class UsersController {
           userId: user.id,
           shiftPreference: payload.shiftPreference || 'Par',
         })
-
       }
-    } else if (user.roleId !== 2 && payload.roleId === 2) {     
+    } else if (user.roleId !== 2 && payload.roleId === 2) {
       await Firefighter.create({
         userId: user.id,
         shiftPreference: payload.shiftPreference || 'Par',
       })
-
     }
 
     user?.merge(userPayload);

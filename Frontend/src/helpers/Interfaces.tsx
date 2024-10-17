@@ -34,6 +34,7 @@ export interface User {
   roleId: number;
   username: string;
   fullName: string;
+  dpi: string;
   password: string;
   photography: File | null;
   address: string;

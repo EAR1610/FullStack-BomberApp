@@ -130,7 +130,12 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
 
   const deleteUser = async (rowData:any) => {
     setSelectedUser(rowData);
-    setIsInactiveUser(true);    
+    console.log(selectedUser)
+    if( !selectedUser.isAdmin ) {
+      setIsInactiveUser(true);
+    } else {
+      showAlert('warn', 'Atención', 'No puedes eliminar a un administrador');
+    }
   };
 
   const showUser = (rowData:any) => {
@@ -144,6 +149,13 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
       try {
         const status = !viewActiveUsers ? 'active' : 'inactive';
         formData.append('status', status);
+        formData.append('username', selectedUser.username);
+        formData.append('fullName', selectedUser.fullName);
+        formData.append('dpi', selectedUser.dpi);
+        formData.append('email', selectedUser.email);
+        formData.append('address', selectedUser.address);
+        formData.append('roleId', selectedUser.roleId);
+        formData.append('shiftPreference', selectedUser?.shiftPreference ? selectedUser.shiftPreference : '');
   
         await apiRequestAuth.put(`/${selectedUser?.id}`, formData, {
           headers: {
