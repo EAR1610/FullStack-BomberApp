@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { apiRequestAuth } from "../../lib/apiRequest"
+import { apiRequest, apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
@@ -24,7 +24,7 @@ const EmergencyRequest = () => {
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-    const { currentToken } = authContext;
+    const { currentToken, updateToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
 
@@ -46,7 +46,25 @@ const EmergencyRequest = () => {
         }
 
         getEmergenciesType();
-    }, []);  
+    }, []);
+
+    const handleLogout = async () => {
+      try {
+        await apiRequest.delete("/logout", 
+          {
+            headers: {
+              Authorization: `Bearer ${currentToken.token}`
+            }
+          }
+        );
+        localStorage.removeItem('currentToken');
+        updateToken('' as any);
+        navigate('/login');
+      } catch (error) {
+        console.error('Error during login:', error);
+        throw error;
+      }
+    };
     
     const handleConfirm = () => {
         setIsModalOpen(false);
@@ -79,11 +97,13 @@ const EmergencyRequest = () => {
                   }, 1500);
                 }
               } catch (error) {
-                console.log(error);
+                console.log(error.response.status);
                 showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
-              }        
-              
-            },
+                setTimeout(() => {
+                  if( error.response.status == '400' ) handleLogout();
+                }, 2000);
+              }                      
+          },
             (error) => {
               console.log(error);
               switch (error.code) {

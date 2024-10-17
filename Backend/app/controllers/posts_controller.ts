@@ -12,12 +12,12 @@ export default class PostsController {
   }
 
   async getAllPostsByCategoryId({ params }: HttpContext) {
-    const posts = await Post.query().where('categoryId', params.id).where('status', 'active').limit(10).orderBy('createdAt', 'desc');
+    const posts = await Post.query().where('categoryId', params.id).where('status', 'active').orderBy('createdAt', 'desc');
     return posts;
   }
 
   async getAllPostsByUserId({ params }: HttpContext) {
-    const posts = await Post.query().where('userId', params.id).where('status', 'active').limit(10).orderBy('createdAt', 'desc');
+    const posts = await Post.query().where('userId', params.id).where('status', 'active').orderBy('createdAt', 'desc');
     return posts;
   }
 

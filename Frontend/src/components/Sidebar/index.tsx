@@ -177,7 +177,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           label: 'Crear una nueva categoria',
           icon: 'pi pi-file-plus',
           command: () => navigate('./create-blog-category')
-        },        
+        },
+        {
+          label: 'Crear un nuevo post',
+          icon: 'pi pi-file-plus',
+          command: () => navigate('./create-blog')
+        } 
       ]
     }
   ]

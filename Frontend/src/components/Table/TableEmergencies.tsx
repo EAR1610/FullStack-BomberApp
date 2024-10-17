@@ -165,7 +165,7 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
       <Dialog header="Seguimiento de Emergencia" visible={viewEmergency} onHide={() => setViewEmergency(false)}
-        style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }} >
         <ViewEmergency emergency={selectedEmergency} setViewEmergency={ setViewEmergency } setChangeStatusEmergency={ setChangeStatusEmergency } changeStatusEmergency={ changeStatusEmergency } />
       </Dialog>
     </div>

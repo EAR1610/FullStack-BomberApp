@@ -65,8 +65,7 @@ export default class FirefighterEmergenciesController {
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
         })      
-    })
-    .limit(10)
+    }).orderBy('createdAt', 'desc');
     return firefighter_emergency
   }
 
@@ -90,8 +89,7 @@ export default class FirefighterEmergenciesController {
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
         })
-    })
-    .limit(10)
+    }).orderBy('createdAt', 'desc');
     return firefighter_emergency
   }
 
@@ -115,8 +113,7 @@ export default class FirefighterEmergenciesController {
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
         })
-    })
-    .limit(10)
+    }).orderBy('createdAt', 'desc');
     return firefighter_emergency
   }
 
@@ -140,8 +137,7 @@ export default class FirefighterEmergenciesController {
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
         })
-    })
-    .limit(10)
+    }).orderBy('createdAt', 'desc');
     return firefighter_emergency
   }
 
@@ -161,11 +157,9 @@ export default class FirefighterEmergenciesController {
     firefighter_emergency.fill(payload);
     await firefighter_emergency.save();
 
-    // Emitir evento solo al bombero que fue asignado a la emergencia
     const firefighterId = payload.firefighterId;
     const io = Ws.io;
     if (io) {
-      // Emitir al bombero asignado, diferenciando del evento para usuarios
       io.to(`firefighter_${firefighterId}`).emit('firefighterEmergencyCreated', firefighter_emergency);
     } else {
       console.error('WebSocket server is not initialized.');

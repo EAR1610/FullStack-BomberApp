@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import type { HttpContext } from '@adonisjs/core/http'
 import Ws from '#services/Ws';
 import { error } from 'console';
+import Setting from '#models/setting';
 /**
  * * This class definition is for an `EmergenciesController` in an AdonisJS application. Here's a brief explanation of what each class method does:
 * `index`: Displays a list of emergencies with a status of 'Registrada'.
@@ -48,8 +49,7 @@ export default class EmergenciesController {
     .preload('emergencyType', (query) => {
       query.select('name')
     })
-    .where('status', 'Registrada')
-    .limit(10);
+    .where('status', 'Registrada').orderBy('createdAt', 'desc');
     return emergency
   }
 
@@ -58,7 +58,7 @@ export default class EmergenciesController {
     .preload('user', (query) => {
       query.select('id', 'username', 'fullName', 'address')
     })
-    .where('status', 'Atendida');
+    .where('status', 'Atendida').orderBy('createdAt', 'desc');
     return emergency
   }
 
@@ -73,8 +73,7 @@ export default class EmergenciesController {
     .preload('emergencyType', (query) => {
       query.select('name')
     })
-    .where('status', 'Atendida')
-    .limit(10);
+    .where('status', 'Atendida').orderBy('createdAt', 'desc');
     return emergency
   }
 
@@ -98,8 +97,7 @@ export default class EmergenciesController {
     .preload('emergencyType', (query) => {
       query.select('name')
     })
-    .where('status', 'En proceso')
-    .limit(10);
+    .where('status', 'En proceso').orderBy('createdAt', 'desc');
     return emergency
   }
 
@@ -108,7 +106,7 @@ export default class EmergenciesController {
     .preload('user', (query) => {
       query.select('username', 'fullName', 'address')
     })
-    .where('status', 'Cancelada');
+    .where('status', 'Cancelada').orderBy('createdAt', 'desc');
     return emergency
   }
 
@@ -123,8 +121,7 @@ export default class EmergenciesController {
     .preload('emergencyType', (query) => {
       query.select('name')
     })
-    .where('status', 'Cancelada')
-    .limit(10);
+    .where('status', 'Cancelada').orderBy('createdAt', 'desc');
     return emergency
   }
 
@@ -148,8 +145,7 @@ export default class EmergenciesController {
     .preload('emergencyType', (query) => {
       query.select('name')
     })
-    .where('status', 'Rechazada')
-    .limit(10);
+    .where('status', 'Rechazada').orderBy('createdAt', 'desc');
     return emergency
   }
 
@@ -180,10 +176,15 @@ export default class EmergenciesController {
   async create({}: HttpContext) {}
 
   async store({ auth, request, response }: HttpContext) {
-    const user = auth.user;    
-    const payload = await request.validateUsing(createEmergencyValidator);
+    const user = auth.user;
+    const settigs = await Setting.query().first();
+
+    if( !settigs ) return response.status(404).json({ errors: [ { message: 'No se ha encontrado la configuración' } ]} );
     if (!user) return response.status(401).json({ errors: [ { message: 'No tienes permisos para crear una emergencia' } ]} );
-  
+    const maxPenalizations = settigs.maxPenalizations;
+    if( user.penalizations >= maxPenalizations ) return response.status(400).json({ errors: [ { message: `No puedes crear otra emergencia, ya has superado el número máximo de penalizaciones`} ]} );
+
+    const payload = await request.validateUsing(createEmergencyValidator);      
     if (!user.isAdmin) {
       const existingEmergencies = await Emergency.query()
         .where('userId', payload.userId)

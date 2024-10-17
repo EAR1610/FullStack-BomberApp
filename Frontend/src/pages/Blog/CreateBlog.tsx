@@ -6,11 +6,12 @@ import { Dropdown } from 'primereact/dropdown';
 import { Editor } from 'primereact/editor';
 import { handleErrorResponse } from "../../helpers/functions";
 import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
 
 const CreateBlog = () => {
 
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState("Salud");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Salud");
   const [errorMessages, setErrorMessages] = useState<string>('');
   const [categoryId, setCategoryId] = useState(0);
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
@@ -19,6 +20,7 @@ const CreateBlog = () => {
   const userId = currentToken?.user?.id || 1;
 
   const toast = useRef(null);
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState(''); 
   const [image, setImage] = useState<File | null>(null)
@@ -26,6 +28,9 @@ const CreateBlog = () => {
   const [description, setDescription] = useState('')
 
   useEffect(() => {
+
+    if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+
     const getCategories = async () => { 
         const response = await apiRequestAuth.get("/blog/categories", {
           headers: {
@@ -40,7 +45,6 @@ const CreateBlog = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    debugger;
     const formData = new FormData();
     formData.append('userId', JSON.stringify(userId));
     formData.append('categoryId', JSON.stringify(categoryId));

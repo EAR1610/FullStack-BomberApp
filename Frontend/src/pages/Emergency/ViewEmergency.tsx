@@ -118,15 +118,14 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         await createLog(userId, 'ACTUALIZAR', 'EMERGENCIA', `Se ha actualizado la emergencia: ${emergency.applicant} con estado: ${selectedStatus}`, currentToken?.token);
         showAlert('info', 'Info', 'Emergencia registrada correctamente!');
 
-        // ? Penalizar si el que solicita la emergencia es un usuario
-        if( selectedStatus == 'Rechazada' && currentToken.user.isUser ) {
+        if( selectedStatus == 'Rechazada' && emergency.userId !== 1 ) {
           await apiRequestAuth.post(`/penalizations/${emergency.userId}`, {}, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${currentToken?.token}`,
             },
           });
-          showAlert('info', 'Info', 'Se ha penalizado al usuario');
+          showAlert('info', 'Info', `Se ha penalizado al usuario: ${emergency.user.fullName}`);
         }
         setChangeStatusEmergency(!changeStatusEmergency);
         setTimeout(() => {
