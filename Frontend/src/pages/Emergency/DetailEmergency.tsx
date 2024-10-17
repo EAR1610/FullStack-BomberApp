@@ -101,7 +101,7 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
                       Observación
                     </label>
                     <div className="relative">
-                        <Editor value={observation} onTextChange={(e) => setObservation(e.htmlValue)} style={{ height: '320px' }} />
+                        <Editor value={observation} onTextChange={(e) => setObservation(e.htmlValue)} style={{ height: '320px' }} maxLength={2000} />
                     </div>
                   </div>   
 

@@ -7,7 +7,7 @@ const createPostValidator = vine.compile(
         title: vine.string().minLength(3),
         desc: vine.string().minLength(3),
         img: vine.file({
-            size: '5mb',
+            size: '10mb',
             extnames: ['jpg', 'png', 'jpeg']
         }),
         status: vine.enum(['active', 'inactive']),

@@ -21,7 +21,7 @@ export const loginValidator = vine.compile(
         password: vine.string().minLength(8),
         address: vine.string().minLength(5).maxLength(255),
         photography: vine.file({
-          size: '2mb',
+          size: '10mb',
           extnames: ['jpg', 'png', 'jpeg']
         }),
         dpi: vine.string().minLength(13).maxLength(13).unique(async (db, value, field) => {          

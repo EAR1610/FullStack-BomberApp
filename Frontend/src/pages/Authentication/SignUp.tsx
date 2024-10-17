@@ -241,13 +241,10 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     <>    
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
       <Toast ref={toast} />
-        <div className="flex flex-wrap items-center">
-            
-          <div className={`${currentToken ? 'hidden' : 'hidden w-full xl:block xl:w-1/2'}`}>
-            <div className="py-17.5 px-26 text-center">              
-              <Link className="mb-5.5 inline-block" to="/">              
-              </Link>
-              <p className="2xl:px-20">
+        <div className="flex flex-wrap items-center">          
+          <div className={`${currentToken ? 'hidden' : 'hidden w-full lg:block lg:w-1/2'}`}>
+            <div className="py-17.5 px-26 text-center">
+              <p className="2xl:px-20 dark:text-white">
                 Crea una cuenta en BomberApp y empieza a disfrutar de lo que puedes aprender o ayudar
               </p>            
             
@@ -256,8 +253,8 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
               </span>
             </div>
           </div>
-          <div className={`${currentToken ? 'w-full' : 'border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'}`}>
-            <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+          <div className={`${currentToken ? 'w-full' : 'w-full border-stroke dark:border-strokedark lg:w-1/2 lg:border-l-2'}`}>
+            <div className="w-full p-4 sm:p-12.5 lg:p-17.5">
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
                 {`${user ? 'Actualiza la cuenta en' : 'Crea tu cuenta en '}`}<span className='text-red-500'> BomberApp</span>
               </h2>

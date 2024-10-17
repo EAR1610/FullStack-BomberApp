@@ -23,7 +23,7 @@ export const createUserValidator = vine.compile(
         password: vine.string().minLength(8),
         address: vine.string().minLength(5),
         photography: vine.file({
-            size: '5mb',
+            size: '10mb',
             extnames: ['jpg', 'png', 'jpeg']
         }),
         roleId: vine.number(),

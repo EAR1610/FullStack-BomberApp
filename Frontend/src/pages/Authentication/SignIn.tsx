@@ -38,22 +38,17 @@ const SignIn: React.FC = () => {
   }, []);
   
 
-  // ? Define the handleSubmit function to handle form submission
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();
 
     try {
-      // ? Use the apiRequest function to send a POST request to the "/login" endpoint
       const res = await apiRequest.post("/login", {
         email,
         password,
       });
       showAlert("info", "Inicio de sesión exitosa", "Success");
       
-      // ? If the request was successful, update the token in the AuthContext
       updateToken(res.data);
-      
-      // * Navigate to the appropriate page based on the user's role
       setTimeout(() => {
         if ( res.data.user.isAdmin ) {
           navigate("/app/dashboard");          
@@ -65,7 +60,6 @@ const SignIn: React.FC = () => {
       }, 1000);
       
     } catch (err: any) {
-      // ? Check if the error response contains the specific inactive account message
       if (err.response && err.response.status === 401 && err.response.data.error === 'Tu cuenta no está activa.') {
         showAlert("error", "Tu cuenta no está activa.", "Error");
       } else if (err.response && err.response.status === 401 && err.response.data.error === 'Tu cuenta está suspendida por demasiadas penalizaciones.') {
@@ -90,10 +84,10 @@ const SignIn: React.FC = () => {
       <Toast ref={toast} />
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
         <div className="flex flex-wrap items-center">
-          <div className="hidden w-full xl:block xl:w-1/2">
+          <div className="hidden w-full lg:block lg:w-1/2">
             <div className="py-17.5 px-26 text-center">
               <p className="2xl:px-20 dark:text-white">
-                Inicia sesión en BomberApp para disfrutar de los beneficios que te ofrece. 
+                Inicia sesión en BomberApp para disfrutar de los beneficios que te ofrece.
               </p>
 
               <span className="mt-5 inline-block">
@@ -102,8 +96,8 @@ const SignIn: React.FC = () => {
             </div>
           </div>
 
-          <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
-            <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+          <div className="w-full border-stroke dark:border-strokedark lg:w-1/2 lg:border-l-2">
+            <div className="w-full p-4 sm:p-12.5 lg:p-17.5">
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Inicia sesión en <span className='text-red-500'>BomberApp</span>
               </h2>
