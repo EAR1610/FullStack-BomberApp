@@ -97,7 +97,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLoca
     if (markerRef.current) {
       markerRef.current.setLatLng([latitude, longitude]);
 
-      // Actualizar la ruta cuando cambien las coordenadas
       if (routingControlRef.current) {
         routingControlRef.current.setWaypoints([
           L.latLng(firefighterCoords[0], firefighterCoords[1]),
@@ -107,27 +106,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude, onLoca
     }
   }, [latitude, longitude]);
 
-  // const toggleInstructions = () => {
-  //   const instructionsContainer = document.querySelector('.leaflet-routing-container');
-  //   if (instructionsContainer) {
-  //     instructionsContainer.classList.toggle('hidden');
-  //     setInstructionsVisible(!instructionsVisible);
-  //   }
-  // };
-
   return (
     <div>
-      <div ref={mapContainerRef} id="map" className="h-80 xl:h-70 w-full"></div>
-      {/* { !isUser && (
-        <button
-          onClick={ e => {
-            e.preventDefault();
-            toggleInstructions();
-          }}
-          className="w-full bg-orange-400 hover:bg-orange-700 text-white font-semibold p-1 rounded-lg transition-colors duration-300 uppercase mt-2">
-          { instructionsVisible ? 'Ocultar Instrucciones' : 'Mostrar Instrucciones' }
-        </button>
-      )} */}
+      <div ref={mapContainerRef} id="map" className="h-90 xl:h-85 w-full"></div>
     </div>
   );
 };

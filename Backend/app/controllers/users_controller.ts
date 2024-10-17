@@ -141,9 +141,6 @@ export default class UsersController {
   async update({ request, params, response }: HttpContext) {
     const user = await User.find( params.id );
     if( !user ) return response.notFound({ message: 'No se encontro el usuario' });
-    console.log(user);
-    console.log("=========request=========")
-    console.log(request)
     const payload =  await request.validateUsing(updateUserValidator,
       {
         meta: {

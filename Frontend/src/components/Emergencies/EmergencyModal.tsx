@@ -9,9 +9,9 @@ import { formatDateTime } from '../../helpers/functions';
 
 /**
  * 
- * This TypeScript code snippet defines a functional component called `EmergencyModal`. It is a React component that renders a modal dialog for displaying details of an emergency. 
+ * * This TypeScript code snippet defines a functional component called `EmergencyModal`. It is a React component that renders a modal dialog for displaying details of an emergency. 
 
-The component takes in three props: `isOpen`, `onClose`, and `emergencyData`. `isOpen` is a boolean that determines whether the modal is open or not. `onClose` is a function that is called when the modal is closed. `emergencyData` is an object that contains the data of the emergency to be displayed.
+The component takes in three props: `isOpen`, `onClose`, and `emergencyData`. `isOpen` is a boolean that determines whether the modal is open or not. `onClose` is a function that is called when the modal is closed. s`emergencyData` is an object that contains the data of the emergency to be displayed.
 
 Inside the component, it uses the `useState` hook to manage the state of `viewDetailEmergency`, which determines whether the detailed view of the emergency is visible or not.
 
@@ -34,8 +34,8 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl transform transition-all">
-        <h2 className="text-2xl font-semibold text-gray-80 mb-1">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl transform transition-all max-h-[80vh] overflow-y-auto">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-1">
           Detalles de la Emergencia
         </h2>
 
