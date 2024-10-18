@@ -16,6 +16,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import EquipmentType from '../../pages/EquipmentType/EquipmentType';
 import ViewEquipmentType from '../../pages/EquipmentType/ViewEquipmentType';
 import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { useNavigate } from 'react-router-dom';
 
 const TableEquipmentTypes = ({ data, viewActiveEquipmentsType, setViewActiveEquipmentsType, loading, isChangedEquipmentType, setIsChangedEquipmentType }: any) => {
 
