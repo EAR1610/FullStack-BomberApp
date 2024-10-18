@@ -1,10 +1,53 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Galleria, GalleriaResponsiveOptions } from 'primereact/galleria';
 import logo from "../../assets/bomber.png";
 import ambulancia from "../../assets/Ambulancia.jpg";
 import bus from "../../assets/Bus.jpg";
 import motobomba from "../../assets/Motobomba.jpg";
-import { Link } from "react-router-dom";
+import { Button } from "primereact/button";
 
-export default function Homepage() {
+export default function Homepage() {    
+    const [images] = useState([
+      {
+          itemImageSrc: bus,
+          thumbnailImageSrc: bus,
+          alt: 'Bus de bomberos'
+      },
+      {
+          itemImageSrc: motobomba,
+          thumbnailImageSrc: motobomba,
+          alt: 'Motobomba'
+      },
+      {
+          itemImageSrc: ambulancia,
+          thumbnailImageSrc: ambulancia,
+          alt: 'Ambulancia'
+      }
+    ]);
+    const responsiveOptions: GalleriaResponsiveOptions[] = [
+        {
+            breakpoint: '991px',
+            numVisible: 4
+        },
+        {
+            breakpoint: '767px',
+            numVisible: 3
+        },
+        {
+            breakpoint: '575px',
+            numVisible: 1
+        }
+    ];
+
+  const itemTemplate = (item: any) => {
+    return <img src={item.itemImageSrc} alt={item.alt} style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
+  }
+
+  const thumbnailTemplate = (item: any) => {
+    return <img src={item.thumbnailImageSrc} alt={item.alt} style={{ width: '100%', objectFit: 'cover' }} />
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 to-white">
       <main className="container mx-auto px-4 py-16">
@@ -40,7 +83,7 @@ export default function Homepage() {
             {[
               { icon: "🔥", title: "Respuesta rápida", description: "El tiempo para realizar una solicitud es menor a 10 segundos." },
               { icon: "🛡️", title: "Equipo Avanzado", description: "Equipos de extinción de incendios y salvamento de última generación" },
-              { icon: "🕒", title: "Disponibilidad 24/7", description: "Servicios de urgencia las 24 horas" },
+              { icon: "🕒", title: "Disponibilidad 24/7", description: "Servicios de urgencia las 24 horas. Puede solicitar una emergencia: 7926-0177 o 7926-3054" },
               { icon: "📞", title: "Informes sencillos", description: "Sistema de notificación de emergencias fácil de usar" },
             ].map((feature, index) => (
               <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
@@ -54,21 +97,18 @@ export default function Homepage() {
 
         <section>
           <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Nuestras unidades</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { src: bus, alt: "Bus de bomberos" },
-              { src: motobomba, alt: "Motobomba" },
-              { src: ambulancia, alt: "Ambulancia" },
-            ].map((image, index) => (
-              <div key={index} className="h-64 xl:h-96 flex items-center justify-center shadow-md hover:shadow-lg">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="w-full h-full object-cover rounded-lg shadow-md"
-                  style={{ aspectRatio: '16/9' }}
-                />
-              </div>
-            ))}
+          <div className="card">
+            <Galleria 
+                value={images}
+                responsiveOptions={responsiveOptions} 
+                numVisible={3} 
+                style={{ maxWidth: '100%' }}
+                item={itemTemplate} 
+                thumbnail={thumbnailTemplate}
+                circular 
+                autoPlay 
+                transitionInterval={2000} 
+            />
           </div>
         </section>
 

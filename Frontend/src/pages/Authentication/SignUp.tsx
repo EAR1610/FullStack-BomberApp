@@ -225,7 +225,6 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
         setVisible(false);
       }, 1500);
     } catch (err:any) {
-      console.log(err);
       showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   };
