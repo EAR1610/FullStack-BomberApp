@@ -30,11 +30,11 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
         vehicleNumber: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
       });
-      const [globalFilterValue, setGlobalFilterValue] = useState('');
-      const [visible, setVisible] = useState(false);
-      const [visibleVehicle, setVisibleVehicle] = useState(false);
+      const [globalFilterValue, setGlobalFilterValue] = useState<String>('');
+      const [visible, setVisible] = useState<Boolean>(false);
+      const [visibleVehicle, setVisibleVehicle] = useState<Boolean>(false);(false);
       const [selectedVehicle, setSelectedVehicle] = useState(null);
-      const [isInactiveVehicle, setIsInactiveVehicle] = useState(false);
+      const [isInactiveVehicle, setIsInactiveVehicle] = useState<Boolean>(false);
     
       const toast = useRef(null); 
 
@@ -63,8 +63,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
         }
       }
       verificarToken();
-    }, [])
-    
+    }, []);
 
     useEffect(() => {
       if( selectedVehicle && isInactiveVehicle ) {

@@ -9,7 +9,7 @@ import { Toast } from 'primereact/toast';
 import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
-import { createLog, handleErrorResponse } from '../../helpers/functions';
+import { createLog } from '../../helpers/functions';
 import { InputTextarea } from 'primereact/inputtextarea';
         
 const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:any) => {
@@ -35,11 +35,18 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
   const [roleId, setRoleId] = useState(3);
   const [imagePreview, setImagePreview] = useState<null | string>(null);
   const [selectedFirefighter, setSelectedFirefighter] = useState(null);
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const [selectedShiftPreference, setSelectedShiftPreference] = useState(null);
   const [shiftPreferences, setShiftPreferences] = useState([
     { name: "Par", code: "Par" },
     { name: "Impar", code: "Impar" },
   ]);
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    setIsValidEmail(emailRegex.test(e.target.value));
+  };
 
   const header = <div className="font-bold mb-3">Escribe tu contraseña</div>;
   const footer = (
@@ -135,6 +142,11 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     e.preventDefault();
     const formData = new FormData();
 
+    if( !isValidEmail ) {
+      showAlert('error', 'Error', 'El email ingresado no es válido');
+      return;
+    }
+
     if( user ) {
 
       if ( 
@@ -227,6 +239,16 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     } catch (err:any) {
       showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
+  };
+
+  const handleErrorResponse = (error: any, setErrorMessages: (msg: string) => void) => {
+    const errorMessages = error?.response?.data?.errors
+      ? error.response.data.errors.map((err: { message: string }) => err.message).join(', ')
+      : 'Ocurrió un error inesperado, por favor intenta cambiar la imagen.';
+  
+    setErrorMessages(errorMessages);
+  
+    return errorMessages;
   };
 
   const handleDPIChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -392,7 +414,8 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
                       value={ email }
-                      onChange={ e => setEmail( e.target.value )}
+                      onChange={ handleEmailChange }
+                      style={{ borderColor: isValidEmail ? 'initial' : 'red' }}
                     />
 
                     <span className="absolute right-4 top-4">
@@ -472,7 +495,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
 
                 <div className="mb-4">
                   <label htmlFor='photography' className="mb-2.5 block font-medium text-black dark:text-white">
-                    Fotografía (jpg, png, jpeg)
+                    Fotografía (jpg, png, jpeg) max. 5mb
                   </label>
                   <div className="relative">
                     {imagePreview && (
