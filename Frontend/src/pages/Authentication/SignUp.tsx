@@ -435,6 +435,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                         </g>
                       </svg>
                     </span>
+                    {!isValidEmail && <p style={{ color: 'red' }}>Correo electrónico inválido</p>}
                   </div>
                 </div>
 

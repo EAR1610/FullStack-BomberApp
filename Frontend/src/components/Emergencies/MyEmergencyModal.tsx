@@ -5,10 +5,10 @@ const MyEmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emer
     if (!isOpen) return null;
 
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-        <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
+      <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+        <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl transform transition-all max-h-[80vh] overflow-y-auto">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-1">Detalles de la Emergencia</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-gray-700 mb-2">
-            <h2 className="text-lg font-semibold mb-4">Detalles de la Emergencia</h2>
             <p><strong>Solicitante:</strong> {emergencyData.applicant}</p>
             <p><strong>Dirección:</strong> {emergencyData.address}</p>
             <p><strong>Descripción:</strong> {emergencyData.description}</p>
