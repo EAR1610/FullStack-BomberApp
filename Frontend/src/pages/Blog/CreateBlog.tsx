@@ -63,6 +63,9 @@ const CreateBlog = () => {
         showAlert('info', 'Info', 'Publicación creada exitosamente');
         cleanData();
         
+        setTimeout(() => {
+          navigate('/app/blogs');
+        }, 2000);
     } catch (err) {
         console.log(err);
         showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));

@@ -97,10 +97,10 @@ const EmergencyRequest = () => {
                   }, 1500);
                 }
               } catch (error) {
-                console.log(error.response.status);
                 showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
                 setTimeout(() => {
                   if( error.response.status == '400' ) handleLogout();
+                  if( error.response.status == '405' ) navigate('/app/my-emergencies');
                 }, 2000);
               }                      
           },
