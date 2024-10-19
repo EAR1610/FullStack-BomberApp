@@ -545,14 +545,14 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                       <Dropdown
                         value={selectedRole}
                         onChange={handleRoleChange}
-                        options={ user.isAdmin ? roles : rolesWithoutAdmin }
+                        options={ user?.isAdmin ? roles : rolesWithoutAdmin }
                         optionLabel="name"
                         placeholder="Selecciona un rol"
                         filter
                         valueTemplate={selectedRoleTemplate}
                         itemTemplate={roleOptionTemplate}
                         className="w-full md:w-14rem"
-                        disabled = { user.isAdmin }
+                        disabled = { user?.isAdmin }
                         required
                       />
                     </div>
