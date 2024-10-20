@@ -5,6 +5,7 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import { TableFirefightersProps, User } from "../../helpers/Interfaces"
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible, isChangedFirefighter, setIsChangedFirefighter } ) => {
 
@@ -20,6 +21,7 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
     { name: "Par", code: "Par" },
     { name: "Impar", code: "Impar" },
   ]);
+  const connectionStatus = useInternetConnectionStatus();
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -70,6 +72,11 @@ const FireFighter: React.FC<TableFirefightersProps> = ({ firefighter, setVisible
    */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (connectionStatus === ConnectionStatus.Offline) {
+      showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+      return;
+    }
   
     if (!validateForm()) {
       showAlert("warn", "Atención", "Todos los campos son obligatorios");

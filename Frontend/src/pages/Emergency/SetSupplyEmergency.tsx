@@ -12,6 +12,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ConfirmDialog } from "primereact/confirmdialog"
 import { Button } from 'primereact/button';
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const SetSupplyEmergency = ({ idEmergency, statusEmergency }:any) => {
 
@@ -37,6 +38,7 @@ const SetSupplyEmergency = ({ idEmergency, statusEmergency }:any) => {
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
     const toast = useRef(null);
+    const connectionStatus = useInternetConnectionStatus();
 
     const onGlobalFilterChange = (e:any) => {
       const value = e.target.value;
@@ -96,6 +98,11 @@ const SetSupplyEmergency = ({ idEmergency, statusEmergency }:any) => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      if (connectionStatus === ConnectionStatus.Offline) {
+        showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+        return;
+      }
       
       if( quantity <= 0 ) {
         showAlert("error", "Error", "La cantidad del insumo debe ser mayor a cero");

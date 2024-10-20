@@ -12,6 +12,7 @@ import SetVehicleEmergency from "./SetVehicleEmergency"
 import DetailEmergency from "./DetailEmergency"
 import SetSupplyEmergency from "./SetSupplyEmergency"
 import { createLog } from "../../helpers/functions"
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, changeStatusEmergency }: any) => {
 
@@ -25,6 +26,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
     const { currentToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const connectionStatus = useInternetConnectionStatus();
     
     const toast = useRef(null);
     
@@ -96,6 +98,11 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      if (connectionStatus === ConnectionStatus.Offline) {
+        showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+        return;
+      }
       
       try {
         await validateProcess();

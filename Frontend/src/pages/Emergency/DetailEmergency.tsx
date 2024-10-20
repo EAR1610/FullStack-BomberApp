@@ -4,6 +4,7 @@ import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
 import { Toast } from "primereact/toast";
 import { Editor } from 'primereact/editor';
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus";
         
 
 const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency, isFirefighter }: any ) => {
@@ -14,6 +15,7 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
     const { currentToken } = authContext;
+    const connectionStatus = useInternetConnectionStatus();
 
     const toast = useRef(null);
 
@@ -45,6 +47,11 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (connectionStatus === ConnectionStatus.Offline) {
+          showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+          return;
+        }
         
         if( !observation || duration === 0 ) {
             showAlert('warn', 'Atención', 'Todos los campos son obligatorios');

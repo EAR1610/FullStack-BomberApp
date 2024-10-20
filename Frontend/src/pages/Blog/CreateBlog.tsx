@@ -7,6 +7,7 @@ import { Editor } from 'primereact/editor';
 import { handleErrorResponse } from "../../helpers/functions";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus";
 
 const CreateBlog = () => {
 
@@ -18,6 +19,7 @@ const CreateBlog = () => {
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
   const userId = currentToken?.user?.id || 1;
+  const connectionStatus = useInternetConnectionStatus();
 
   const toast = useRef(null);
   const navigate = useNavigate();
@@ -45,6 +47,12 @@ const CreateBlog = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (connectionStatus === ConnectionStatus.Offline) {
+      showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+      return;
+    }
+
     const formData = new FormData();
     formData.append('userId', JSON.stringify(userId));
     formData.append('categoryId', JSON.stringify(categoryId));

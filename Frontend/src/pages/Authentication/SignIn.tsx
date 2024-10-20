@@ -5,6 +5,7 @@ import { apiRequest } from '../../lib/apiRequest';
 import { AuthContext } from '../../context/AuthContext';
 import { AuthContextProps } from '../../interface/Auth';
 import { Toast } from 'primereact/toast';
+import { ConnectionStatus, useInternetConnectionStatus } from '../../hooks/useInternetConnectionStatus';
         
 
 /**
@@ -15,9 +16,9 @@ import { Toast } from 'primereact/toast';
 
 const SignIn: React.FC = () => {
   
-  // Define state variables for email and password
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const connectionStatus = useInternetConnectionStatus();
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -41,6 +42,11 @@ const SignIn: React.FC = () => {
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();
 
+    if (connectionStatus === ConnectionStatus.Offline) {
+      showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+      return;
+    }
+    
     try {
       const res = await apiRequest.post("/login", {
         email,

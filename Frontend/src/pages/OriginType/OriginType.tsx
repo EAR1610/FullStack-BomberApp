@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { createLog, handleErrorResponse } from "../../helpers/functions"
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const OriginType = ({ originType, setVisible, isChangedOriginType, setIsChangedOriginType }: any) => {
 
@@ -16,6 +17,7 @@ const OriginType = ({ originType, setVisible, isChangedOriginType, setIsChangedO
   const { currentToken } = authContext;
   const userId = currentToken?.user?.id || 1;
   const [errorMessages, setErrorMessages] = useState<string>('');
+  const connectionStatus = useInternetConnectionStatus();
   
   const toast = useRef(null);
 
@@ -28,6 +30,12 @@ const OriginType = ({ originType, setVisible, isChangedOriginType, setIsChangedO
 
   const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
     e.preventDefault();
+
+    if (connectionStatus === ConnectionStatus.Offline) {
+      showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+      return;
+    }
+
     setError("");
     const formData = new FormData();
 

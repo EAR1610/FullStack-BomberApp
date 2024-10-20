@@ -5,6 +5,7 @@ import { apiRequestAuth } from "../lib/apiRequest";
 import { Toast } from "primereact/toast";
 import { createLog, handleErrorResponse } from "../helpers/functions";
 import { useNavigate } from "react-router-dom";
+import { ConnectionStatus, useInternetConnectionStatus } from "../hooks/useInternetConnectionStatus";
 
 const Settings = () => {
   const [settings, setSettings] = useState(null);
@@ -15,6 +16,7 @@ const Settings = () => {
   const userId = currentToken?.user?.id || 1;  
   const [errorMessages, setErrorMessages] = useState<string>('');
   const navigate = useNavigate();
+  const connectionStatus = useInternetConnectionStatus();
 
   const toast = useRef(null);
 
@@ -39,6 +41,12 @@ const Settings = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (connectionStatus === ConnectionStatus.Offline) {
+      showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('maxPenalizations', String(settings?.maxPenalizations));

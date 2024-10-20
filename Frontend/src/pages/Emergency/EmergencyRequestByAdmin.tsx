@@ -8,6 +8,7 @@ import MapComponent from "../../components/Maps/MapComponent"
 import { useNavigate } from "react-router-dom"
 import { createLog, handleErrorResponse } from "../../helpers/functions"
 import { InputTextarea } from "primereact/inputtextarea"
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const EmergencyRequestByAdmin = () => {
     const [emergenciesType, setEmergenciesType] = useState([]);
@@ -25,6 +26,7 @@ const EmergencyRequestByAdmin = () => {
     const { currentToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const connectionStatus = useInternetConnectionStatus();
 
     const navigate = useNavigate();
 
@@ -49,6 +51,12 @@ const EmergencyRequestByAdmin = () => {
 
     const handleSubmit = async (e : any) => {
         e.preventDefault();
+
+        if (connectionStatus === ConnectionStatus.Offline) {
+            showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+            return;
+        }
+
         const formData = new FormData();
         formData.append('emergencyTypeId', String(selectedEmergencyType?.id));
         formData.append('applicant', applicant);

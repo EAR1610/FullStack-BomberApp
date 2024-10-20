@@ -5,6 +5,7 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { createLog, handleErrorResponse } from "../../helpers/functions"
 import { InputTextarea } from "primereact/inputtextarea"
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const BlogCategory = ({ category, setVisible, isChangedCategory, setIsChangedCategory }: any) => {
 
@@ -17,6 +18,7 @@ const BlogCategory = ({ category, setVisible, isChangedCategory, setIsChangedCat
     const { currentToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const connectionStatus = useInternetConnectionStatus();
 
     const toast = useRef(null);
 
@@ -34,6 +36,11 @@ const BlogCategory = ({ category, setVisible, isChangedCategory, setIsChangedCat
     const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
         e.preventDefault();
         const formData = new FormData();
+
+        if (connectionStatus === ConnectionStatus.Offline) {
+          showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+          return;
+        }
     
         if( !name || !description ){
           showAlert('warn', 'Error', "Todos los campos son obligatorios");

@@ -8,6 +8,7 @@ import ModalLocalitationEmergency from "./ModalLocalitationEmergency"
 import { useNavigate } from "react-router-dom"
 import { createLog, handleErrorResponse } from "../../helpers/functions"
 import { InputTextarea } from "primereact/inputtextarea"
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const EmergencyRequest = () => {
     const [emergenciesType, setEmergenciesType] = useState([]);
@@ -27,6 +28,7 @@ const EmergencyRequest = () => {
     const { currentToken, updateToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
+    const connectionStatus = useInternetConnectionStatus();
 
     const toast = useRef(null);
     const navigate = useNavigate();
@@ -130,6 +132,10 @@ const EmergencyRequest = () => {
 
     const handleSubmit = async ( e:React.FormEvent<HTMLFormElement>  ) => {
         e.preventDefault();
+        if (connectionStatus === ConnectionStatus.Offline) {
+          showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+          return;
+        }
         setIsModalOpen(true);       
     }
     

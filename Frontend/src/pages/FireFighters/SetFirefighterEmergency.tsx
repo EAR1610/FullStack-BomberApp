@@ -12,6 +12,7 @@ import { InputIcon } from "primereact/inputicon"
 import { InputText } from "primereact/inputtext"
 import { FilterMatchMode } from "primereact/api"
 import { handleErrorResponse } from "../../helpers/functions"
+import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const SetFirefighterEmergency = ({ idEmergency, statusEmergency }: any) => {
   const [firefighters, setFirefighters] = useState([]);
@@ -28,7 +29,8 @@ const SetFirefighterEmergency = ({ idEmergency, statusEmergency }: any) => {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [updateTableFirefighterEmergency, setUpdateTableFirefighterEmergency] = useState(false);
-  const [errorMessages, setErrorMessages] = useState<string>('');  
+  const [errorMessages, setErrorMessages] = useState<string>(''); 
+  const connectionStatus = useInternetConnectionStatus(); 
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");  const { currentToken } = authContext;
@@ -90,6 +92,11 @@ const SetFirefighterEmergency = ({ idEmergency, statusEmergency }: any) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (connectionStatus === ConnectionStatus.Offline) {
+      showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+      return;
+    }
 
     if( statusEmergency === 'Atendida' || statusEmergency === 'Cancelada' || statusEmergency === 'Rechazada' ){
       showAlert("error", "Error", "No se puede asignar un bombero a una emergencia que ya está en estado: " + statusEmergency);

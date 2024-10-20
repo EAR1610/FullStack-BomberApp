@@ -11,6 +11,7 @@ import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
 import { createLog } from '../../helpers/functions';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { ConnectionStatus, useInternetConnectionStatus } from '../../hooks/useInternetConnectionStatus';
         
 const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:any) => {
   
@@ -42,6 +43,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     { name: "Par", code: "Par" },
     { name: "Impar", code: "Impar" },
   ]);
+  const connectionStatus = useInternetConnectionStatus();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -142,6 +144,11 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     e.preventDefault();
     const formData = new FormData();
 
+    if (connectionStatus === ConnectionStatus.Offline) {
+      showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
+      return;
+    }
+  
     if( !isValidEmail ) {
       showAlert('error', 'Error', 'El email ingresado no es válido');
       return;
