@@ -45,7 +45,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         },
       });
     
-      if (response.data.length === 0) throw new Error("No hay bomberos asignados a la emergencia");      
+      if (response.data.length === 0 && selectedStatus !== 'Cancelada') throw new Error("No hay bomberos asignados a la emergencia");      
     };
     
     const verifyVehicleEmergency = async () => {
@@ -55,9 +55,9 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         },
       });
     
-      if (response.data.length === 0) throw new Error("No hay unidades asignadas a la emergencia");    
+      if (response.data.length === 0 && selectedStatus !== 'Cancelada') throw new Error("No hay unidades asignadas a la emergencia");    
 
-      if( selectedStatus === 'Atendida' || selectedStatus === 'Cancelada' || selectedStatus === 'Rechazada' ){
+      if( selectedStatus === 'Atendida' || selectedStatus === 'Rechazada' ){
         for (const vehicle of response.data) {
           if (vehicle.mileageInbound === vehicle.mileageOutput) throw new Error(`El vehículo con placa ${vehicle.vehicle.plateNumber} tiene el mismo kilometraje de entrada y salida.`);        
         }
@@ -71,7 +71,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         },
       });
       
-      if (response.data.length === 0) throw new Error("No hay insumos asignados a la emergencia");    
+      if (response.data.length === 0 && selectedStatus !== 'Cancelada') throw new Error("No hay insumos asignados a la emergencia");    
     }
 
     const verifyDetailEmergency = async () => {
@@ -79,7 +79,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         headers: { Authorization: `Bearer ${currentToken?.token}` },
       });
 
-      const statusesNeedingDetails = ['Atendida', 'Cancelada', 'Rechazada'];
+      const statusesNeedingDetails = ['Atendida','Rechazada'];
       if (statusesNeedingDetails.includes(selectedStatus) && response.data.length === 0) throw new Error(`Para la emergencia con estado: ${selectedStatus}, se requiere un detalle`);
     };
 
@@ -235,16 +235,30 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                   Estado
                 </label>
                 <div className="relative">
-                  <Dropdown
-                    id="status"
-                    value={selectedStatus}
-                    options={emergencyStatuses}
-                    onChange={(e) => setSelectedStatus(e.value)}
-                    placeholder="Selecciona el estado de la emergencia"
-                    filter
-                    className="w-full"
-                    disabled={emergency.status === 'Atendida' || emergency.status === 'Cancelada' || emergency.status === 'Rechazada'}
-                  />
+                <Dropdown
+                  id="status"
+                  value={selectedStatus}
+                  options={emergencyStatuses}
+                  onChange={(e) => {
+                    const newStatus = e.value;
+                    if (emergency.status === 'En proceso' && newStatus === 'Registrada') {
+                      setSelectedStatus(selectedStatus); // No cambia el estado
+                      return;
+                    }
+                    if (
+                      ['Atendida', 'Cancelada', 'Rechazada'].includes(emergency.status) &&
+                      !['Atendida', 'Cancelada', 'Rechazada'].includes(newStatus)
+                    ) {
+                      setSelectedStatus(selectedStatus); // No cambia el estado
+                      return;
+                    }
+                    setSelectedStatus(newStatus);
+                  }}
+                  placeholder="Selecciona el estado de la emergencia"
+                  filter
+                  className="w-full"
+                  disabled={emergency.status === 'Atendida' || emergency.status === 'Cancelada' || emergency.status === 'Rechazada'}
+                />
                 </div>
               </div>
 

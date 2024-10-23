@@ -75,7 +75,6 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
             },
           })
           if( response ) setVechiclesEmergency(response.data);
-          console.log(response.data);
           setLoading(false);
         } catch (error) {
           showAlert("error", "Error", "Error al obtener los vehículos de emergencias");
