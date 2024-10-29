@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContextProps } from "../../interface/Auth";
 import { AuthContext } from "../../context/AuthContext";
 import { apiRequestAuth, socketIoURL } from "../../lib/apiRequest";
+import { Howl } from 'howler';
 
 import { Toast } from 'primereact/toast';
 import { useNavigate } from "react-router-dom";
@@ -22,11 +23,54 @@ const Emergency = () => {
 
   const toast = useRef(null);
 
+  const alertSound = new Howl({
+    src: ['/music/EmergencyAlert.mp3'],
+    volume: 1.0,
+    loop: true,
+  });
+
+  const playAlertSound = () => {
+    if (!alertSound.playing()) {
+      alertSound.play();
+    }
+  };
+
+  const stopAlertSound = () => {
+    alertSound.stop();
+  };
+
+  useEffect(() => {
+    const handleUserActivity = () => {
+      stopAlertSound();
+      window.removeEventListener("mousemove", handleUserActivity);
+      window.removeEventListener("keydown", handleUserActivity);
+    };
+
+    const socket = io(socketIoURL);
+
+    socket.on('emergencyCreated', (newEmergency) => {
+      playAlertSound();
+      
+      window.addEventListener("mousemove", handleUserActivity);
+      window.addEventListener("keydown", handleUserActivity);
+
+      if (viewStatusEmergency !== 0) setViewStatusEmergency(0);
+
+      setEmergencies((prevEmergencies) => [newEmergency, ...prevEmergencies]);
+      toast.current?.show({ severity: 'info', summary: 'Nueva emergencia', detail: 'Se ha creado una nueva emergencia' });
+    });
+
+    return () => {
+      socket.disconnect();
+      window.removeEventListener("mousemove", handleUserActivity);
+      window.removeEventListener("keydown", handleUserActivity);
+    };
+  }, [viewStatusEmergency]);
+
   useEffect(() => {
     const getEmergencies = async () => {
-
-      if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
-      if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+      if (currentToken?.user.isFirefighter) navigate('/app/firefighter-shift');
+      if (currentToken?.user.isUser) navigate('/app/emergency-request');
 
       try {
         let response;
@@ -35,27 +79,27 @@ const Emergency = () => {
             headers: {
               Authorization: `Bearer ${currentToken?.token}`,
             },
-          });          
+          });
         } else if (viewStatusEmergency === 1) {
-          response = await apiRequestAuth.post("emergencies/in-process-emergencies", {},{
+          response = await apiRequestAuth.post("emergencies/in-process-emergencies", {}, {
             headers: {
               Authorization: `Bearer ${currentToken?.token}`,
             },
           });
         } else if (viewStatusEmergency === 2) {
-          response = await apiRequestAuth.post("emergencies/cancelled-emergencies", {},{
+          response = await apiRequestAuth.post("emergencies/cancelled-emergencies", {}, {
             headers: {
               Authorization: `Bearer ${currentToken?.token}`,
             }
           })
         } else if (viewStatusEmergency === 3) {
-          response = await apiRequestAuth.post("emergencies/rejected-emergencies", {},{
+          response = await apiRequestAuth.post("emergencies/rejected-emergencies", {}, {
             headers: {
               Authorization: `Bearer ${currentToken?.token}`,
             }
           })
         } else if (viewStatusEmergency === 4) {
-          response = await apiRequestAuth.post("emergencies/attended-emergencies", {},{
+          response = await apiRequestAuth.post("emergencies/attended-emergencies", {}, {
             headers: {
               Authorization: `Bearer ${currentToken?.token}`,
             }
@@ -70,37 +114,20 @@ const Emergency = () => {
     }
 
     getEmergencies();
-  }, [ changeStatusEmergency, viewStatusEmergency ]);
-  
-  useEffect(() => {
-    const socket = io(socketIoURL);
-
-    socket.on('emergencyCreated', (newEmergency) => {
-      console.log('Nueva emergencia creada:', newEmergency);
-
-      if (viewStatusEmergency !== 0) setViewStatusEmergency(0);
-
-      setEmergencies((prevEmergencies) => [newEmergency, ...prevEmergencies]);
-      toast.current?.show({ severity: 'info', summary: 'Nueva emergencia', detail: 'Se ha creado una nueva emergencia' });
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [viewStatusEmergency]);
+  }, [changeStatusEmergency, viewStatusEmergency]);
 
   return (
     <>
       <Toast ref={toast} />
-      <TableEmergencies 
-        data={emergencies} 
-        viewStatusEmergency={viewStatusEmergency} 
-        setViewStatusEmergency={setViewStatusEmergency} 
-        setChangeStatusEmergency={setChangeStatusEmergency} 
-        changeStatusEmergency={changeStatusEmergency} 
+      <TableEmergencies
+        data={emergencies}
+        viewStatusEmergency={viewStatusEmergency}
+        setViewStatusEmergency={setViewStatusEmergency}
+        setChangeStatusEmergency={setChangeStatusEmergency}
+        changeStatusEmergency={changeStatusEmergency}
       />
     </>
   )
 }
 
-export default Emergency
+export default Emergency;

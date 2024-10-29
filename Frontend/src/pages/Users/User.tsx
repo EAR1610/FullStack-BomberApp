@@ -5,6 +5,7 @@ import { apiRequestAuth } from "../../lib/apiRequest";
 import Table from "../../components/Table/Table";
 import { Toast } from 'primereact/toast';
 import { useNavigate } from "react-router-dom";
+import { removeToken } from "../../helpers/functions";
 
 const User = () => {
 
@@ -49,7 +50,13 @@ const User = () => {
         }
         if(response) setUsers(response.data);
       } catch (error) {
-        toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
+        console.log(error);
+        if(error.response.status === 401) {
+          toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Su sesión ha expirado, por favor inicie sesión nuevamente' });
+          // removeToken();
+        } else {
+          toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
+        }
       }
     }
     getUsers();

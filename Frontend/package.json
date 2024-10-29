@@ -25,6 +25,7 @@
     "flowbite": "^2.4.1",
     "flowbite-react": "^0.10.1",
     "headlessui": "^0.0.0",
+    "howler": "^2.2.4",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
     "jsvectormap": "^1.5.3",

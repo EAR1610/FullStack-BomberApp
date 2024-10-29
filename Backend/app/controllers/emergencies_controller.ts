@@ -1,9 +1,8 @@
 import Emergency from '#models/emergency';
-import { createEmergencyValidator, getEmergenciesByDateValidator } from '#validators/emergency';
+import { createEmergencyValidator } from '#validators/emergency';
 import { DateTime } from 'luxon';
 import type { HttpContext } from '@adonisjs/core/http'
 import Ws from '#services/Ws';
-import { error } from 'console';
 import Setting from '#models/setting';
 /**
  * * This class definition is for an `EmergenciesController` in an AdonisJS application. Here's a brief explanation of what each class method does:
