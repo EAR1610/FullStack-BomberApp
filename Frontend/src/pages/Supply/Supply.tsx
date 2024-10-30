@@ -142,6 +142,7 @@ const Supply = ({ supply, setVisible, isChangedSupply, setIsChangedSupply }: any
                   </label>
                   <div className="relative">
                   <Dropdown
+                    filter
                     value={ selectedSupplyType }
                     options={ supplyTypes }
                     onChange={ (e) => setSelectedSupplyType(e.value) }

@@ -153,7 +153,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
             });
             toast.current.show({ severity: 'info', summary: 'Confirmed', detail: 'Se ha desactivado el registro', life: 3000 });
           }
-          await createLog(userId, 'ACTUALIZAR', 'FIREFIGHTER', `Se ha ${viewActiveFirefighters ? 'activado' : 'desactivado'} el registro del bombero: ${selectedFirefighter?.user?.fullName}`, currentToken?.token);
+          await createLog(userId, 'ACTUALIZAR', 'BOMBERO', `Se ha ${viewActiveFirefighters ? 'activado' : 'desactivado'} el registro del bombero: ${selectedFirefighter?.user?.fullName}`, currentToken?.token);
           setIsChangedFirefighter(!isChangedFirefighter);
         } catch (error) {
           console.log(error);
@@ -227,15 +227,15 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} align={'center'} />
     </DataTable>
     <Dialog header={`${selectedFirefighter}` ? 'Actualizar Bombero' : 'Crear Bombero'} visible={visible} onHide={() => setVisible(false)}
-      style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+      style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <FireFighter firefighter={selectedFirefighter} setVisible={setVisible} isChangedFirefighter ={isChangedFirefighter} setIsChangedFirefighter={setIsChangedFirefighter} />
     </Dialog>
     <Dialog header='Información del bombero' visible={visibleFirefighter} onHide={() => setVisibleFirefighter(false)}
-      style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+      style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <ViewFireFighter firefighter={selectedFirefighter} />
     </Dialog>
     <Dialog header='Asignar Turno' visible={visibleFirefighterShift} onHide={() => setvisibleFirefighterShift(false)}
-      style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+      style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <SetFirefighterShift firefighter={selectedFirefighter} setVisible={setvisibleFirefighterShift} />
     </Dialog>
   </div>

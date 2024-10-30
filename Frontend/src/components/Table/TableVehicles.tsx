@@ -225,11 +225,11 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '8rem' }} />
     </DataTable>
     <Dialog header="Gestión de unidades" visible={visible} onHide={() => setVisible(false)}
-      style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+      style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <Vehicle vehicle={selectedVehicle} setVisible={setVisible} isChangedVehicle={isChangedVehicle} setIsChangedVehicle={setIsChangedVehicle} />
     </Dialog>
     <Dialog header="Información de la unidad" visible={visibleVehicle} onHide={() => setVisibleVehicle(false)}
-      style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+      style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
       <ViewVehicle vehicle={selectedVehicle} />
     </Dialog>
   </div>

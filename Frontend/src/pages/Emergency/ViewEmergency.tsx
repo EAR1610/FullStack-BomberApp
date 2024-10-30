@@ -278,6 +278,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                     type="submit"
                     value='Modificar estado de la emergencia'
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
+                    disabled ={emergency.status === 'Atendida' || emergency.status === 'Rechazada'}
                   />
               </div>            
             </form>

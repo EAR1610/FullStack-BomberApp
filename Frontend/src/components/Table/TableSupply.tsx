@@ -200,7 +200,7 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
       <Dialog header="Gestión del Insumos" visible={visible} onHide={() => setVisible(false)}
-        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <Supply
           supply={selectedSupply}
           setVisible={setVisible} 
@@ -209,7 +209,7 @@ const TableSupply = ({ data, viewActiveSupplies, setViewActiveSupplies, loading,
         />
       </Dialog>
       <Dialog header="Información del Insumo" visible={visibleSupply} onHide={() => setVisibleSupply(false)}
-        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewSupply supply={selectedSupply} />
       </Dialog>
     </div>

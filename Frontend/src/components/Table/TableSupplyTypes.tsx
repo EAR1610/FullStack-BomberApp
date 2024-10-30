@@ -202,7 +202,7 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />       
       </DataTable>
       <Dialog header="Gestión del Tipo de Insumo" visible={visible} onHide={() => setVisible(false)}
-        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SupplyType 
           supplyType={selectedSupplyType}
           setVisible={setVisible} 
@@ -211,7 +211,7 @@ const TableSupplyTypes = ({ data, viewActiveSuppliesType, setViewActiveSuppliesT
         />
       </Dialog>
       <Dialog header="Información del Tipo de Insumo" visible={visibleSupplyType} onHide={() => setVisibleSupplyType(false)}
-        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewSupplyType supplyType={selectedSupplyType} />
       </Dialog>
     </div>

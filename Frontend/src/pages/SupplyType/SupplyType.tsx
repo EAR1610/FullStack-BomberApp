@@ -4,6 +4,7 @@ import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { createLog, handleErrorResponse } from "../../helpers/functions"
+import { InputTextarea } from 'primereact/inputtextarea';
 import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const SupplyType = ({ supplyType, setVisible, isChangedSupplyType, setIsChangedSupplyType }: any) => {
@@ -105,16 +106,8 @@ const SupplyType = ({ supplyType, setVisible, isChangedSupplyType, setIsChangedS
                   <label htmlFor='description' className="mb-2.5 block font-medium text-black dark:text-white">
                     Descripción
                   </label>
-                  <div className="relative">
-                    <input
-                      id='description'
-                      type="text"
-                      placeholder="Ingresa la descripción del tipo de insumo"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      required
-                      value={ description }
-                      onChange={ e => setDescription( e.target.value ) }
-                    />
+                  <div className="relative">                    
+                    <InputTextarea required value={ description } onChange={(e) => setDescription(e.target.value)} rows={5} cols={30} maxLength={200} autoResize className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-nonedark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary text-lg" />
                   </div>
                 </div>               
 
