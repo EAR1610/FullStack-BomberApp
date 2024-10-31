@@ -49,7 +49,7 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
                 Authorization: `Bearer ${currentToken?.token}`,
             },
         });
-        await createLog(userId, 'CREAR', 'TURNO', `Se ha creado el turno del bombero: ${firefighter.user.fullName}`, currentToken?.token);
+        await createLog(userId, 'CREAR', 'TURNO', `Se ha asignado el turno del bombero: ${firefighter.user.fullName}`, currentToken?.token);
         showAlert('info', 'Info', 'Turno registrado correctamente!');
         setTimeout(() => {
           setVisible(false);              
@@ -72,7 +72,7 @@ const SetFirefighterShift: React.FC<TableFirefightersProps> = ({ firefighter, se
             </h2>
             <form onSubmit={ handleSubmit }>
                 <div className="card flex justify-content-center w-full">
-                    <Calendar value={date} onChange={(e) => setDate(e.value)} view="month" dateFormat="mm/yy" />
+                    <Calendar value={date} onChange={(e) => setDate(e.value)} view="month" dateFormat="mm/yy" className="w-full"/>
                 </div>
                 <div className="mt-5">
                     <input
