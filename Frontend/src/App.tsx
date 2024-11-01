@@ -75,7 +75,7 @@ function App() {
     },
     {
       path: '/app',
-      element: <RequireAuth />, // ? Protect the routes under the /app route
+      element: <RequireAuth />,
       children: [
         {
           path: '',

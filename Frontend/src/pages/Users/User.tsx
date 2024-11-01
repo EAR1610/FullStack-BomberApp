@@ -5,7 +5,7 @@ import { apiRequestAuth } from "../../lib/apiRequest";
 import Table from "../../components/Table/Table";
 import { Toast } from 'primereact/toast';
 import { useNavigate } from "react-router-dom";
-import { removeToken } from "../../helpers/functions";
+// import { removeToken } from "../../helpers/functions";
 
 const User = () => {
 

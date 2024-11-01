@@ -193,7 +193,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                   Descripción
                 </label>
                 <div className="relative">
-                  <InputTextarea disabled value={ emergency?.description } rows={5} cols={30} className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary font-bold text-lg" />
+                  <InputTextarea readOnly value={ emergency?.description } rows={5} cols={30} className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary font-bold text-lg" />
                 </div>
               </div>
 
@@ -202,7 +202,13 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                 Bomberos para la emergencia
                 </label>
                 <input
-                  onClick={ () => setViewFirefighterToSetEmergency(true) }
+                  onClick={ () => {
+                    if( emergency.status === 'Atendida' || emergency.status === 'Rechazada' || emergency.status === 'Cancelada' ) {
+                      showAlert('error', 'Error', `No se puede establecer bomberos para una emergencia cuyo estado es: ${emergency.status}`);
+                    } else {
+                      setViewFirefighterToSetEmergency(true);
+                    }
+                  }}
                   value='Establecer bomberos para la emergencia'
                   className="w-full cursor-pointer rounded-lg border border-yellow bg-yellow-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />                
@@ -213,7 +219,13 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                 Unidades para la emergencia
                 </label>
                 <input
-                  onClick={ () => setViewVehicleSetEmergency(true) }
+                  onClick={ () => {
+                    if( emergency.status === 'Atendida' || emergency.status === 'Rechazada' || emergency.status === 'Cancelada' ) {
+                      showAlert('error', 'Error', `No se puede establecer unidades para una emergencia cuyo estado es: ${emergency.status}`);
+                    } else {
+                      setViewVehicleSetEmergency(true) 
+                    }
+                  }}
                   value='Establecer las unidades para la emergencia'
                   className="w-full cursor-pointer rounded-lg border border-yellow bg-green-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />
@@ -224,7 +236,13 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                 Insumos para la emergencia
                 </label>
                 <input
-                  onClick={ () => setViewSupplyEmergency(true) }
+                  onClick={ () => {
+                    if( emergency.status === 'Atendida' || emergency.status === 'Rechazada' || emergency.status === 'Cancelada' ) {
+                      showAlert('error', 'Error', `No se puede establecer insumos para una emergencia cuyo estado es: ${emergency.status}`);
+                    } else {
+                      setViewSupplyEmergency(true) 
+                    }
+                  }}
                   value='Establecer los insumos para la emergencia'
                   className="w-full cursor-pointer rounded-lg border border-yellow bg-orange-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />
@@ -278,7 +296,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                     type="submit"
                     value='Modificar estado de la emergencia'
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 uppercase"
-                    disabled ={emergency.status === 'Atendida' || emergency.status === 'Rechazada'}
+                    disabled ={emergency.status === 'Atendida' || emergency.status === 'Rechazada' || emergency.status === 'Cancelada'}
                   />
               </div>            
             </form>

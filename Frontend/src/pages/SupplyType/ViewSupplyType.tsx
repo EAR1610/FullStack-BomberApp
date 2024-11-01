@@ -53,7 +53,7 @@ const ViewSupplyType = ({ supplyType }:any) => {
                   Descrpción
                 </label>
                 <div className="relative">
-                  <InputTextarea required value={ description } onChange={(e) => setDescription(e.target.value)} rows={9} cols={30} maxLength={200} autoResize className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-nonedark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary text-lg" disabled />
+                  <InputTextarea readOnly required value={ description } onChange={(e) => setDescription(e.target.value)} rows={9} cols={30} maxLength={200} autoResize className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-nonedark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary text-lg" disabled />
                 </div>
               </div>              
             </form>

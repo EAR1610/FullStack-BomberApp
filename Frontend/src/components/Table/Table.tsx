@@ -117,21 +117,20 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
   const roleBodyTemplate = (rowData: any) => roleMap[rowData.roleId];
 
   const newUser = () => {
-    setSelectedUser(null);
     setVisible(true);
+    setSelectedUser(null);
   }
 
   const viewActiveOrInactiveUsers = async () => setViewActiveUsers(!viewActiveUsers);
 
   const editUser = (rowData:any) => {
-    setSelectedUser(rowData);
     setVisible(true);
+    setSelectedUser(rowData);
   };
 
   const deleteUser = async (rowData:any) => {
     setSelectedUser(rowData);
-    console.log(selectedUser)
-    if( !selectedUser.isAdmin ) {
+    if( !rowData.isAdmin ) {
       setIsInactiveUser(true);
     } else {
       showAlert('warn', 'Atención', 'No puedes eliminar a un administrador');
@@ -139,8 +138,8 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
   };
 
   const showUser = (rowData:any) => {
-    setSelectedUser(rowData);
     setVisibleUser(true);
+    setSelectedUser(rowData);
   };  
 
   const accept = async () => {

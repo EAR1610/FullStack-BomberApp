@@ -6,6 +6,7 @@ import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import { createLog, handleErrorResponse } from "../../helpers/functions"
 import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
+import { InputTextarea } from "primereact/inputtextarea"
 
 const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:any) => {
 
@@ -15,6 +16,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
   const [vehicleNumber, setVehicleNumber] = useState(0);
   const [gasolineType, setGasolineType] = useState('');
   const [plateNumber, setPlateNumber] = useState('');
+  const [remarks, setRemarks] = useState('');
   const [dateOfPurchase, setDateOfPurchase] = useState('');
   const [selectedVehicleType, setSelectedVehicleType] = useState(null);
   const [selectedOriginType, setselectedOriginType] = useState(null);
@@ -75,6 +77,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
         setVehicleNumber(vehicle.vehicleNumber)
         setGasolineType(vehicle.gasolineType)
         setPlateNumber(vehicle.plateNumber)
+        setRemarks(vehicle.remarks)
         setDateOfPurchase(vehicle.dateOfPurchase)
         setStatus(vehicle.status)
         setSelectedVehicleType(() => {
@@ -277,6 +280,24 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
               </div>
 
               <div className="mb-4">
+                <label htmlFor='remarks' className="mb-2.5 block font-medium text-black dark:text-white">
+                  Observaciones
+                </label>
+                <div className="relative">
+                <InputTextarea 
+                    value={remarks} 
+                    onChange={(e) => setRemarks(e.target.value)} 
+                    rows={3} 
+                    maxLength={250}
+                    placeholder="Especifique la observación del vehículo" 
+                    autoResize
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary text-lg"
+                    readOnly
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
                 <label className="mb-2.5 block font-medium text-black dark:text-white">
                   Tipo de unidad
                 </label>
@@ -319,7 +340,6 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                 />
               </div>
-              { error && <span>{ error }</span> }
             </form>
           </div>
         </div>
