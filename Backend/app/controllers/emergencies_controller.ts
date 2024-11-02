@@ -28,7 +28,11 @@ import Setting from '#models/setting';
 export default class EmergenciesController {
 
   async index({}: HttpContext) {
-    const emergency = await Emergency.query().where('status', 'Registrada');
+    const emergency = await Emergency.query()
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address', 'phone')
+    })
+    .where('status', 'Registrada');
     return emergency
   }
   
@@ -43,7 +47,7 @@ export default class EmergenciesController {
       query.where('id', params.id)
     })
     .preload('user', (query) => {
-      query.select('username', 'fullName', 'address')
+      query.select('username', 'fullName', 'address', 'phone')
     })
     .preload('emergencyType', (query) => {
       query.select('name')
@@ -55,7 +59,7 @@ export default class EmergenciesController {
   async attendedEmergencies({}: HttpContext) {
     const emergency = await Emergency.query()
     .preload('user', (query) => {
-      query.select('id', 'username', 'fullName', 'address')
+      query.select('id', 'username', 'fullName', 'address', 'phone')
     })
     .where('status', 'Atendida').orderBy('createdAt', 'desc');
     return emergency
@@ -67,7 +71,7 @@ export default class EmergenciesController {
       query.where('id', params.id)
     })
     .preload('user', (query) => {
-      query.select('username', 'fullName', 'address')
+      query.select('username', 'fullName', 'address', 'phone')
     })
     .preload('emergencyType', (query) => {
       query.select('name')
@@ -79,7 +83,7 @@ export default class EmergenciesController {
   async inProcessEmergencies({}: HttpContext) {
     const emergency = await Emergency.query()
     .preload('user', (query) => {
-      query.select('username', 'fullName', 'address')
+      query.select('username', 'fullName', 'address', 'phone')
     })
     .where('status', 'En proceso');
     return emergency
@@ -91,7 +95,7 @@ export default class EmergenciesController {
       query.where('id', params.id)
     })
     .preload('user', (query) => {
-      query.select('username', 'fullName', 'address')
+      query.select('username', 'fullName', 'address', 'phone')
     })
     .preload('emergencyType', (query) => {
       query.select('name')
@@ -103,7 +107,7 @@ export default class EmergenciesController {
   async canceledEmergencies({}: HttpContext) {
     const emergency = await Emergency.query()
     .preload('user', (query) => {
-      query.select('username', 'fullName', 'address')
+      query.select('username', 'fullName', 'address', 'phone')
     })
     .where('status', 'Cancelada').orderBy('createdAt', 'desc');
     return emergency
@@ -115,7 +119,7 @@ export default class EmergenciesController {
       query.where('id', params.id)
     })
     .preload('user', (query) => {
-      query.select('username', 'fullName', 'address')
+      query.select('username', 'fullName', 'address', 'phone')
     })
     .preload('emergencyType', (query) => {
       query.select('name')
@@ -127,7 +131,7 @@ export default class EmergenciesController {
   async rejectedEmergencies({}: HttpContext) {
     const emergency = await Emergency.query()
     .preload('user', (query) => {
-      query.select('username', 'fullName', 'address')
+      query.select('username', 'fullName', 'address', 'phone')
     })
     .where('status', 'Rechazada');
     return emergency
@@ -139,7 +143,7 @@ export default class EmergenciesController {
       query.where('id', params.id)
     })
     .preload('user', (query) => {
-      query.select('username', 'fullName', 'address')
+      query.select('username', 'fullName', 'address', 'phone')
     })
     .preload('emergencyType', (query) => {
       query.select('name')
@@ -165,7 +169,7 @@ export default class EmergenciesController {
         query.select('name');
       })
       .preload('user', (query) => {
-        query.select('fullName', 'dpi');
+        query.select('fullName', 'dpi', 'phone');
       })
       .where('status', emergencyStatus);
   

@@ -20,6 +20,7 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
     const [filters, setFilters] = useState({
         applicant: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         address: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        "user.phone": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         status: { value: null, matchMode: FilterMatchMode.EQUALS },
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -154,11 +155,12 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['applicant', 'address', 'description', 'status']}
+        globalFilterFields={['applicant', 'user.phone', 'address', 'description', 'status']}
         header={header}
         emptyMessage="Emergencias no encontradas."
       >
         <Column field="applicant" header="Solicitante"  style={{ minWidth: '8rem' }}  align={'center'}/>
+        <Column field="user.phone" header="Teléfono"  style={{ minWidth: '8rem' }}  align={'center'}/>
         <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column field="description" header="Descripción" style={{ minWidth: '12rem' }} align={'center'}/>
         <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>

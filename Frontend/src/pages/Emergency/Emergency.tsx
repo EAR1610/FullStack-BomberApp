@@ -107,6 +107,7 @@ const Emergency = () => {
         }
 
         if (response) setEmergencies(response.data);
+        console.log(response.data);
 
       } catch (error) {
         toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener las emergencias' });

@@ -154,7 +154,25 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
               Estas viendo el seguimiento de una emergencia registrada en <span className='text-red-500'>BomberApp</span>
             </h2>
             <form onSubmit={ handleSubmit }>
-              <div className="mb-4">
+            <div className="flex w-full gap-1">
+              <div className="mb-4 w-2/3">
+                <label htmlFor='user' className="mb-2.5 block font-medium text-black dark:text-white">
+                  Usuario
+                </label>
+                <div className="relative">
+                  <input
+                    id='user'
+                    type="text"
+                    placeholder="Solicitante de la emergencia"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    required
+                    value={ emergency?.user?.fullName }
+                    disabled                    
+                  />
+                </div>
+              </div> 
+             
+              <div className="mb-4 w-2/3">
                 <label htmlFor='applicant' className="mb-2.5 block font-medium text-black dark:text-white">
                   Solicitante
                 </label>
@@ -169,14 +187,15 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                     disabled                    
                   />
                 </div>
-              </div>   
+              </div>                   
+            </div>
 
               <div className="mb-4">
                 <label htmlFor='address' className="mb-2.5 block font-medium text-black dark:text-white">
                   Dirección
                 </label>
                 <div className="relative">
-                  <InputTextarea readOnly value={ emergency?.address } rows={5} cols={30} className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary font-bold text-lg" />
+                  <InputTextarea readOnly value={ emergency?.address } rows={5} cols={30} className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary font-bold text-lg resize-none" />
                 </div>
               </div>
 
@@ -185,7 +204,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                   Descripción
                 </label>
                 <div className="relative">
-                  <InputTextarea readOnly value={ emergency?.description } rows={5} cols={30} className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary font-bold text-lg" />
+                  <InputTextarea readOnly value={ emergency?.description } rows={5} cols={30} className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary font-bold text-lg resize-none" />
                 </div>
               </div>
 
