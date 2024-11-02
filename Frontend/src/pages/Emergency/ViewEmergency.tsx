@@ -176,15 +176,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                   Dirección
                 </label>
                 <div className="relative">
-                  <input
-                    id='address'
-                    type="text"
-                    placeholder="Dirección de la emergencia"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    value={ emergency?.address }
-                    disabled                    
-                  />
+                  <InputTextarea readOnly value={ emergency?.address } rows={5} cols={30} className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary font-bold text-lg" />
                 </div>
               </div>
 

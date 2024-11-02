@@ -22,7 +22,7 @@ const EmergencyCard: React.FC<EmergencyCardProps> = ({
           className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-300 shadow-lg hover:shadow-xl"
           onClick={onShowDetails}
         >
-          Ver Detalles
+          Ver Emergencia
         </button>
       </div>
     </div>

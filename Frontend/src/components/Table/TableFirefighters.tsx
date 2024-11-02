@@ -28,6 +28,7 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
         shiftPreference: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         "user.userName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         "user.dpi": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        "user.phone": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         "user.fullName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         "user.address": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
@@ -123,13 +124,13 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
 
     const accept = async () => {
       if (selectedFirefighter) {
-        console.log(selectedFirefighter);
         const formData = new FormData();        
         formData.append('username', selectedFirefighter.user.username);
         formData.append('fullName', selectedFirefighter.user.fullName);
         formData.append('email', selectedFirefighter.user.email);
         formData.append('address', selectedFirefighter.user.address);
         formData.append('dpi', selectedFirefighter.user.dpi);
+        formData.append('phone', selectedFirefighter.user.phone);
         formData.append('roleId', selectedFirefighter.user.roleId);
         formData.append('shiftPreference', selectedFirefighter.shiftPreference);
 
@@ -156,7 +157,6 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
           await createLog(userId, 'ACTUALIZAR', 'BOMBERO', `Se ha ${viewActiveFirefighters ? 'activado' : 'desactivado'} el registro del bombero: ${selectedFirefighter?.user?.fullName}`, currentToken?.token);
           setIsChangedFirefighter(!isChangedFirefighter);
         } catch (error) {
-          console.log(error);
           showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
         }
       }
@@ -215,16 +215,17 @@ const TableFirefighters: React.FC<TableFirefightersProps> = ({ data, viewActiveF
       filters={filters}
       filterDisplay="row"
       loading={loading}
-      globalFilterFields={['shiftPreference', 'user.userName', 'user.fullName', 'user.email', 'user.dpi']}
+      globalFilterFields={['shiftPreference', 'user.userName', 'user.fullName', 'user.email', 'user.dpi', 'user.phone']}
       header={header}
       emptyMessage="Registro no encontrado."
     >
       <Column field="user.username" header="Usuario"  style={{ minWidth: '4rem' }}  align={'center'} />
       <Column field="user.fullName" header="Nombre Completo"  style={{ minWidth: '4rem' }}  align={'center'} />
       <Column field="user.dpi" header="DPI"  style={{ minWidth: '4rem' }}  align={'center'} />
+      <Column field="user.phone" header="Teléfono"  style={{ minWidth: '4rem' }}  align={'center'} />
       <Column field="user.email" header="Correo"  style={{ minWidth: '4rem' }}  align={'center'} />
       <Column field="shiftPreference" header="Turno"  style={{ minWidth: '4rem' }}  align={'center'} />
-      <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} align={'center'} />
+      <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '4rem' }} align={'left'} />
     </DataTable>
     <Dialog header={`${selectedFirefighter}` ? 'Actualizar Bombero' : 'Crear Bombero'} visible={visible} onHide={() => setVisible(false)}
       style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>

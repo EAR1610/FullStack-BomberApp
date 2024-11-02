@@ -27,6 +27,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [dpi, setDpi] = useState('');
+  const [phone, setPhone] = useState('');
   const [penalizations, setPenalizations] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -84,6 +85,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
       setUsername(user.username || '');
       setFullName(user.fullName || '');
       setDpi(user.dpi || '');
+      setPhone(user.phone || '');
       setEmail(user.email || '');
       setPhotography(user.photography || null);
       setPassword(user.password || ''); 
@@ -157,7 +159,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     if( user ) {
 
       if ( 
-        !username || !fullName || !email  || !address || !dpi
+        !username || !fullName || !email  || !address || !dpi || !phone
       ) {
         showAlert('error', 'Error', 'Todos los campos son obligatorios');
         return;
@@ -166,6 +168,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
         formData.append('username', username);
         formData.append('fullName', fullName);
         formData.append('dpi', dpi);
+        formData.append('phone', phone);
         formData.append('penalizations', JSON.stringify(penalizations));
         formData.append('email', email);
         formData.append('address', address);
@@ -187,6 +190,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
         formData.append('username', username);
         formData.append('fullName', fullName);
         formData.append('dpi', dpi);
+        formData.append('phone', phone);
         formData.append('penalizations', JSON.stringify(penalizations));
         formData.append('email', email);
         formData.append('password', password);
@@ -232,7 +236,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
 
         if( !currentToken ){
           setTimeout(() => {
-            navigate("/login");          
+            navigate("/login");
           }, 1000);
         }
         showAlert('info', 'Info', 'Usuario Creado!');
@@ -244,6 +248,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
         setVisible(false);
       }, 1500);
     } catch (err:any) {
+      console.log(err);
       showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   };
@@ -261,6 +266,11 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
   const handleDPIChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (/^\d{0,13}$/.test(value)) setDpi(value);    
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d{0,8}$/.test(value)) setPhone(value);
   };
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
@@ -299,6 +309,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                       tooltip="Mínimo 3 caracteres" tooltipOptions={{ position: 'top' }}
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       required
+                      maxLength={15}
                       value={ username }
                       onChange={ e => setUsername( e.target.value ) }
                     />
@@ -349,6 +360,32 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                     <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                       <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 9h3m-3 3h3m-3 3h3m-6 1c-.306-.613-.933-1-1.618-1H7.618c-.685 0-1.312.387-1.618 1M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm7 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
                     </svg>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor='phone' className="mb-2.5 block font-medium text-black dark:text-white">
+                    Teléfono
+                  </label>
+                  <div className="relative">
+                    <InputText
+                      id='phone'
+                      type="text"
+                      tooltip="Corresponden a 8 dígitos" tooltipOptions={{ position: 'top' }}
+                      placeholder="Ingresa tu número de teléfono"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      required
+                      min={0}
+                      maxLength={8}
+                      value={ phone }
+                      onChange={ handlePhoneChange }
+                    />
+
+                    <span className="absolute right-4 top-4">
+                    <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 15h12M6 6h12m-6 12h.01M7 21h10a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1Z"/>
+                    </svg>                      
                     </span>
                   </div>
                 </div>
@@ -487,7 +524,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
 
                 <div className="mb-4">
                   <label htmlFor='photography' className="mb-2.5 block font-medium text-black dark:text-white">
-                    Fotografía (jpg, png, jpeg) max. 5mb
+                    Fotografía (max. 5mb)
                   </label>
                   <div className="relative">
                     {imagePreview && (
@@ -528,7 +565,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                         valueTemplate={selectedRoleTemplate}
                         itemTemplate={roleOptionTemplate}
                         className="w-full md:w-14rem"
-                        disabled = { user?.isAdmin }
+                        disabled = { user }
                         required
                       />
                     </div>

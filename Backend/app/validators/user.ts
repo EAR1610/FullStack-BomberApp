@@ -2,8 +2,8 @@ import vine from '@vinejs/vine'
 
 export const createUserValidator = vine.compile(
     vine.object({
-        username: vine.string().minLength(3),
-        fullName: vine.string().minLength(5),
+        username: vine.string().minLength(3).maxLength(15),
+        fullName: vine.string().minLength(5).maxLength(255),
         email: vine.string().email().unique( async(db, value, field) => {
             const user = await db
               .from('users')
@@ -20,6 +20,14 @@ export const createUserValidator = vine.compile(
               .first();
               return !existingUserWithDpi;
           }),
+        phone: vine.string().minLength(8).unique( async (db, value, field) => {
+            const existingPhone = await db
+                .from('users')
+                .whereNot('id', field.meta.id)
+                .where('phone', value)
+                .first()
+            return !existingPhone
+        }),
         password: vine.string().minLength(8),
         address: vine.string().minLength(5),
         photography: vine.file({
@@ -34,8 +42,8 @@ export const createUserValidator = vine.compile(
 
 export const updateUserValidator = vine.compile(
     vine.object({
-        username: vine.string().minLength(3),
-        fullName: vine.string().minLength(5),
+        username: vine.string().minLength(3).maxLength(15),
+        fullName: vine.string().minLength(5).maxLength(255),
         email: vine.string().email().unique( async(db, value, field) => {
             const user = await db
               .from('users')
@@ -44,7 +52,7 @@ export const updateUserValidator = vine.compile(
               .first()
               return !user
           }),
-        dpi: vine.string().minLength(13).unique(async (db, value, field) => {
+        dpi: vine.string().minLength(13).unique( async (db, value, field) => {
             const existingUserWithDpi = await db
               .from('users')
               .whereNot('id', field.meta.id)
@@ -52,6 +60,14 @@ export const updateUserValidator = vine.compile(
               .first();
               return !existingUserWithDpi;
           }),
+        phone: vine.string().minLength(8).unique( async (db, value, field) => {
+            const existingPhone = await db
+                .from('users')
+                .whereNot('id', field.meta.id)
+                .where('phone', value)
+                .first()
+                return !existingPhone
+        }),
         address: vine.string().minLength(5),        
         roleId: vine.number(),
         shiftPreference: vine.enum(['Par', 'Impar']).nullable(),

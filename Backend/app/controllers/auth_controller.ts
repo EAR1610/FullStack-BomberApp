@@ -32,6 +32,7 @@ export default class AuthController {
             address: payload.address,
             roleId: payload.roleId,
             dpi: payload.dpi,
+            phone: payload.phone,
             penalizations: payload.penalizations,
             status: payload.status,
         }

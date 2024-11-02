@@ -151,6 +151,7 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
         formData.append('username', selectedUser.username);
         formData.append('fullName', selectedUser.fullName);
         formData.append('dpi', selectedUser.dpi);
+        formData.append('phone', selectedUser.phone);
         formData.append('email', selectedUser.email);
         formData.append('address', selectedUser.address);
         formData.append('roleId', selectedUser.roleId);

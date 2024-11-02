@@ -100,6 +100,7 @@ export default class UsersController {
       fullName: payload.fullName,
       email: payload.email,
       dpi: payload.dpi,
+      phone: payload.phone,
       password: payload.password,
       address: payload.address,
       roleId: payload.roleId,
@@ -148,8 +149,6 @@ export default class UsersController {
         }
     });
 
-    console.log(payload);
-
     const file = request.file('photography');
     if (file) {
         await file.move(app.makePath('uploads/pictures'), {
@@ -164,9 +163,11 @@ export default class UsersController {
       email: payload.email,
       address: payload.address,
       dpi: payload.dpi,
+      phone: payload.phone,
       roleId: payload.roleId,
       status: payload.status,
     }
+
     if ( user.roleId === 2 || payload.roleId === 2 ) {
       const firefighter = await Firefighter.findBy('userId', user.id)
       if (firefighter) {
@@ -179,6 +180,7 @@ export default class UsersController {
           shiftPreference: payload.shiftPreference || 'Par',
         })
       }
+      
     } else if (user.roleId !== 2 && payload.roleId === 2) {
       await Firefighter.create({
         userId: user.id,

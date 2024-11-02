@@ -33,7 +33,7 @@ export default class FirefighterEmergenciesController {
         query.where('status', 'active')
       })
       .preload('user', (query) => {
-        query.select('id', 'username', 'fullName', 'address')
+        query.select('id', 'username', 'fullName', 'address', 'phone')
       })
     })
     .preload('emergency', (query) => {
@@ -57,7 +57,7 @@ export default class FirefighterEmergenciesController {
         query.where('status', 'active')
       })
       .preload('user', (query) => {
-        query.select('id', 'username', 'fullName', 'address')
+        query.select('id', 'username', 'fullName', 'address', 'phone')
       })
     })
     .preload('emergency', (query) => {
@@ -81,7 +81,7 @@ export default class FirefighterEmergenciesController {
         query.where('status', 'active')
       })
       .preload('user', (query) => {
-        query.select('id', 'username', 'fullName', 'address')
+        query.select('id', 'username', 'fullName', 'address', 'phone')
       })
     })
     .preload('emergency', (query) => {
@@ -105,7 +105,7 @@ export default class FirefighterEmergenciesController {
         query.where('status', 'active')
       })
       .preload('user', (query) => {
-        query.select('id', 'username', 'fullName', 'address')
+        query.select('id', 'username', 'fullName', 'address', 'phone')
       })
     })
     .preload('emergency', (query) => {
@@ -129,7 +129,7 @@ export default class FirefighterEmergenciesController {
         query.where('status', 'active')
       })
       .preload('user', (query) => {
-        query.select('id', 'username', 'fullName', 'address')
+        query.select('id', 'username', 'fullName', 'address', 'phone')
       })
     })
     .preload('emergency', (query) => {
@@ -176,7 +176,7 @@ export default class FirefighterEmergenciesController {
             query.where('status', 'active')
           })
           .preload('user', (query) => {
-            query.select('id', 'username', 'fullName', 'address')
+            query.select('id', 'username', 'fullName', 'address', 'phone')
           })
       })
       .preload('emergency', (query) => {
@@ -212,7 +212,7 @@ export default class FirefighterEmergenciesController {
             query.where('status', 'active')
           })
           .preload('user', (query) => {
-            query.select('id', 'username', 'fullName', 'address')
+            query.select('id', 'username', 'fullName', 'address', 'phone')
           })
       })
       .preload('emergency', (query) => {
@@ -244,7 +244,7 @@ export default class FirefighterEmergenciesController {
             query.where('status', 'active')
           })
           .preload('user', (query) => {
-            query.select('id', 'username', 'fullName', 'address')
+            query.select('id', 'username', 'fullName', 'address', 'phone')
           })
       })
       .preload('emergency', (query) => {

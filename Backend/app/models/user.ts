@@ -36,6 +36,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare address: string
 
   @column()
+  declare phone: string
+
+  @column()
   declare photography: string
 
   @column()

@@ -9,7 +9,7 @@ export const loginValidator = vine.compile(
   
   export const registerValidator = vine.compile(
     vine.object({
-        username: vine.string().minLength(3).maxLength(255),
+        username: vine.string().minLength(3).maxLength(15),
         fullName: vine.string().minLength(5).maxLength(255),
         email: vine.string().email().unique( async(db, value, field) => {
           const user = await db
@@ -21,8 +21,7 @@ export const loginValidator = vine.compile(
         password: vine.string().minLength(8),
         address: vine.string().minLength(5).maxLength(255),
         photography: vine.file({
-          size: '5mb',
-          extnames: ['jpg', 'png', 'jpeg']
+          size: '5mb'
         }),
         dpi: vine.string().minLength(13).maxLength(13).unique(async (db, value, field) => {          
           if (!value) return true;
@@ -32,6 +31,15 @@ export const loginValidator = vine.compile(
             .first();
     
           return !existingUserWithDpi;
+        }),
+        phone: vine.string().minLength(8).unique(async (db, value, field) => {
+          if (!value) return true;
+          const existingPhone = await db
+            .from('users')
+            .where('phone', value)
+            .first();
+    
+          return !existingPhone;
         }),
         penalizations: vine.number().nullable(),
         roleId: vine.number(),

@@ -12,6 +12,7 @@ export default class extends BaseSeeder {
         address: 'Peten',
         roleId: 1,
         dpi: '1234567891012',
+        phone: '33554285',
       },
       {
         username: 'bombero',
@@ -21,6 +22,7 @@ export default class extends BaseSeeder {
         address: 'Peten',
         roleId: 2,
         dpi: '1234567891013',
+        phone: '54357880',
       },
       {
         username: 'user',
@@ -30,6 +32,7 @@ export default class extends BaseSeeder {
         address: 'Peten',        
         roleId: 3,
         dpi: '1234567891014',
+        phone: '12345678',
       }
     ];
 
@@ -43,7 +46,8 @@ export default class extends BaseSeeder {
       user.password = userData.password;
       user.roleId = userData.roleId;
       user.dpi = userData.dpi;
-      
+      user.phone = userData.phone;
+            
       await user.save();
     }
   }

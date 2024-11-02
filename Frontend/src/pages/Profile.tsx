@@ -8,6 +8,7 @@ import { apiRequest, apiRequestAuth } from '../lib/apiRequest';
 import { Password } from 'primereact/password';
 import { Divider } from 'primereact/divider';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { InputText } from 'primereact/inputtext';
 
 const Profile = () => {
   const [errorMessages, setErrorMessages] = useState<string>('');
@@ -22,6 +23,7 @@ const Profile = () => {
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [dpi, setDpi] = useState('');
+  const [phone, setPhone] = useState('');
   const [penalizations, setPenalizations] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -110,6 +112,7 @@ const Profile = () => {
           setUsername(response.data.user.username);
           setFullName(response.data.user.fullName);
           setDpi(response.data.user.dpi);
+          setPhone(response.data.user.phone);
           setPenalizations(response.data.user.penalizations);
           setEmail(response.data.user.email);
           setPassword(response.data.user.password);
@@ -153,6 +156,7 @@ const Profile = () => {
       formData.append('username', username);
       formData.append('fullName', fullName);
       formData.append('dpi', dpi);
+      formData.append('phone', phone);
       formData.append('penalizations', JSON.stringify(penalizations));
       formData.append('email', email);
       formData.append('address', address);
@@ -186,6 +190,11 @@ const Profile = () => {
   };
 
   const showAlert = (severity: string, summary: string, detail: string) => toast.current.show({ severity, summary, detail });
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d{0,8}$/.test(value)) setPhone(value);
+  };
 
   return (
     <div className="container mx-auto p-2">
@@ -278,6 +287,32 @@ const Profile = () => {
                         </span>
                       </div>
                     </div>
+
+                    <div className="mb-4">
+                    <label htmlFor='phone' className="mb-2.5 block font-medium text-black dark:text-white">
+                      Teléfono
+                    </label>
+                    <div className="relative">
+                      <InputText
+                        id='phone'
+                        type="text"
+                        tooltip="Corresponden a 8 dígitos" tooltipOptions={{ position: 'top' }}
+                        placeholder="Ingresa tu número de teléfono"
+                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        required
+                        min={0}
+                        maxLength={8}
+                        value={ phone }
+                        onChange={ handlePhoneChange }
+                      />
+
+                      <span className="absolute right-4 top-4">
+                      <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 15h12M6 6h12m-6 12h.01M7 21h10a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1Z"/>
+                      </svg>                      
+                      </span>
+                    </div>
+                  </div>
 
                     <div className="mb-4">
                       <label htmlFor='fullName' className="mb-2.5 block font-medium text-black dark:text-white">
