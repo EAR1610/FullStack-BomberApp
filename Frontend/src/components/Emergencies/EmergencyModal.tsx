@@ -32,8 +32,6 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
   const [viewToolsPerEmergencyType, setViewToolsPerEmergencyType] = useState(false);
   if( !isOpen ) return null;
 
-  console.log(emergencyData);
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl transform transition-all max-h-[80vh] overflow-y-auto">
@@ -43,7 +41,12 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-gray-700 mb-2">
           <p><strong>Hora de la solicitud:</strong> {formatDateTime(emergencyData.createdAt)}</p>
-          <p><strong>Teléfono:</strong>(+502) {emergencyData.firefighter.user.phone}</p>
+          <p>
+            <strong>Teléfono:</strong> 
+            <a href={`tel:+502${emergencyData.firefighter.user.phone}`} className="text-blue-500 underline">
+              (+502) {emergencyData.firefighter.user.phone}
+            </a>
+          </p>
           <p><strong>Usuario:</strong> {emergencyData.firefighter.user.fullName}</p>
           <p><strong>Solicitante:</strong> {emergencyData.emergency.applicant}</p>
           <p><strong>Dirección:</strong> {emergencyData.emergency.address}</p>

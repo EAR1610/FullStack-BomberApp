@@ -183,6 +183,7 @@ const EmergencyRequest = () => {
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           required
                           value={ applicant }
+                          maxLength={50}
                           onChange={ e => setApplicant( e.target.value ) }
                       />
                       </div>
@@ -200,6 +201,7 @@ const EmergencyRequest = () => {
                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         required
                         value={ address }
+                        maxLength={50}
                         onChange={ e => setAddress( e.target.value ) }
                     />
                     </div>

@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import type { HttpContext } from '@adonisjs/core/http'
 import Ws from '#services/Ws';
 import Setting from '#models/setting';
+import FirefighterEmergency from '#models/firefighter_emergency';
 /**
  * * This class definition is for an `EmergenciesController` in an AdonisJS application. Here's a brief explanation of what each class method does:
 * `index`: Displays a list of emergencies with a status of 'Registrada'.
@@ -225,20 +226,36 @@ export default class EmergenciesController {
 
   async edit({ params }: HttpContext) {}
 
+  // Dentro del método update en tu controlador de emergencia
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createEmergencyValidator);
     const emergency = await Emergency.findOrFail(params.id);
-    if ( !emergency ) return response.status(404).json({ message: 'No se ha encontrado la emergencia' });
+    
+    if (!emergency) return response.status(404).json({ message: 'No se ha encontrado la emergencia' });
 
     emergency.merge(payload);
     await emergency.save();
-      
+
     const userId = emergency.userId;
     const io = Ws.io;
     
-    if (io) io.to(`user_${userId}`).emit('emergencyUpdated', emergency);
+    if (io) {
+        io.to(`user_${userId}`).emit('emergencyUpdated', emergency);
+    }
 
-    return emergency
+    const firefighters = await FirefighterEmergency.query()
+        .where('emergencyId', emergency.id)
+        .preload('firefighter');
+
+        console.log(firefighters)
+    firefighters.forEach((firefighterEmergency) => {
+        const firefighterId = firefighterEmergency.firefighter.id;
+        if (io) {
+            io.to(`firefighter_${firefighterId}`).emit('emergencyUpdatedForFirefighter', emergency);
+        }
+    });
+
+    return emergency;
   }
 
   async destroy({ params }: HttpContext) {}

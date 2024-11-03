@@ -103,6 +103,14 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         showAlert("error", "No tienes conexión a internet. Revisa tu conexión.", "Error");
         return;
       }
+
+      if( emergency.status === selectedStatus ) {
+        showAlert('info', 'Info', 'La emergencia ya se encuentra en este estado');
+        setTimeout(() => {
+          setViewEmergency(false);          
+        }, 1500);
+        return;
+      }
       
       try {
         await validateProcess();

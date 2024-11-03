@@ -75,7 +75,7 @@ const MyEmergencies = () => {
 
   useEffect(() => {
     const socket = io(socketIoURL,{
-      query: { userId: currentToken?.user.id }
+      query: { userId: currentToken?.user?.id }
     });
 
     socket.on('emergencyUpdated', (updatedEmergency) => {

@@ -23,7 +23,6 @@ const SuppliesEmergency = ({ emergencyId }: any) => {
                     }
                 });
                 if (response) setSuppliesPerEmergency(response.data);
-                console.log(response.data);
             } catch (error) {
                 console.log(error);
             }

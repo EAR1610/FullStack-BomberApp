@@ -27,6 +27,8 @@ export const FirefighterEmergencies = () => {
 
   const toast = useRef(null);
 
+  console.log(currentToken);
+
   useEffect(() => {
 
     if( currentToken?.user.isUser ) navigate('/app/emergency-request');
@@ -89,6 +91,39 @@ export const FirefighterEmergencies = () => {
     };
     
   }, []);
+
+  useEffect(() => {
+    const socket = io(socketIoURL, {
+      query: { firefighterId: currentToken?.firefighter?.id }
+    });
+    
+    socket.on('emergencyUpdatedForFirefighter', (updatedEmergency) => {   
+      const statusMap = {
+        "En proceso": 0,
+        "Cancelada": 1,
+        "Rechazada": 2,
+        "Atendida": 3
+      };
+      const newStatusId = statusMap[updatedEmergency.status];
+
+      if (newStatusId !== undefined) {
+        const newStatus = emergencyTypes.find(type => type.id === newStatusId);
+        if( newStatus ){
+          toast.current?.show({
+            severity: 'info',
+            summary: 'Emergencia actualizada',
+            detail: `La emergencia de ${updatedEmergency.applicant} ahora está en estado: ${updatedEmergency.status}`,
+          });
+          setViewStatusEmergency(newStatus);
+        }
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [viewStatusEmergency]);
+
 
   const emergencyTypes = [
     { name: "En proceso", id: 0 },

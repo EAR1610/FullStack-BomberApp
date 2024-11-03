@@ -22,6 +22,7 @@ const ReportEmergency = () => {
   const [emergencyStatus, setEmergencyStatus] = useState<string>('Registrada');
   const [viewGenerateReport, setViewGenerateReport] = useState<boolean>(false);
   const [typeReport, setTypeReport] = useState<string>('Pdf');
+  const today = new Date();
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -244,13 +245,14 @@ const ReportEmergency = () => {
             Fecha de inicio
             </label>
             <Calendar
-            id="startDate"
-            value={startDate}
-            onChange={(e) => setStartDate(e.value)}
-            showIcon
-            className="w-full"
-            placeholder="Selecciona la fecha de inicio"
-            dateFormat="dd/mm/yy"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.value)}
+              showIcon
+              className="w-full"
+              placeholder="Selecciona la fecha de inicio"
+              dateFormat="dd/mm/yy"
+              maxDate={today}
             />
         </div>
 
@@ -259,13 +261,14 @@ const ReportEmergency = () => {
             Fecha de fin
             </label>
             <Calendar
-            id="endDate"
-            value={endDate}
-            onChange={(e) => setEndDate(e.value)}
-            showIcon
-            className="w-full"
-            placeholder="Selecciona la fecha de fin"
-            dateFormat="dd/mm/yy"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.value)}
+              showIcon
+              className="w-full"
+              placeholder="Selecciona la fecha de fin"
+              dateFormat="dd/mm/yy"
+              maxDate={today}
             />
         </div>
 
@@ -298,7 +301,6 @@ const ReportEmergency = () => {
     </div>
 
       <div>
-
         <Dialog header="Generar reporte" visible={viewGenerateReport} onHide={() => setViewGenerateReport(false)}
           style={{ width: '35vw' }} breakpoints={{ '641px': '90vw' }}>
           <div className="flex flex-wrap items-center justify-between gap-2 mb-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">

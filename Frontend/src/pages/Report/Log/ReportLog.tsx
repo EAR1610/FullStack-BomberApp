@@ -7,10 +7,8 @@ import { Toast } from 'primereact/toast';
 import { Calendar } from 'primereact/calendar';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
 import { RadioButton, RadioButtonChangeEvent } from "primereact/radiobutton";
 import { handleErrorResponse } from "../../../helpers/functions";
-import TableEmergenciesReport from "../../../components/Table/TableEmergenciesReport";
 import { ColumnMeta } from "../../../helpers/Interfaces";
 import { useNavigate } from "react-router-dom";
 import TableLogsReport from "../../../components/Table/TableLogsReport";
@@ -23,6 +21,7 @@ const ReportLog = () => {
   const [errorMessages, setErrorMessages] = useState<string>('');
   const [viewGenerateReport, setViewGenerateReport] = useState<boolean>(false);
   const [typeReport, setTypeReport] = useState<string>('Pdf');
+  const today = new Date();
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -211,13 +210,14 @@ const ReportLog = () => {
             Fecha de inicio
             </label>
             <Calendar
-            id="startDate"
-            value={startDate}
-            onChange={(e) => setStartDate(e.value)}
-            showIcon
-            className="w-full"
-            placeholder="Selecciona la fecha de inicio"
-            dateFormat="dd/mm/yy"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.value)}
+              showIcon
+              className="w-full"
+              placeholder="Selecciona la fecha de inicio"
+              dateFormat="dd/mm/yy"
+              maxDate={today}
             />
         </div>
 
@@ -226,13 +226,14 @@ const ReportLog = () => {
             Fecha de fin
             </label>
             <Calendar
-            id="endDate"
-            value={endDate}
-            onChange={(e) => setEndDate(e.value)}
-            showIcon
-            className="w-full"
-            placeholder="Selecciona la fecha de fin"
-            dateFormat="dd/mm/yy"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.value)}
+              showIcon
+              className="w-full"
+              placeholder="Selecciona la fecha de fin"
+              dateFormat="dd/mm/yy"
+              maxDate={today}
             />
         </div>
 
