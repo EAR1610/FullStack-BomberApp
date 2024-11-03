@@ -13,6 +13,7 @@ import { Column } from 'primereact/column';
 import { ConfirmDialog } from "primereact/confirmdialog"
 import { Button } from 'primereact/button';
 import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
+import { handleErrorResponse } from "../../helpers/functions"
 
 const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
 
@@ -33,7 +34,7 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
       "emergency.description": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       "vehicle.plateNumber": { value: null, matchMode: FilterMatchMode.STARTS_WITH }
     });
-  const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [updateTableVehicleEmergency, setUpdateTableVehicleEmergency] = useState(false);
     const [errorMessages, setErrorMessages] = useState('');
 
@@ -132,22 +133,10 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
         setIsUpdateVehicleEmergency(false);
         cleanData();
         
-      } catch (error) {
-        showAlert("error", "Error", handleErrorResponse(error));
+      } catch (err) {
+        showAlert("error", "Error", handleErrorResponse(err, setErrorMessages));
       }
-    }
-
-    const handleErrorResponse = (error: any) => {      
-      if (error.response && error.response.data && error.response.data.errors) {
-        const errorMessages = error.response.data.errors
-          .map((err: { message: string }) => err.message)
-          .join(', ');
-          setErrorMessages(errorMessages);
-      } else {
-        setErrorMessages('Ocurrió un error inesperado');
-      }
-      return errorMessages
-    };
+    }    
 
     const cleanData = () => {
       setMileageOutput(0);

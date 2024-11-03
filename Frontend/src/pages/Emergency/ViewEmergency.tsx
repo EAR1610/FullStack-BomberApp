@@ -221,13 +221,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                 Bomberos para la emergencia
                 </label>
                 <input
-                  onClick={ () => {
-                    if( emergency.status === 'Atendida' || emergency.status === 'Rechazada' || emergency.status === 'Cancelada' ) {
-                      showAlert('error', 'Error', `No se puede establecer bomberos para una emergencia cuyo estado es: ${emergency.status}`);
-                    } else {
-                      setViewFirefighterToSetEmergency(true);
-                    }
-                  }}
+                  onClick={ () => setViewFirefighterToSetEmergency(true) }
                   value='Establecer bomberos para la emergencia'
                   className="w-full cursor-pointer rounded-lg border border-yellow bg-yellow-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />                
@@ -238,13 +232,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                 Unidades para la emergencia
                 </label>
                 <input
-                  onClick={ () => {
-                    if( emergency.status === 'Atendida' || emergency.status === 'Rechazada' || emergency.status === 'Cancelada' ) {
-                      showAlert('error', 'Error', `No se puede establecer unidades para una emergencia cuyo estado es: ${emergency.status}`);
-                    } else {
-                      setViewVehicleSetEmergency(true) 
-                    }
-                  }}
+                  onClick={ () => setViewVehicleSetEmergency(true) }
                   value='Establecer las unidades para la emergencia'
                   className="w-full cursor-pointer rounded-lg border border-yellow bg-green-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />
@@ -255,13 +243,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                 Insumos para la emergencia
                 </label>
                 <input
-                  onClick={ () => {
-                    if( emergency.status === 'Atendida' || emergency.status === 'Rechazada' || emergency.status === 'Cancelada' ) {
-                      showAlert('error', 'Error', `No se puede establecer insumos para una emergencia cuyo estado es: ${emergency.status}`);
-                    } else {
-                      setViewSupplyEmergency(true) 
-                    }
-                  }}
+                  onClick={ () => setViewSupplyEmergency(true) }
                   value='Establecer los insumos para la emergencia'
                   className="w-full cursor-pointer rounded-lg border border-yellow bg-orange-500 p-4 text-white transition hover:bg-opacity-90 text-center uppercase"
                 />

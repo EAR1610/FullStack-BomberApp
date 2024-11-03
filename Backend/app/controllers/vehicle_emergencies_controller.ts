@@ -36,8 +36,7 @@ export default class VehicleEmergenciesController {
     .where('vehicleId', payload.vehicleId)
     .andWhere('emergencyId', payload.emergencyId)
     .first();
-    if (existingAssignment) return response.badRequest({ error: 'La unidad ya se encuentra asignada a esta emergencia' });
-  
+    if (existingAssignment) return response.badRequest({ errors: [ { message: 'La unidad ya se encuentra asignada a esta emergencia' } ]});
     const vehicle_emergency = new VehicleEmergency();
     vehicle_emergency.fill(payload);
 
@@ -69,7 +68,7 @@ export default class VehicleEmergenciesController {
     .andWhere('emergencyId', payload.emergencyId)
     .andWhereNot('id', params.id)
     .first();
-    if (existingAssignment) return response.badRequest({ error: 'La emergencia ya se encuentra asignada a esta unidad' });
+    if (existingAssignment) return response.badRequest({ errors: [ { message: 'La emergencia ya se encuentra asignada a esta unidad' } ]});
     vehicle_emergency.merge(payload);
 
     return await vehicle_emergency.save();
