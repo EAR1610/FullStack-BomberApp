@@ -5,6 +5,7 @@ import { apiRequestAuth } from "../../lib/apiRequest";
 import Table from "../../components/Table/Table";
 import { Toast } from 'primereact/toast';
 import { useNavigate } from "react-router-dom";
+import { handleErrorResponse } from "../../helpers/functions";
 // import { removeToken } from "../../helpers/functions";
 
 const User = () => {
@@ -12,14 +13,13 @@ const User = () => {
   const [users, setUsers] = useState([]);
   const [changedAUser, setChangedAUser] = useState(false);
   const [viewActiveUsers, setViewActiveUsers] = useState(true);
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;
-
+  const { currentToken, updateToken } = authContext;
 
   const navigate = useNavigate();
-
   const toast = useRef(null);
 
   useEffect(() => {
@@ -49,18 +49,22 @@ const User = () => {
           });    
         }
         if(response) setUsers(response.data);
-      } catch (error) {
-        console.log(error);
-        if(error.response.status === 401) {
-          toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Su sesión ha expirado, por favor inicie sesión nuevamente' });
-          // removeToken();
+      } catch (err) {
+        if(err.request.statusText === 'Unauthorized'){
+          showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+            updateToken('' as any);
+          }, 1500);
         } else {
-          toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener los usuarios' });
+          showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
         }
       }
     }
     getUsers();
   }, [changedAUser, viewActiveUsers]);
+
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (    
     <>

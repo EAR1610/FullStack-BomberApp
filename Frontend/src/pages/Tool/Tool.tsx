@@ -6,6 +6,7 @@ import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import { createLog, handleErrorResponse } from "../../helpers/functions"
 import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
+import { useNavigate } from "react-router-dom"
 
 const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
 
@@ -27,12 +28,13 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;
+  const { currentToken, updateToken } = authContext;
   const userId = currentToken?.user?.id || 1;
   const [errorMessages, setErrorMessages] = useState<string>('');
   const connectionStatus = useInternetConnectionStatus();
   
   const toast = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getToolType = async () => {
@@ -43,8 +45,16 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
           }
         });
         if (response) setToolTypes(response.data);
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        if(err.request.statusText === 'Unauthorized'){
+          showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+            updateToken('' as any);
+          }, 1500);
+        } else {
+          showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+        }
       }
     }
 

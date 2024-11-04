@@ -7,6 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import ViewPost from "./ViewPost";
 import { io } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 
 const BlogWithAuth = () => {
   const [selectedCategory, setSelectedCategory] = useState<String>("Salud");
@@ -20,10 +21,12 @@ const BlogWithAuth = () => {
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;
+  const { currentToken, updateToken } = authContext;
   const userId = currentToken?.user?.id || 1;
   const [viewPost, setViewPost] = useState(false);
   const toast = useRef(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCategories = async () => {
@@ -36,7 +39,15 @@ const BlogWithAuth = () => {
         });
         setCategories(response.data);
       } catch (err) {
-        showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+        if(err.request.statusText === 'Unauthorized'){
+          showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+            updateToken('' as any);
+          }, 1500);
+        } else {
+          showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+        }
       }
     };   
 
@@ -113,7 +124,7 @@ const BlogWithAuth = () => {
         [postId]: imageObjectUrl
       }));
     } catch (error) {
-      console.error('Error fetching user image:', error);
+      showAlert('error', 'Error', 'Error al obtener la imagen');
     }
   };
 
@@ -131,7 +142,6 @@ const BlogWithAuth = () => {
         await fetchUserImage(post.img, post.id);
       }
     } catch (err) {
-      console.log(err);
       showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   };
@@ -150,7 +160,6 @@ const BlogWithAuth = () => {
         await fetchUserImage(post.img, post.id);
       }
     } catch (err) {
-      console.log(err);
       showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   };
@@ -179,7 +188,6 @@ const BlogWithAuth = () => {
       setPostsChanged(!postsChanged);
       createLog(userId, 'ELIMINACIÓN', 'POST', `Se ha borrado el post: ${post.title}`, currentToken?.token);
     } catch (error) {
-      console.log(error);
       showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
     }
   };

@@ -1,13 +1,4 @@
-import { useContext } from "react";
 import { apiRequestAuth } from "../lib/apiRequest";
-import { AuthContextProps } from "../interface/Auth";
-import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-
-// const authContext = useContext<AuthContextProps | undefined>(AuthContext);
-// if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-// const { updateToken } = authContext;
-// const navigate = useNavigate();
 
 export const handleErrorResponse = (error: any, setErrorMessages: (msg: string) => void) => {
   const errorMessages = error?.response?.data?.errors
@@ -75,10 +66,3 @@ export const createLog = async (
     console.log(error);
   }
 };
-
-// export const removeToken = () => {
-//   setTimeout(() => {
-//     updateToken('' as any);
-//     navigate('/login', { replace: true });    
-//   }, 1500);
-// }

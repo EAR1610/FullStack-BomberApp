@@ -42,8 +42,16 @@ const EmergencyRequest = () => {
                     }
                 });
                 if (response) setEmergenciesType(response.data);
-            } catch (error) {
-                console.log(error);
+            } catch (err) {
+                if(err.request.statusText === 'Unauthorized'){
+                  showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+                  setTimeout(() => {
+                    navigate('/login', { replace: true });
+                    updateToken('' as any);
+                  }, 1500);
+                } else {
+                  showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+                }
             }
         }
 

@@ -10,18 +10,20 @@ import { EmergencyCardProps, ViewStatusEmergency } from "../../helpers/Interface
 
 import { io } from 'socket.io-client';
 import { Toast } from "primereact/toast";
+import { handleErrorResponse } from "../../helpers/functions";
 
 const MyEmergencies = () => {
   const [myEmergencies, setMyEmergencies] = useState([]);
   const [selectedEmergency, setSelectedEmergency] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [viewStatusEmergency, setViewStatusEmergency] = useState<ViewStatusEmergency | null>(null);
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   const navigate = useNavigate();
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;
+  const { currentToken, updateToken} = authContext;
 
   const toast = useRef(null);
 
@@ -65,8 +67,16 @@ const MyEmergencies = () => {
           })
         }        
         if(response) setMyEmergencies(response.data);
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        if(err.request.statusText === 'Unauthorized'){
+          showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+            updateToken('' as any);
+          }, 1500);
+        } else {
+          showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+        }
       }
     };
 
@@ -123,6 +133,8 @@ const MyEmergencies = () => {
     setSelectedEmergency(null);
     setModalOpen(false);
   };
+
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
   
   return (
     <>    

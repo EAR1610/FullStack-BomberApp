@@ -17,7 +17,7 @@ const CreateBlog = () => {
   const [categoryId, setCategoryId] = useState(0);
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;
+  const { currentToken, updateToken } = authContext;
   const userId = currentToken?.user?.id || 1;
   const connectionStatus = useInternetConnectionStatus();
 
@@ -33,14 +33,26 @@ const CreateBlog = () => {
 
     if( currentToken?.user.isUser ) navigate('/app/emergency-request');
 
-    const getCategories = async () => { 
+    const getCategories = async () => {
+      try {
         const response = await apiRequestAuth.get("/blog/categories", {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        setCategories(response.data);
+        setCategories(response.data);        
+      } catch (err) {
+        if(err.request.statusText === 'Unauthorized'){
+          showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+            updateToken('' as any);
+          }, 1500);
+        } else {
+          showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+        }
+      }
     }
     getCategories();
   }, []);
@@ -75,8 +87,7 @@ const CreateBlog = () => {
           navigate('/app/blogs');
         }, 2000);
     } catch (err) {
-        console.log(err);
-        showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+      showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
   };
 

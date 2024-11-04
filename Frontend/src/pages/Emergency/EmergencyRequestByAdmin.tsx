@@ -23,30 +23,38 @@ const EmergencyRequestByAdmin = () => {
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-    const { currentToken } = authContext;
+    const { currentToken, updateToken } = authContext;
     const userId = currentToken?.user?.id || 1;
     const [errorMessages, setErrorMessages] = useState<string>('');
     const connectionStatus = useInternetConnectionStatus();
 
     const navigate = useNavigate();
-
     const toast = useRef(null);
 
     useEffect(() => {
-        const getEmergenciesType = async () => {
-            try {
+        try {
+            const getEmergenciesType = async () => {
                 const response = await apiRequestAuth.get("/emergency-type", {
                     headers: {
                         Authorization: `Bearer ${currentToken?.token}`
                     }
                 });
-                if (response) setEmergenciesType(response.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
 
-        getEmergenciesType();
+                if (!response) throw new Error('Error al obtener los tipos de emergencia');                
+                setEmergenciesType(response.data);
+            }   
+            getEmergenciesType();            
+        } catch (err) {
+            if(err.response.data.errors[0].message=== 'Unauthorized access'){
+                showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+                setTimeout(() => {
+                    navigate('/login', { replace: true });
+                    updateToken('' as any);
+                }, 1500);
+            } else {
+                showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+            }          
+        }
     }, []);
 
     const handleSubmit = async (e : any) => {

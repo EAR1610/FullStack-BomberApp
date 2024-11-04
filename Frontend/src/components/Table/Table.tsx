@@ -42,30 +42,42 @@ const Table = ({ data, viewActiveUsers, setViewActiveUsers, changedAUser, setCha
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;  
+  const { currentToken, updateToken } = authContext;  
   const userId = currentToken?.user?.id || 1;
   const navigate = useNavigate();
 
   
   useEffect(() => {
-    const verificarToken = async () => {
-      if( currentToken) {
-        if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
-        if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+    try {
+      const verificarToken = async () => {
+        if( currentToken) {
+          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
+          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+        }
       }
-    }
-    
-    const transformData = async() => {
-      const transformedData = data.map((customer: any) => ({
-        ...customer,
-        rol: roleMap[customer.roleId]
-      }));
-      setCustomers(transformedData);
-      setLoading(false);
-    }
-    
-    verificarToken();
-    transformData();
+      
+      const transformData = async() => {
+        const transformedData = data.map((customer: any) => ({
+          ...customer,
+          rol: roleMap[customer.roleId]
+        }));
+        setCustomers(transformedData);
+        setLoading(false);
+      }      
+
+      verificarToken();
+      transformData();
+    } catch (err) {
+      if(err.request.statusText === 'Unauthorized'){
+        showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+        setTimeout(() => {
+          navigate('/login', { replace: true });
+          updateToken('' as any);
+        }, 1500);
+      } else {
+        showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+      }
+    }    
   }, [data]);
 
   useEffect(() => {

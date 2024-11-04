@@ -23,7 +23,7 @@ const ReportFirefighterShift = () => {
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;
+  const { currentToken,updateToken } = authContext;
 
   const navigate = useNavigate();
   const toast = useRef(null); 
@@ -141,7 +141,6 @@ const ReportFirefighterShift = () => {
   };
 
   const handleSearch = async () => {
-  
     const formatedMonth = formatMonth(monthDate);
     try {
         if( formatedMonth == null ){
@@ -160,7 +159,15 @@ const ReportFirefighterShift = () => {
         if( response.data.length === 0 ) showAlert('warn', 'Error', 'No hay asignaciones de turnos para el mes seleccionado');
 
     } catch (err) {
+      if(err.request.statusText === 'Unauthorized'){
+        showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+        setTimeout(() => {
+          navigate('/login', { replace: true });
+          updateToken('' as any);
+        }, 1500);
+      } else {
         showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+      }
         setFirefighterShifts([]);
     }
   };

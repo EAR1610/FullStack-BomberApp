@@ -9,18 +9,19 @@ import { useNavigate } from "react-router-dom";
 import TableEmergencies from "../../components/Table/TableEmergencies";
 
 import { io } from 'socket.io-client';
+import { handleErrorResponse } from "../../helpers/functions";
 
 const Emergency = () => {
   const [emergencies, setEmergencies] = useState([]);
   const [viewStatusEmergency, setViewStatusEmergency] = useState(0);
   const [changeStatusEmergency, setChangeStatusEmergency] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<string>('');
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;
+  const { currentToken, updateToken } = authContext;
 
   const navigate = useNavigate();
-
   const toast = useRef(null);
 
   const alertSound = new Howl({
@@ -69,6 +70,7 @@ const Emergency = () => {
 
   useEffect(() => {
     const getEmergencies = async () => {
+      
       if (currentToken?.user.isFirefighter) navigate('/app/firefighter-shift');
       if (currentToken?.user.isUser) navigate('/app/emergency-request');
 
@@ -107,15 +109,24 @@ const Emergency = () => {
         }
 
         if (response) setEmergencies(response.data);
-        console.log(response.data);
 
-      } catch (error) {
-        toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Ha ocurrido un error al obtener las emergencias' });
+      } catch (err) {
+        if(err.request.statusText === 'Unauthorized'){
+          showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+            updateToken('' as any);
+          }, 1500);
+        } else {
+          showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+        }
       }
     }
 
     getEmergencies();
   }, [changeStatusEmergency, viewStatusEmergency]);
+
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <>

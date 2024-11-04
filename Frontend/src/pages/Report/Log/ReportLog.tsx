@@ -25,7 +25,7 @@ const ReportLog = () => {
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-  const { currentToken } = authContext;
+  const { currentToken, updateToken } = authContext;
 
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -151,7 +151,6 @@ const ReportLog = () => {
   };
 
   const handleSearch = async () => {
-  
     const formattedStartDate = formatDate(startDate);
     const formattedEndDate = formatDate(endDate);
     
@@ -178,7 +177,15 @@ const ReportLog = () => {
         if( response.data.length === 0 ) showAlert('warn', 'Error', 'No hay registros para generar el reporte');
 
     } catch (err) {
+      if(err.request.statusText === 'Unauthorized'){
+        showAlert("error", "Sesion expirada", "Vuelve a iniciar sesion");
+        setTimeout(() => {
+          navigate('/login', { replace: true });
+          updateToken('' as any);
+        }, 1500);
+      } else {
         showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
+      }
     }
   };
 
