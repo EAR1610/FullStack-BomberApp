@@ -43,11 +43,11 @@ const EmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emerge
           <p><strong>Hora de la solicitud:</strong> {formatDateTime(emergencyData.createdAt)}</p>
           <p>
             <strong>Teléfono:</strong> 
-            <a href={`tel:+502${emergencyData.firefighter.user.phone}`} className="text-blue-500 underline">
-              (+502) {emergencyData.firefighter.user.phone}
+            <a href={`tel:+502${emergencyData?.emergency?.user?.phone}`} className="text-blue-500 underline">
+              (+502) {emergencyData?.emergency?.user?.phone}
             </a>
           </p>
-          <p><strong>Usuario:</strong> {emergencyData.firefighter.user.fullName}</p>
+          <p><strong>Usuario:</strong> {emergencyData.emergency?.user?.fullName}</p>
           <p><strong>Solicitante:</strong> {emergencyData.emergency.applicant}</p>
           <p><strong>Dirección:</strong> {emergencyData.emergency.address}</p>
           <p><strong>Descripción:</strong> {emergencyData.emergency.description}</p>

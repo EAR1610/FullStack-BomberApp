@@ -10,7 +10,6 @@ export const EmergencyType = ({ emergencyType, setVisible, isChangedEmergencyTyp
 
     const [name, setName] = useState('');
     const [status, setStatus] = useState('active')
-    const [error, setError] = useState("");
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -36,11 +35,10 @@ export const EmergencyType = ({ emergencyType, setVisible, isChangedEmergencyTyp
         return;
       }
 
-      setError("");
       const formData = new FormData();
     
       if (!name) {
-        setError("Todos los campos son obligatorios");
+        showAlert('error', 'Error', 'Todos los campos son obligatorios');
         return;
       }
     
@@ -108,7 +106,6 @@ export const EmergencyType = ({ emergencyType, setVisible, isChangedEmergencyTyp
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                 />
               </div>
-              { error && <span>{ error }</span> }
             </form>
           </div>
         </div>

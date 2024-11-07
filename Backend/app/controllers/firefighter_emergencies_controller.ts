@@ -37,10 +37,13 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'userId', 'status')
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
-        })     
+        })
+        .preload('user', (query) => {
+          query.select('id', 'username', 'fullName', 'address', 'phone')          
+        })
     })
     return firefighter_emergency
   }
@@ -61,10 +64,13 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'userId', 'status')
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
-        })      
+        })
+        .preload('user', (query) => {
+          query.select('id', 'username', 'fullName', 'address', 'phone')          
+        })
     }).orderBy('createdAt', 'desc');
     return firefighter_emergency
   }
@@ -85,9 +91,12 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'userId', 'status')
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
+        })
+        .preload('user', (query) => {
+          query.select('id', 'username', 'fullName', 'address', 'phone')          
         })
     }).orderBy('createdAt', 'desc');
     return firefighter_emergency
@@ -109,9 +118,12 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'userId', 'status')
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
+        })
+        .preload('user', (query) => {
+          query.select('id', 'username', 'fullName', 'address', 'phone')          
         })
     }).orderBy('createdAt', 'desc');
     return firefighter_emergency
@@ -133,9 +145,12 @@ export default class FirefighterEmergenciesController {
       })
     })
     .preload('emergency', (query) => {
-      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+      query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'userId', 'status')
         .preload('emergencyType', (query) => {
           query.select('id', 'name')
+        })
+        .preload('user', (query) => {
+          query.select('id', 'username', 'fullName', 'address', 'phone')          
         })
     }).orderBy('createdAt', 'desc');
     return firefighter_emergency
@@ -180,9 +195,12 @@ export default class FirefighterEmergenciesController {
           })
       })
       .preload('emergency', (query) => {
-        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'userId', 'status')
           .preload('emergencyType', (query) => {
             query.select('id', 'name')
+          })
+          .preload('user', (query) => {
+            query.select('id', 'username', 'fullName', 'address', 'phone')          
           })
       })
       .where('firefighterId', params.id)
@@ -216,9 +234,12 @@ export default class FirefighterEmergenciesController {
           })
       })
       .preload('emergency', (query) => {
-        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'userId', 'status')
           .preload('emergencyType', (query) => {
             query.select('id', 'name')
+          })
+          .preload('user', (query) => {
+            query.select('id', 'username', 'fullName', 'address', 'phone')          
           })
       })
 
@@ -248,9 +269,12 @@ export default class FirefighterEmergenciesController {
           })
       })
       .preload('emergency', (query) => {
-        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'status')
+        query.select('id', 'applicant', 'address', 'latitude', 'longitude', 'description', 'emergencyTypeId', 'userId', 'status')
           .preload('emergencyType', (query) => {
             query.select('id', 'name')
+          })
+          .preload('user', (query) => {
+            query.select('id', 'username', 'fullName', 'address', 'phone')          
           })
       })
       .where('emergencyId', params.id)
