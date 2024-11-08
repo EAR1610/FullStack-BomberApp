@@ -21,6 +21,7 @@ const TablePenalizedUsers = ({ data, changedAPenalizedUser, setChangedAPenalized
     username: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     fullName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     email: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    phone: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     address: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     dpi: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     status: { value: null, matchMode: FilterMatchMode.EQUALS },
@@ -170,15 +171,16 @@ const TablePenalizedUsers = ({ data, changedAPenalizedUser, setChangedAPenalized
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['username', 'fullName', 'rol', 'address', 'dpi']}
+        globalFilterFields={['username', 'fullName', 'rol', 'address', 'dpi', 'phone']}
         header={header}
         emptyMessage="Usuario no encontrado."
       >
-        <Column field="username" header="Usuario"  style={{ minWidth: '8rem' }}  align={'center'}/>
-        <Column field="fullName" header="Nombre" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="dpi" header="DPI" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="penalizations" header="Penalizaciones" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
+        <Column field="username" header="Usuario"  style={{ minWidth: '8rem' }}  align={'center'} />
+        <Column field="fullName" header="Nombre" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="dpi" header="DPI" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="phone" header="Teléfono" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="penalizations" header="Penalizaciones" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }}  />
       </DataTable>      
     </div>
   )

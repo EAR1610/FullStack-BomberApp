@@ -137,6 +137,7 @@ const CommentsByPost = ({ postId }: { postId: number }) => {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             rows={5}
+            maxLength={1000}
           />
 
           <button

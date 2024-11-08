@@ -177,9 +177,9 @@ export const FirefighterEmergencies = () => {
             {emergencies.map((emergency: EmergencyCardProps, index) => (
               <EmergencyCard
                 key={index}
-                applicant={emergency?.emergency.applicant}
-                address={emergency?.emergency.address}
-                description={emergency?.emergency.description}
+                applicant={emergency?.emergency?.applicant}
+                address={emergency?.emergency?.address}
+                description={emergency?.emergency?.description}
                 user={emergency?.firefighter?.user}
                 onShowDetails={() => openModal(emergency)}
               />

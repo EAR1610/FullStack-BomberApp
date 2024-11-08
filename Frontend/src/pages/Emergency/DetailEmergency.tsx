@@ -114,7 +114,7 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
 
                   <div className="mb-4">
                     <label htmlFor='duration_emergency' className="mb-2.5 block font-medium text-black dark:text-white">
-                      Duración en minutos
+                      Duración en minutos (600 max)
                     </label>
                     <div className="relative">
                       <input

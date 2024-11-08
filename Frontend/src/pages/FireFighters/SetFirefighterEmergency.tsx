@@ -55,7 +55,7 @@ const SetFirefighterEmergency = ({ idEmergency, statusEmergency }: any) => {
         const utcOffset = -6 * 60 * 60 * 1000;
         const localDate = new Date(currentDate.getTime() + utcOffset);
         const formattedDate = localDate.toISOString().replace('Z', '')
-        formData.append("date", formattedDate);
+        formData.append("date", formattedDate);        
 
         const response = await apiRequestAuth.post("/firefighter-shift/on-shift", formData, {
           headers: {

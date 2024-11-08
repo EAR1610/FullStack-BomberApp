@@ -19,6 +19,7 @@ const TableLogsReport = ({ data }: any) => {
         description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         'user.fullName': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         'user.dpi': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        'user.phone': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         date: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
@@ -85,15 +86,16 @@ const TableLogsReport = ({ data }: any) => {
         filterDisplay="row"
         loading={loading}
         header={header}
-        globalFilterFields={['actionType', 'entityType', 'description', 'date', 'user.fullName', 'user.dpi']}
+        globalFilterFields={['actionType', 'entityType', 'description', 'date', 'user.fullName', 'user.dpi', 'user.phone']}
         emptyMessage="Registros no encontrados."
       >
-        <Column field="actionType" header="Acción"  style={{ minWidth: '8rem' }}  align={'center'}/>
-        <Column field="entityType" header="Módulo" style={{ minWidth: '8rem' }} align={'center'}/>
-        <Column field="description" header="Descripción" style={{ minWidth: '10rem' }} align={'center'}/>
-        <Column field="user.fullName" header="Usuario" style={{ minWidth: '10rem' }} align={'left'}/>
-        <Column field="user.dpi" header="DPI" style={{ minWidth: '10rem' }} align={'left'}/>
-        <Column field="date" header="Fecha" style={{ minWidth: '8rem' }} align={'left'}/>
+        <Column field="actionType" header="Acción"  style={{ minWidth: '8rem' }}  align={'center'} />
+        <Column field="entityType" header="Módulo" style={{ minWidth: '8rem' }} align={'center'} />
+        <Column field="description" header="Descripción" style={{ minWidth: '10rem' }} align={'center'} />
+        <Column field="user.fullName" header="Usuario" style={{ minWidth: '10rem' }} align={'left'} />
+        <Column field="user.dpi" header="DPI" style={{ minWidth: '10rem' }} align={'left'} />
+        <Column field="user.phone" header="TEL" style={{ minWidth: '10rem' }} align={'left'} />
+        <Column field="date" header="Fecha" style={{ minWidth: '8rem' }} align={'left'} />
       </DataTable>
     </div>
   )

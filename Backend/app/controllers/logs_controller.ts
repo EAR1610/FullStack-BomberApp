@@ -21,7 +21,7 @@ export default class LogsController {
     const logs = await Log.query()
       .whereBetween('createdAt', [start.toISO(), end.toISO()])
       .preload('user', (query) => {
-        query.select('fullName', 'dpi');
+        query.select('fullName', 'dpi', 'phone');
       });
   
     const formattedLogs = logs.map(log => {

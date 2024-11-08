@@ -42,14 +42,14 @@ export default class FirefighterShiftsController {
     let dateTime: DateTime;
     
     if (!date) {
-      dateTime = DateTime.now(); 
+      dateTime = DateTime.now().set({ hour: 8, minute: 0, second: 0 });
     } else {
-      dateTime = DateTime.fromISO(date);
+      dateTime = DateTime.fromISO(date).set({ hour: 8, minute: 0, second: 0 });
     }
 
     const firefightersOnShift = await FirefighterShift.query()
-      .where('shiftStart', '<=', dateTime.toISO())  
-      .andWhere('shiftEnd', '>', dateTime.toISO())  
+      .where('shiftStart', '<=', dateTime.toFormat('yyyy-MM-dd HH:mm:ss'))
+      .andWhere('shiftEnd', '>', dateTime.toFormat('yyyy-MM-dd HH:mm:ss'))
       .preload('firefighter', (query) => {
         query.preload('user')
         .whereHas('user', (query) => {

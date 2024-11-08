@@ -203,7 +203,7 @@ const TableCategory = ({ data, viewActiveCategories, setViewActiveCategories, lo
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
       <Dialog header="Gestión de Categorías" visible={visible} onHide={() => setVisible(false)}
-        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <BlogCategory
           category={selectedCategory}
           setVisible={setVisible} 
@@ -212,7 +212,7 @@ const TableCategory = ({ data, viewActiveCategories, setViewActiveCategories, lo
         />
       </Dialog>
       <Dialog header="Información de la Categoría" visible={visibleCategory} onHide={() => setVisibleCategory(false)}
-        style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
+        style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewCategory category={selectedCategory} />
       </Dialog>
     </div>

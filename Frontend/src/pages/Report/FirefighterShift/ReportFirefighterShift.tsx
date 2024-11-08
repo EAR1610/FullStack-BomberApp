@@ -218,12 +218,12 @@ const ReportFirefighterShift = () => {
             className="w-full md:w-auto bg-blue-500 text-white hover:bg-blue-600 transition-colors"
             onClick={handleSearch}
             />
-            <Button
+            {/* <Button
             label="Generar reporte"
             icon="pi pi-file"
             className="w-full md:w-auto bg-red-500 text-white hover:bg-red-600 transition-colors"
             onClick={handleReportType}
-            />
+            /> */}
         </div>
     </div>
 

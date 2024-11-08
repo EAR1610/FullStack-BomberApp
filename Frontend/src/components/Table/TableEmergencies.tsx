@@ -23,12 +23,15 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
         "user.phone": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         status: { value: null, matchMode: FilterMatchMode.EQUALS },
+        "emergencyType.name": { value: null, matchMode: FilterMatchMode.EQUALS },
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       });
     const [loading, setLoading] = useState(true);
     const [globalFilterValue, setGlobalFilterValue] = useState('');      
     const [selectedEmergency, setSelectedEmergency] = useState(null);
     const [viewEmergency, setViewEmergency] = useState(false);
+
+    console.log(data);
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -155,15 +158,16 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
         filters={filters}
         filterDisplay="row"
         loading={loading}
-        globalFilterFields={['applicant', 'user.phone', 'address', 'description', 'status']}
+        globalFilterFields={['applicant', 'user.phone', 'address', 'description', 'status', 'emergencyType.name']}
         header={header}
         emptyMessage="Emergencias no encontradas."
       >
-        <Column field="applicant" header="Solicitante"  style={{ minWidth: '8rem' }}  align={'center'}/>
-        <Column field="user.phone" header="Teléfono"  style={{ minWidth: '8rem' }}  align={'center'}/>
-        <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="description" header="Descripción" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'}/>
+        <Column field="applicant" header="Solicitante"  style={{ minWidth: '8rem' }}  align={'center'} />
+        <Column field="user.phone" header="Teléfono"  style={{ minWidth: '8rem' }}  align={'center'} />
+        <Column field="address" header="Dirección" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="description" header="Descripción" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="emergencyType.name" header="Tipo" style={{ minWidth: '12rem' }} align={'center'} />
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
       <Dialog header="Seguimiento de Emergencia" visible={viewEmergency} onHide={() => setViewEmergency(false)}

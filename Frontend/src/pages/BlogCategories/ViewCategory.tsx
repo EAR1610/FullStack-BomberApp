@@ -58,7 +58,7 @@ const ViewCategory = ({ category }:any) => {
                     placeholder="Ingresa la descripción de la categoría"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     required
-                    value={ String(Description) }
+                    value={ String(description) }
                     disabled
                   />
                 </div>

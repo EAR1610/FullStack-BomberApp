@@ -33,12 +33,19 @@ export default class EmergenciesController {
     .preload('user', (query) => {
       query.select('username', 'fullName', 'address', 'phone')
     })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
     .where('status', 'Registrada');
     return emergency
   }
   
   async myEmergencies({ params }: HttpContext) {
-    const emergency = await Emergency.query().where('userId', params.id);
+    const emergency = await Emergency.query()
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
+    .where('userId', params.id);
     return emergency
   }
 
@@ -61,6 +68,9 @@ export default class EmergenciesController {
     const emergency = await Emergency.query()
     .preload('user', (query) => {
       query.select('id', 'username', 'fullName', 'address', 'phone')
+    })
+    .preload('emergencyType', (query) => {
+      query.select('name')
     })
     .where('status', 'Atendida').orderBy('createdAt', 'desc');
     return emergency
@@ -86,6 +96,9 @@ export default class EmergenciesController {
     .preload('user', (query) => {
       query.select('username', 'fullName', 'address', 'phone')
     })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
     .where('status', 'En proceso');
     return emergency
   }
@@ -110,6 +123,9 @@ export default class EmergenciesController {
     .preload('user', (query) => {
       query.select('username', 'fullName', 'address', 'phone')
     })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
     .where('status', 'Cancelada').orderBy('createdAt', 'desc');
     return emergency
   }
@@ -133,6 +149,9 @@ export default class EmergenciesController {
     const emergency = await Emergency.query()
     .preload('user', (query) => {
       query.select('username', 'fullName', 'address', 'phone')
+    })
+    .preload('emergencyType', (query) => {
+      query.select('name')
     })
     .where('status', 'Rechazada');
     return emergency
@@ -226,7 +245,6 @@ export default class EmergenciesController {
 
   async edit({ params }: HttpContext) {}
 
-  // Dentro del método update en tu controlador de emergencia
   async update({ params, request, response }: HttpContext) {
     const payload = await request.validateUsing(createEmergencyValidator);
     const emergency = await Emergency.findOrFail(params.id);

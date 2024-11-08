@@ -66,10 +66,11 @@ const CreateBlog = () => {
     }
 
     const formData = new FormData();
+    const cleanDesc = description.replace(/[\u200B-\u200D\uFEFF]/g, '');
     formData.append('userId', JSON.stringify(userId));
     formData.append('categoryId', JSON.stringify(categoryId));
     formData.append('title', title);
-    formData.append('desc', description);
+    formData.append('desc', cleanDesc);
     if (image) formData.append('img', image);
     formData.append('status', "active");
 
@@ -187,7 +188,7 @@ const CreateBlog = () => {
         {/* Campo Descripción (React Quill) */}
         <div>
           <label className="block text-lg font-semibold text-gray-700 mb-2">Descripción</label>
-          <Editor value={description} onTextChange={(e) => setDescription(e.htmlValue)} style={{ height: '320px' }} />
+          <Editor value={description} onTextChange={(e) => setDescription(e.htmlValue)} style={{ height: '320px' }} maxLength={5000} />
         </div>
 
         {/* Botón de Enviar */}

@@ -82,7 +82,7 @@ export default class AuthController {
         const firefighter = await Firefighter.query().where('userId', userId).first();
 
         const settings = await Setting.query().first()
-        const maxPenalizations = settings?.max_penalizations || 3;
+        const maxPenalizations = settings?.maxPenalizations || 3;
         
         if (user.penalizations >= maxPenalizations) response.status(401).send({ error: 'Tu cuenta está suspendida por demasiadas penalizaciones.' });
 

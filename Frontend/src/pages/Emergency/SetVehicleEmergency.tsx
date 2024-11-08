@@ -223,6 +223,7 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
                       required
                       value={mileageOutput}
                       min={0}
+                      max={50000}
                       onChange={ (e) => setMileageOutput(parseFloat(e.target.value) || 0) }
                     />
                   </div>
@@ -241,6 +242,7 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
                       required
                       value={mileageInbound}
                       min={0}
+                      max={50000}
                       onChange={ (e) => setMileageInbound(parseFloat(e.target.value) || 0) }
                     />
                   </div>

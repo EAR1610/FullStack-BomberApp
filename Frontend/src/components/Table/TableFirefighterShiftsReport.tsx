@@ -19,6 +19,7 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
   const [filters, setFilters] = useState({
     "user.fullName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     "user.dpi": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    "user.phone": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     "user.email": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     shiftPreference: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -108,13 +109,14 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
         filterDisplay="row"
         loading={loading}
         header={header}
-        globalFilterFields={['user.fullName', 'user.dpi', 'user.email', 'shiftPreference']}
+        globalFilterFields={['user.fullName', 'user.dpi', 'user.email', 'shiftPreference', 'user.phone']}
         emptyMessage="No hay turnos asignados."
       >
-        <Column field="user.fullName" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'}/>
-        <Column field="user.dpi" header="DPI" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="user.email" header="Correo" style={{ minWidth: '12rem' }} align={'center'}/>
-        <Column field="shiftPreference" header="Turno" style={{ minWidth: '8rem' }} align={'center'}/>
+        <Column field="user.fullName" header="Nombre"  style={{ minWidth: '12rem' }}  align={'center'} />
+        <Column field="user.dpi" header="DPI" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="user.phone" header="Teléfono" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="user.email" header="Correo" style={{ minWidth: '12rem' }} align={'center'} />
+        <Column field="shiftPreference" header="Turno" style={{ minWidth: '8rem' }} align={'center'} />
         <Column header="Emergencias asignadas" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} align='left' />
       </DataTable>
       <Dialog header="Emergencias asignadas a un bombero" visible={viewEmergenciesByFirefighterShift} onHide={() => setViewEmergenciesByFirefighterShift(false)}

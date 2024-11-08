@@ -16,13 +16,12 @@ const PenalizedUsers = () => {
   const { currentToken } = authContext;
 
   const navigate = useNavigate();
-
   const toast = useRef(null);
 
   useEffect(() => {
 
-    if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
-    if( currentToken?.user.isUser ) navigate('/app/emergency-request');
+    if( currentToken?.user?.isFirefighter ) navigate('/app/firefighter-shift');
+    if( currentToken?.user?.isUser ) navigate('/app/emergency-request');
     
    /**
    * ? Retrieves a list of users from the API using the current authentication token.
