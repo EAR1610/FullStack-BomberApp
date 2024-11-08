@@ -242,7 +242,7 @@ const ReportFirefighterShift = () => {
             <Button label="Generar" icon="pi pi-file" className="w-full md:w-auto bg-blue-500 text-white hover:bg-blue-600 transition-colors" onClick={handleReport} />
           </div>
         </Dialog>
-        <TableFirefighterShiftsReport data={firefighterShifts} />
+        <TableFirefighterShiftsReport data={firefighterShifts} monthDate={monthDate} />
       </div>
     </div>
   )

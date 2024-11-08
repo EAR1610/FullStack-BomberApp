@@ -14,7 +14,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { AuthContextProps } from '../../interface/Auth';
 import { useNavigate } from 'react-router-dom';
 
-const TableFirefighterShiftsReport = ({ data }: any) => {
+const TableFirefighterShiftsReport = ({ data, monthDate }: any) => {
 
   const [filters, setFilters] = useState({
     "user.fullName": { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -30,11 +30,10 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
   const [viewEmergenciesByFirefighterShift, setViewEmergenciesByFirefighterShift] = useState(false);
 
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
-    if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
-    const { currentToken } = authContext;
-    const userId = currentToken?.user?.id || 1;
-    const navigate = useNavigate();
-
+  if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
+  const { currentToken } = authContext;
+  const userId = currentToken?.user?.id || 1;
+  const navigate = useNavigate();  
 
   const toast = useRef(null);
 
@@ -124,6 +123,7 @@ const TableFirefighterShiftsReport = ({ data }: any) => {
         <EmergenciesByFirefighterShift 
           firefighterShift={selectedFirefighterShift}
           setViewEmergenciesByFirefighterShift={setViewEmergenciesByFirefighterShift}
+          monthDate={monthDate}
         />
         </Dialog>
     </div>

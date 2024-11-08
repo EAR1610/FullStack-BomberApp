@@ -18,7 +18,7 @@ import 'primeicons/primeicons.css';
 import { handleErrorResponse } from "../../helpers/functions"
 
 
-const EmergenciesByFirefighterShift = ({ firefighterShift, setViewEmergencies }: any) => {
+const EmergenciesByFirefighterShift = ({ firefighterShift, setViewEmergencies, monthDate }: any) => {
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -50,7 +50,7 @@ const EmergenciesByFirefighterShift = ({ firefighterShift, setViewEmergencies }:
     useEffect(() => {
       const getEmergenciesByFirefighterShift = async () => {
         const formData = new FormData();
-        const formatedMonth = formatMonth(firefighterShift.createdAt);
+        const formatedMonth = formatMonth(monthDate);
 
         if( formatedMonth == null ){
             showAlert('warn', 'Error', 'La fecha de inicio y la fecha de fin son obligatorias');
@@ -66,7 +66,6 @@ const EmergenciesByFirefighterShift = ({ firefighterShift, setViewEmergencies }:
               },
             });
 
-            console.log(response);
             if (response) setEmergenciesByFirefighterShift(response.data);
             setLoading(false);
             
