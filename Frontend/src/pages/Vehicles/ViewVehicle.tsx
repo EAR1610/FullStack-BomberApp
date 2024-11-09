@@ -62,10 +62,10 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
   
 
   useEffect(() => {
-
     const getVehicle = async () => {
       const formattedDate = getFormattedDate();
-        setDateOfPurchase(formattedDate);
+      setDateOfPurchase(formattedDate);
+      console.log(vehicle);
       if( vehicle ) {
         setBrand(vehicle.brand)
         setModel(vehicle.model)
@@ -145,12 +145,12 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
               </div>
 
               <div className="mb-4">
-                <label htmlFor='line' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Línea
+                <label htmlFor='equipment' className="mb-2.5 block font-medium text-black dark:text-white">
+                  Equipamento
                 </label>
                 <div className="relative">
                   <input
-                    id='line'
+                    id='equipment'
                     type="text"
                     placeholder="Ingresa la línea de la unidad"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -163,7 +163,7 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
 
               <div className="mb-4">
                 <label htmlFor='gasoline_type' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Gasolina
+                  Combustible
                 </label>
                 <div className="relative">
                   <input

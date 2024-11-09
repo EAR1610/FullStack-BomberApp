@@ -131,7 +131,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
       formData.append('dateOfPurchase', new Date(dateOfPurchase).toISOString().split('T')[0]);
       formData.append('dateOfLeaving', '');
       formData.append('reasonOfLeaving', String(null));
-      formData.append('remarks', String(null));
+      formData.append('remarks', remarks);
       formData.append('vehicleTypeId', JSON.stringify(selectedVehicleType?.id));
       formData.append('originTypeId', JSON.stringify(selectedOriginType?.id));
       formData.append('status', status);
@@ -210,12 +210,12 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
               </div>
 
               <div className="mb-4">
-                <label htmlFor='line' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Línea
+                <label htmlFor='equipment' className="mb-2.5 block font-medium text-black dark:text-white">
+                  Equipamento
                 </label>
                 <div className="relative">
                   <input
-                    id='line'
+                    id='equipment'
                     type="text"
                     placeholder="Ingresa la línea de la unidad"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -228,7 +228,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
 
               <div className="mb-4">
                 <label htmlFor='gasoline_type' className="mb-2.5 block font-medium text-black dark:text-white">
-                  Gasolina
+                  Combustible
                 </label>
                 <div className="relative">
                   <input
@@ -291,8 +291,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
                     maxLength={250}
                     placeholder="Especifique la observación del vehículo" 
                     autoResize
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary text-lg"
-                    readOnly
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary text-lg"                    
                   />
                 </div>
               </div>

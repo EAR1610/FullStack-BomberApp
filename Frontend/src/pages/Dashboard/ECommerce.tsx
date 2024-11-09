@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
     <>
     <div className="space-y-6 flex">          
       <div className="w-full bg-gray-100 p-4 rounded-lg items-center">        
-        <iframe title="Dashboard BomberApp Final" width="1800" height="1060" src="https://app.powerbi.com/view?r=eyJrIjoiYzU5MjFkMzUtODkwNi00OTJhLTg5NzktOGFjMzQzYTZkZjYyIiwidCI6IjVmNTNiNGNlLTYzZDQtNGVlOC04OGQyLTIyZjBiMmQ0YjI3YSIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
+        <iframe title="Dashboard BomberApp Final" width="1650" height="1060" src="https://app.powerbi.com/view?r=eyJrIjoiYzU5MjFkMzUtODkwNi00OTJhLTg5NzktOGFjMzQzYTZkZjYyIiwidCI6IjVmNTNiNGNlLTYzZDQtNGVlOC04OGQyLTIyZjBiMmQ0YjI3YSIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
       </div>
     </div>
     </>
