@@ -7,13 +7,16 @@ import './css/satoshi.css';
 import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';
 import { AuthContextProvider } from './context/AuthContext';
+import { EmergencyProvider } from './context/EmergencyContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <PrimeReactProvider>
     <React.StrictMode>
-        <AuthContextProvider>
+      <AuthContextProvider>
+        <EmergencyProvider>
           <App />
-        </AuthContextProvider>
+        </EmergencyProvider>
+      </AuthContextProvider>
     </React.StrictMode>,
   </PrimeReactProvider>
 );
