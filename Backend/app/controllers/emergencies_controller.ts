@@ -204,7 +204,9 @@ export default class EmergenciesController {
 
     if( !settigs ) return response.status(404).json({ errors: [ { message: 'No se ha encontrado la configuración' } ]} );
     if (!user) return response.status(401).json({ errors: [ { message: 'No tienes permisos para crear una emergencia' } ]} );
+
     const maxPenalizations = settigs.maxPenalizations;
+
     if( user.penalizations >= maxPenalizations ) return response.status(400).json({ errors: [ { message: `No puedes crear otra emergencia, ya has superado el número máximo de penalizaciones`} ]} );
 
     const payload = await request.validateUsing(createEmergencyValidator);      
@@ -226,11 +228,20 @@ export default class EmergenciesController {
   
     const emergency = new Emergency();
     emergency.fill(payload);
-    await emergency.save();
+    const newEmergency = await emergency.save();
+
+    const emergencyForNotification = await Emergency.query()
+    .preload('user', (query) => {
+      query.select('username', 'fullName', 'address', 'phone')
+    })
+    .preload('emergencyType', (query) => {
+      query.select('name')
+    })
+    .where('id', newEmergency.id).first();
   
     const io = Ws.io;
     if (io) {
-      io.emit('emergencyCreated', emergency);
+      io.emit('emergencyCreated', emergencyForNotification);
     } else {
       console.error('WebSocket server is not initialized.');
     }
@@ -262,15 +273,14 @@ export default class EmergenciesController {
     }
 
     const firefighters = await FirefighterEmergency.query()
-        .where('emergencyId', emergency.id)
-        .preload('firefighter');
+      .where('emergencyId', emergency.id)
+      .preload('firefighter');
 
-        console.log(firefighters)
     firefighters.forEach((firefighterEmergency) => {
-        const firefighterId = firefighterEmergency.firefighter.id;
-        if (io) {
-            io.to(`firefighter_${firefighterId}`).emit('emergencyUpdatedForFirefighter', emergency);
-        }
+      const firefighterId = firefighterEmergency.firefighter.id;
+      if (io) {
+          io.to(`firefighter_${firefighterId}`).emit('emergencyUpdatedForFirefighter', emergency);
+      }
     });
 
     return emergency;
