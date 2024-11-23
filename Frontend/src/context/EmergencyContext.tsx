@@ -27,13 +27,13 @@ export const EmergencyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     socket.on('emergencyCreated', (newEmergency) => {
-      playAlertSound();
-
-      window.addEventListener('mousemove', handleUserActivity);
-      window.addEventListener('keydown', handleUserActivity);
-
-      setEmergencies((prevEmergencies) => [newEmergency, ...prevEmergencies]);
-      if( currentToken?.user?.isAdmin ){
+      if( !currentToken?.user?.isAdmin ) {
+        playAlertSound();
+  
+        window.addEventListener('mousemove', handleUserActivity);
+        window.addEventListener('keydown', handleUserActivity);
+  
+        setEmergencies((prevEmergencies) => [newEmergency, ...prevEmergencies]);
         toast.current?.show({
           severity: 'info',
           summary: 'Nueva emergencia',
@@ -41,8 +41,8 @@ export const EmergencyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           life: 5000,
           closable: true,
         });
-        if (viewStatusEmergency !== 0) setViewStatusEmergency(0);
       }
+      if (viewStatusEmergency !== 0) setViewStatusEmergency(0);
     });
 
     return () => {

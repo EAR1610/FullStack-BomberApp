@@ -18,8 +18,7 @@ const Emergency = () => {
   const { currentToken, updateToken } = authContext;
 
   const emergency = useEmergency();
-  const { emergencies, setEmergencies, viewStatusEmergency, setViewStatusEmergency } = emergency;
-  console.log(viewStatusEmergency);
+  const { emergencies, setEmergencies, viewStatusEmergency, setViewStatusEmergency } = emergency;  
 
   const navigate = useNavigate();
   const toast = useRef(null); 
