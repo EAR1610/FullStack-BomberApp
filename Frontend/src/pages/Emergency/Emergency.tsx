@@ -80,7 +80,6 @@ const Emergency = () => {
     }
 
     getEmergencies();
-    console.log('Intentando actualizar emergencias');
   }, [changeStatusEmergency, viewStatusEmergency]);
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });

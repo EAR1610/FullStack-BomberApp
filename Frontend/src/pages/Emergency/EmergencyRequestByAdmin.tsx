@@ -72,6 +72,7 @@ const EmergencyRequestByAdmin = () => {
         formData.append('latitude', String(latitude));
         formData.append('longitude', String(longitude));
         formData.append('description', description);
+        formData.append('reason', '');
         formData.append('status', status);
         formData.append('userId', String(currentToken?.user.id));
 

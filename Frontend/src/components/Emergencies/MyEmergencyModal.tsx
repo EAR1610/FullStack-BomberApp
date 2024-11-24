@@ -27,6 +27,9 @@ const MyEmergencyModal: React.FC<EmergencyModalProps> = ({ isOpen, onClose, emer
                 { emergencyData.status }
               </span>
             </p>
+            {emergencyData.status === 'Cancelada' || emergencyData.status === 'Rechazada' ? (
+            <p className="mb-2"><strong>Motivo:</strong> {emergencyData.reason}</p>
+          ) : null}
           </div>
   
           <MapComponent latitude={emergencyData.latitude} longitude={emergencyData.longitude} isUser={isUser} />

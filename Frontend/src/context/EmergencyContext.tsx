@@ -27,7 +27,7 @@ export const EmergencyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     socket.on('emergencyCreated', (newEmergency) => {
-      if( !currentToken?.user?.isAdmin ) {
+      if( currentToken.user.isAdmin ) {
         playAlertSound();
   
         window.addEventListener('mousemove', handleUserActivity);

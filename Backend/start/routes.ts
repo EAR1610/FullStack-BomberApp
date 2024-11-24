@@ -94,6 +94,9 @@ router.group(() => {
 }).prefix('users/supply-type').use(middleware.auth());
 
 router.resource('users/vehicle-emergency', VehicleEmergenciesController).use('*', middleware.auth());
+router.group(() => {
+  router.post('/getLastMileage/:id', [VehicleEmergenciesController, 'getLastMileage']);
+}).prefix('users/vehicle-emergency').use(middleware.auth());
 
 router.resource('users/detail-emergency', DetailEmergenciesController).use('*', middleware.auth());
 

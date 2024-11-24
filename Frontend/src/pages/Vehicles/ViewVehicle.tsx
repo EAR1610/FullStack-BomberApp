@@ -64,8 +64,7 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
   useEffect(() => {
     const getVehicle = async () => {
       const formattedDate = getFormattedDate();
-      setDateOfPurchase(formattedDate);
-      console.log(vehicle);
+      setDateOfPurchase(formattedDate);      
       if( vehicle ) {
         setBrand(vehicle.brand)
         setModel(vehicle.model)
@@ -76,14 +75,17 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
         setRemarks(vehicle.remarks)
         setDateOfPurchase(vehicle.dateOfPurchase)
         setStatus(vehicle.status)
+
         setSelectedVehicleType(() => {
           const vehicleType = vehicleTypes.find((type) => type.id === vehicle.vehicleTypeId);
           return vehicleType;
         })
+
         setselectedOriginType(() => {
           const originType = originTypes.find((type) => type.id === vehicle.originTypeId);
           return originType;
         })
+        
       }      
     }
 

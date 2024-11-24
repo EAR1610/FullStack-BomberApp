@@ -29,9 +29,7 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
     const [loading, setLoading] = useState(true);
     const [globalFilterValue, setGlobalFilterValue] = useState('');      
     const [selectedEmergency, setSelectedEmergency] = useState(null);
-    const [viewEmergency, setViewEmergency] = useState(false);
-
-    console.log(data);
+    const [viewEmergency, setViewEmergency] = useState(false);    
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -39,7 +37,6 @@ const TableEmergencies = ({ data, setViewStatusEmergency, setChangeStatusEmergen
     const userId = currentToken?.user?.id || 1;
     const navigate = useNavigate();
 
-    
     const toast = useRef(null);
     
     useEffect(() => {

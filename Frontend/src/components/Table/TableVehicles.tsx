@@ -68,20 +68,6 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       verificarToken();
     }, []);
 
-    // useEffect(() => {
-    //   if( selectedVehicle && isInactiveVehicle ) {
-    //       confirmDialog({
-    //           message: `${!viewActiveVehicles ? '¿Desea activar este registro?' : '¿Desea inactivar este registro?'}`,
-    //           header: `${!viewActiveVehicles ? 'Confirma la activación' : 'Confirma la inactivación'}`,
-    //           icon: 'pi pi-info-circle',
-    //           acceptClassName: `${!viewActiveVehicles ? 'p-button-success' : 'p-button-danger'}`,
-    //           accept,
-    //           reject,
-    //           onHide: () => setIsInactiveVehicle(false)
-    //       });
-    //   }
-    // }, [selectedVehicle, isInactiveVehicle]);
-
     const openDialog = () => {
       setIsDialogVisible(true);
     };
@@ -139,7 +125,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
     setSelectedVehicle(vehicleType);
   }
 
-  const accept = async () => {    
+  const accept = async () => {
     if (!selectedVehicle) return;
     if(!reason){
       toast.current.show({ severity: 'error', summary: 'Error', detail: `Debe especificar el motivo de la ${!viewActiveVehicles ? 'activación' : 'inactivación'}`, life: 3000 });

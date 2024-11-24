@@ -178,7 +178,21 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
                 style={{ fontSize: '0.875rem', padding: '0.375rem 0.75rem' }}
             />
         </div>
-    )};    
+    )};
+    
+    const setVehicleToEmergency = async (vehicle: any) => {      
+      try {
+        const response = await apiRequestAuth.post(`/vehicle-emergency/getLastMileage/${vehicle?.id}`, {}, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`,
+          },
+        })
+        if( response ) setMileageOutput(response.data);
+      } catch (error) {
+        console.log(error);
+        showAlert("error", "Error", "Error al obtener el kilometraje del vehículo");
+      }
+    }
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
@@ -202,7 +216,11 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
                       label: `${vehicle.brand} ${vehicle.model} - ${vehicle.plateNumber}`,
                       value: vehicle 
                     }))}
-                    onChange={(e) => setSelectedVehicle(e.value)}
+                    onChange={ (e) => {
+                        setSelectedVehicle(e.value);
+                        setVehicleToEmergency(e.value) 
+                      }
+                    }
                     placeholder="Selecciona el vehículo para la emergencia"
                     className="w-full"
                   />

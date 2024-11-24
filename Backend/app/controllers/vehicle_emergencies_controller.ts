@@ -55,6 +55,18 @@ export default class VehicleEmergenciesController {
 
     return vehicle_emergency
   }
+
+  async getLastMileage({ params }: HttpContext) {
+    const vehicleEmergency = await VehicleEmergency.query()
+      .where('vehicleId', params.id)
+      .orderBy('mileageInbound', 'desc')
+      .first();
+  
+    if (!vehicleEmergency) return 0; 
+      
+    const totalMileage = vehicleEmergency.mileageInbound ?? 0;
+    return totalMileage;
+  }
   
   async edit({ params }: HttpContext) {}
   

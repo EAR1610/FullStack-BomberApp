@@ -9,6 +9,7 @@ export const createEmergencyValidator = vine.compile(
         latitude: vine.number(),
         longitude: vine.number(),
         description: vine.string(),
+        reason: vine.string().nullable(),
         status: vine.enum(['Registrada', 'En proceso', 'Atendida', 'Cancelada', 'Rechazada']),
     })
 )

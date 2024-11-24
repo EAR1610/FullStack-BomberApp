@@ -102,11 +102,6 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
     { id: 3, name: "Usuario" }
   ];
 
-  const rolesWithoutAdmin = [
-    { id: 2, name: "Bombero" },
-    { id: 3, name: "Usuario" }
-  ];
-
   const selectedRoleTemplate = (option:any, props:any) => {
     if (option) {
         return (
@@ -538,7 +533,7 @@ const SignUp: React.FC = ({ user, setVisible, changedAUser, setChangedAUser }:an
                       <Dropdown
                         value={selectedRole}
                         onChange={handleRoleChange}
-                        options={ user?.isAdmin ? roles : rolesWithoutAdmin }
+                        options={roles}
                         optionLabel="name"
                         placeholder="Selecciona un rol"
                         filter

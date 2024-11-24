@@ -30,6 +30,9 @@ export default class Emergency extends BaseModel {
   declare description: string | null
 
   @column()
+  declare reason: string | null
+
+  @column()
   declare status: 'Registrada' | 'En proceso' | 'Atendida' | 'Cancelada' | 'Rechazada'
 
   @belongsTo(() => EmergencyType)

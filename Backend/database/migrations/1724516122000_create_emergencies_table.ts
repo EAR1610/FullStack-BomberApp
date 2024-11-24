@@ -12,7 +12,8 @@ export default class extends BaseSchema {
       table.text('address').nullable()
       table.double('latitude').nullable()
       table.double('longitude').nullable()
-      table.text('description').nullable()      
+      table.text('description').nullable()
+      table.text('reason').nullable()
       table.enu('status', ['Registrada', 'En proceso', 'Atendida', 'Cancelada', 'Rechazada']).defaultTo('Registrada')
 
       table.timestamp('created_at')

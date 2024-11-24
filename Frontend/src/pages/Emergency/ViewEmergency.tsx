@@ -12,6 +12,7 @@ import SetVehicleEmergency from "./SetVehicleEmergency"
 import DetailEmergency from "./DetailEmergency"
 import SetSupplyEmergency from "./SetSupplyEmergency"
 import { createLog } from "../../helpers/functions"
+import { Button } from 'primereact/button';
 import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 
 const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, changeStatusEmergency }: any) => {
@@ -20,6 +21,8 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
     const [viewVehicleSetEmergency, setViewVehicleSetEmergency] = useState(false);
     const [viewDetailEmergency, setViewDetailEmergency] = useState(false);
     const [viewSupplyEmergency, setViewSupplyEmergency] = useState(false);
+    const [viewReasonEmergency, setViewReasonEmergency] = useState(false);
+    const [reasonStatusEmergency, setreasonStatusEmergency] = useState('');
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     const [selectedStatus, setSelectedStatus] = useState<string>(emergency?.status || 'Registrada');
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -121,6 +124,7 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         updateEmergencyFormData.append('latitude', String(emergency.latitude));
         updateEmergencyFormData.append('longitude', String(emergency.longitude));
         updateEmergencyFormData.append('description', emergency.description);
+        updateEmergencyFormData.append('reason', reasonStatusEmergency);
         updateEmergencyFormData.append('userId', emergency.userId);
         updateEmergencyFormData.append('status', selectedStatus);
     
@@ -151,6 +155,14 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
     }
     
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+
+  const acceptAction = async () => {
+    if (reasonStatusEmergency.trim()) {
+      setViewReasonEmergency(false);
+    } else {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Por favor, especificar el motivo del estado de la emergencia', life: 3000 });
+    }
+  };
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
@@ -271,6 +283,9 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
                       setSelectedStatus(selectedStatus); // No cambia el estado
                       return;
                     }
+                    if ([ 'Cancelada', 'Rechazada' ].includes(newStatus)) {
+                      setViewReasonEmergency(true);
+                    }
                     setSelectedStatus(newStatus);
                   }}
                   placeholder="Selecciona el estado de la emergencia"
@@ -315,6 +330,26 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
       <Dialog header="Asignación de insumos a la emergencia" visible={viewSupplyEmergency} onHide={() => setViewSupplyEmergency(false)}
         style={{ width: '90vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <SetSupplyEmergency idEmergency={emergency?.id} statusEmergency={emergency.status} />
+      </Dialog>
+      <Dialog header="Ingrese el motivo de la emergencia" visible={viewReasonEmergency} onHide={() => setViewReasonEmergency(false)}
+        style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}
+        footer={
+          <div className="flex justify-end space-x-2">
+            <Button label="Aceptar" severity="success" onClick={acceptAction} />
+            <Button label="Cancelar" severity="danger" onClick={() => setViewReasonEmergency(false)} />
+          </div>
+        }>
+        <div className='w-full'>
+          <InputTextarea 
+            value={reasonStatusEmergency} 
+            onChange={(e) => setreasonStatusEmergency(e.target.value)} 
+            rows={3} 
+            maxLength={250}
+            placeholder="Especifique el motivo de la emergencia"
+            autoResize
+            className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary text-lg" 
+          />
+        </div>
       </Dialog>
       <Dialog
           header="Detalle Emergencia"
