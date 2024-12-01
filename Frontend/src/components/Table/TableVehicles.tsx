@@ -105,6 +105,8 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
 
     const editVehicles = (vehicleType: any) => {
       setSelectedVehicle(vehicleType);
+      console.log(selectedVehicle);
+      console.log(vehicleType);
       setVisible(true);
     }
 
