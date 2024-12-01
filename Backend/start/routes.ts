@@ -33,7 +33,18 @@ import LogsController from '#controllers/logs_controller';
 import PostsController from '#controllers/posts_controller';
 import CategoriesController from '#controllers/categories_controller';
 import CommentsController from '#controllers/comments_controller';
+import ViewsController from '#controllers/views_controller';
 
+
+router.group(() => {
+  router.get('/emergencies-attended', [ViewsController, 'getEmergenciesAttended']);
+  router.get('/most-requested-emergencies', [ViewsController, 'getMostRequestedEmergencies']);
+  router.get('/user-status-count', [ViewsController, 'getUserStatusCount']);
+  router.get('/user-inactive-count', [ViewsController, 'getInactiveUsers']);
+  router.get('/user-active-firefighter-count', [ViewsController, 'getActiveFirefighters']);
+  router.get('/duration-range-emergencies', [ViewsController, 'getDurationRangeEmergencies']);
+  router.get('/total-users-by-role', [ViewsController, 'getAllUsersCount']);
+}).prefix('users/views').use(middleware.auth());
 
 /**
  * ? Routes for the application: POSTS 📝

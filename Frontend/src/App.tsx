@@ -29,7 +29,7 @@ import { FirefighterEmergencies } from './pages/FireFighters/FirefighterEmergenc
 import EmergencyRequestByAdmin from './pages/Emergency/EmergencyRequestByAdmin';
 import SuppliesType from './pages/SupplyType/SuppliesType';
 import Supplies from './pages/Supply/Supplies';
-import Dashboard from './pages/Dashboard/ECommerce';
+import Dashboard from './pages/Dashboard/Dashboard';
 import PenalizedUsers from './pages/Users/PenalizedUsers';
 import CreateBlog from './pages/Blog/CreateBlog';
 import BlogCategories from './pages/BlogCategories/BlogCategories';

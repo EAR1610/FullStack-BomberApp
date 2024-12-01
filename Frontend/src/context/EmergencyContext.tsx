@@ -27,6 +27,9 @@ export const EmergencyProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     socket.on('emergencyCreated', (newEmergency) => {
+      
+      if( currentToken.user.isFirefighter || currentToken.user.isUser ) return;
+
       if( currentToken.user.isAdmin ) {
         playAlertSound();
   

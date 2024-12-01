@@ -19,6 +19,7 @@
     "@tanstack/react-table": "^8.19.3",
     "apexcharts": "^3.41.0",
     "axios": "^1.7.2",
+    "chart.js": "^4.4.6",
     "dayjs": "^1.11.13",
     "file-saver": "^2.0.5",
     "flatpickr": "^4.6.13",
