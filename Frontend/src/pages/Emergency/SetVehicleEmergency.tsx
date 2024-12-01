@@ -187,7 +187,10 @@ const SetVehicleEmergency = ({ idEmergency, statusEmergency }:any ) => {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         })
-        if( response ) setMileageOutput(response.data);
+        if( response ) {
+          setMileageOutput(response.data);
+          setMileageInbound(response.data);
+        }
       } catch (error) {
         console.log(error);
         showAlert("error", "Error", "Error al obtener el kilometraje del vehículo");
