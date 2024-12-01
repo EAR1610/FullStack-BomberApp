@@ -60,11 +60,7 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
               <IconField iconPosition="left" className='ml-2'>                
                     <InputIcon className="pi pi-search" />
                     <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newEmergencyType()} className='' />
-                    <Button label={viewActiveEmergenciesType ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveEmergenciesType() } className='ml-2' severity={viewActiveEmergenciesType ? 'danger' : 'success'} />
-                  <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                    style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                    <EmergencyType emergencyType={selectedEmergencyType} setVisible={setVisible} />
-                </Dialog>
+                    <Button label={viewActiveEmergenciesType ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveEmergenciesType() } className='ml-2' severity={viewActiveEmergenciesType ? 'danger' : 'success'} />                  
               </IconField>
           </div>
         );
@@ -195,11 +191,11 @@ const TableEmergencyTypes = ({ data, viewActiveEmergenciesType, setViewActiveEme
         <Column field="status" header="Estado" style={{ minWidth: '12rem' }} align={'center'} />
         <Column header="Opciones" body={optionsBodyTemplate} style={{ minWidth: '12rem' }} />
       </DataTable>
-      <Dialog header="Header" visible={visible} onHide={() => setVisible(false)}
+      <Dialog header="Gestión de tipo de emergencia" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <EmergencyType emergencyType={selectedEmergencyType} setVisible={setVisible} isChangedEmergencyType={isChangedEmergencyType} setIsChangedEmergencyType={setIsChangedEmergencyType} />
       </Dialog>
-      <Dialog header="Header" visible={visibleEmergencyType} onHide={() => setVisibleEmergencyType(false)}
+      <Dialog header="Ver tipo de emergencia" visible={visibleEmergencyType} onHide={() => setVisibleEmergencyType(false)}
         style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
         <ViewEmergencyType emergencyType={selectedEmergencyType} />
       </Dialog>

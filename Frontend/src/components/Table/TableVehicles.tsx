@@ -31,12 +31,12 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
         vehicleNumber: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
         status: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
       });
-      const [globalFilterValue, setGlobalFilterValue] = useState<String>('');
-      const [visible, setVisible] = useState<Boolean>(false);
-      const [visibleVehicle, setVisibleVehicle] = useState<Boolean>(false);(false);
+      const [globalFilterValue, setGlobalFilterValue] = useState('');
+      const [visible, setVisible] = useState(false);
+      const [visibleVehicle, setVisibleVehicle] = useState(false);
       const [selectedVehicle, setSelectedVehicle] = useState(null);
       const [isInactiveVehicle, setIsInactiveVehicle] = useState<Boolean>(false);
-      const [isDialogVisible, setIsDialogVisible] = useState<Boolean>(false);
+      const [isDialogVisible, setIsDialogVisible] = useState(false);
       const [reason, setReason] = useState<string>('');
     
       const toast = useRef(null); 
@@ -59,11 +59,9 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
     };
 
     useEffect(() => {
-      const verificarToken = async () => {
-        if( currentToken) {
-          if( currentToken?.user.isFirefighter ) navigate('/app/firefighter-shift');
-          if( currentToken?.user.isUser ) navigate('/app/emergency-request');
-        }
+      const verificarToken = async () => {        
+        if( currentToken?.user?.isFirefighter ) navigate('/app/firefighter-shift');
+        if( currentToken?.user?.isUser ) navigate('/app/emergency-request');
       }
       verificarToken();
     }, []);
@@ -92,11 +90,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
             <IconField iconPosition="left" className='ml-2'>                
                   <InputIcon className="pi pi-search" />
                   <Button label="Crear un nuevo registro" icon="pi pi-check" loading={loading} onClick={() => newVehicle()} className='' />
-                  <Button label={viewActiveVehicles ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={ () => viewActiveOrInactiveVehicles() } className='ml-2' severity={viewActiveVehicles ? 'danger' : 'success'} />
-                <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                  style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-                  <Vehicle vehicle={selectedVehicle} setVisible={setVisible} />
-              </Dialog>
+                  <Button label={viewActiveVehicles ? 'Ver registros inactivos' : 'Ver registros activas'} icon="pi pi-eye" loading={loading} onClick={ () => viewActiveOrInactiveVehicles() } className='ml-2' severity={viewActiveVehicles ? 'danger' : 'success'} />                
             </IconField>
         </div>
       );
@@ -110,23 +104,25 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
     const viewActiveOrInactiveVehicles = () => setViewActiveVehicles(!viewActiveVehicles)
 
     const editVehicles = (vehicleType: any) => {
-      setVisible(true);
       setSelectedVehicle(vehicleType);
+      setVisible(true);
     }
 
-    const deleteVehicles = async (rowData:any) => {    
+    const deleteVehicles = async (rowData:any) => {
       setSelectedVehicle(rowData);
       setIsInactiveVehicle(true);
       openDialog();
     };
     
   const showVehicles = (vehicleType: any) => {
-    setVisibleVehicle(true);
     setSelectedVehicle(vehicleType);
+    setVisibleVehicle(true);
   }
 
   const accept = async () => {
+    
     if (!selectedVehicle) return;
+
     if(!reason){
       toast.current.show({ severity: 'error', summary: 'Error', detail: `Debe especificar el motivo de la ${!viewActiveVehicles ? 'activación' : 'inactivación'}`, life: 3000 });
       return
@@ -243,7 +239,7 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       <Dialog
         header={`${!viewActiveVehicles ? 'Confirma la activación' : 'Confirma la inactivación'}`}
         visible={isDialogVisible}
-        style={{ width: '50vw' }}
+        style={{ width: '75vw' }}
         onHide={() => {
           setIsDialogVisible(false);
           showAlert('warn', 'Rechazado', `Has rechazado el proceso`);
