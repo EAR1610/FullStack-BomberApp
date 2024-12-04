@@ -54,7 +54,10 @@ async function generateShiftsForMonthForFirefighter(firefighterId: number, month
     
     if (existingShifts) throw new Error('El bombero ya tiene turnos asignados para este mes');
 
-    const previousMonthDate = DateTime.local(year, month, 1).minus({ months: 1 });
+    const previousMonth = month === 1 ? 12 : month - 1;
+    const previousYear = month === 1 ? year - 1 : year;
+
+    const previousMonthDate = DateTime.local(previousYear, previousMonth, 1);
     const lastDayOfPreviousMonth = previousMonthDate.endOf('month');
     const daysInPreviousMonth = lastDayOfPreviousMonth.day;
 
@@ -62,11 +65,11 @@ async function generateShiftsForMonthForFirefighter(firefighterId: number, month
 
     const existingShiftsBefore = await FirefighterShift.query()
         .where('firefighterId', firefighterId)
-        .andWhereRaw('EXTRACT(MONTH FROM shift_start) = ?', [month-1])
-        .andWhereRaw('EXTRACT(YEAR FROM shift_start) = ?', [year])
+        .andWhereRaw('EXTRACT(MONTH FROM shift_start) = ?', [previousMonth])
+        .andWhereRaw('EXTRACT(YEAR FROM shift_start) = ?', [previousYear])
         .first();
 
-    if ( daysInPreviousMonth % 2 !== 0 && existingShiftsBefore ) prefersEvenDays = !prefersEvenDays;
+    if (daysInPreviousMonth % 2 !== 0 && existingShiftsBefore) prefersEvenDays = !prefersEvenDays;
 
     const numberOfDays = DateTime.local(year, month).daysInMonth;
     if (numberOfDays === undefined) throw new Error(`Invalid month: ${month}`);
@@ -88,6 +91,7 @@ async function generateShiftsForMonthForFirefighter(firefighterId: number, month
         });
     }
 }
+
 
 export {
     generateShiftsForMonth,

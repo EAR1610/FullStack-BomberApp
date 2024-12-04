@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
-import { createLog, handleErrorResponse } from '../helpers/functions';
+import { createLog } from '../helpers/functions';
 import { AuthContextProps } from '../interface/Auth';
 import { AuthContext } from '../context/AuthContext';
 import { apiRequest, apiRequestAuth } from '../lib/apiRequest';
@@ -184,9 +184,18 @@ const Profile = () => {
       }, 1500);
 
     } catch (err: any) {
-      console.log(err);
       showAlert('error', 'Error', handleErrorResponse(err, setErrorMessages));
     }
+  };
+
+  const handleErrorResponse = (error: any, setErrorMessages: (msg: string) => void) => {
+    const errorMessages = error?.response?.data?.errors
+      ? error.response.data.errors.map((err: { message: string }) => err.message).join(', ')
+      : 'Ocurrió un error inesperado, por favor intenta cambiar la imagen.';
+  
+    setErrorMessages(errorMessages);
+  
+    return errorMessages;
   };
 
   const showAlert = (severity: string, summary: string, detail: string) => toast.current.show({ severity, summary, detail });
