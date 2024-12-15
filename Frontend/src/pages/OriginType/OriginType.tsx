@@ -54,14 +54,14 @@ const OriginType = ({ originType, setVisible, isChangedOriginType, setIsChangedO
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        showAlert('info', 'Info', 'Herramienta Actualizada!');        
+        showAlert('info', 'Info', 'Tipo de Origen Actualizado!');        
       } else {
         await apiRequestAuth.post(`/origin-type`, formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
         });
-        showAlert('info', 'Info', 'Herramienta Creada!');
+        showAlert('info', 'Info', 'Se ha creado un nuevo tipo de origen!');
       } 
 
       await createLog(userId, 'ACTUALIZAR', 'TIPO DE ORIGEN', `Se ha ${originType ? 'actualizado' : 'creado'} el registro del tipo de origen: ${name}`, currentToken?.token);

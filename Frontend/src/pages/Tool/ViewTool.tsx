@@ -28,82 +28,99 @@ const ViewTool = ({ Idtool }:any) => {
       try {
         const response = await apiRequestAuth.get(`/tool/${Idtool}`, {
           headers: {
-            Authorization: `Bearer ${currentToken?.token}`
-          }
-        })
-        if (response) setSelectedTool(response.data);
+            Authorization: `Bearer ${currentToken?.token}`,
+          },
+        });
+        setSelectedTool(response.data);
       } catch (error) {
-        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+        console.log(error);
+        showAlert("error", "Error", handleErrorResponse(error, setErrorMessages));
       }
-    }
+    };
+
+    getToolById();
+  }, [Idtool, currentToken]);
+
+  useEffect(() => {
+    if (!selectedTool) return;
+
     const getToolType = async () => {
       try {
-        const response = await apiRequestAuth.get(`/tool-type/${selectedTool.toolTypeId}`, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`
+        const response = await apiRequestAuth.get(
+          `/tool-type/${selectedTool.toolTypeId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`,
+            },
           }
-        });
+        );
         setSelectedToolType(response.data);
       } catch (error) {
-        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+        showAlert("error", "Error", handleErrorResponse(error, setErrorMessages));
       }
-    }
+    };
 
     const getOriginTool = async () => {
       try {
-        const response = await apiRequestAuth.get(`/origin-type/${selectedTool.originTypeId}`, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`
+        const response = await apiRequestAuth.get(
+          `/origin-type/${selectedTool.originTypeId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`,
+            },
           }
-        });
+        );
         setSelectedOriginTool(response.data);
       } catch (error) {
-        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+        showAlert("error", "Error", handleErrorResponse(error, setErrorMessages));
       }
-    }
+    };
 
     const getEquipmentType = async () => {
       try {
-        const response = await apiRequestAuth.get(`/equipment-type/${selectedTool.equipmentTypeId}`, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`
+        const response = await apiRequestAuth.get(
+          `/equipment-type/${selectedTool.equipmentTypeId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`,
+            },
           }
-        });
+        );
         setSelectedEquipmentType(response.data);
       } catch (error) {
-        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+        showAlert("error", "Error", handleErrorResponse(error, setErrorMessages));
       }
-    }
-    
-    const getTool = async () => {
-      if(selectedTool){
-        setName(selectedTool.name)
-        setBrand(selectedTool.brand)
-        setModel(selectedTool.model)
-        setSerialNumber(selectedTool.serialNumber)
-      }      
-    }
+    };
 
     const getEmergencyType = async () => {
       try {
-        const response = await apiRequestAuth.get(`/emergency-type/${selectedTool.emergencyTypeId}`, {
-          headers: {
-            Authorization: `Bearer ${currentToken?.token}`
+        const response = await apiRequestAuth.get(
+          `/emergency-type/${selectedTool.emergencyTypeId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${currentToken?.token}`,
+            },
           }
-        });
+        );
         setSelectedEmergencyType(response.data);
       } catch (error) {
-        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+        showAlert("error", "Error", handleErrorResponse(error, setErrorMessages));
       }
-    }
+    };
 
-    getToolById();
-    getTool();
+    const setToolData = () => {
+      setName(selectedTool.name);
+      setBrand(selectedTool.brand);
+      setModel(selectedTool.model);
+      setSerialNumber(selectedTool.serialNumber);
+    };
+
     getToolType();
     getOriginTool();
     getEquipmentType();
     getEmergencyType();
-  }, []);
+    setToolData();
+  }, [selectedTool, currentToken]);
 
   const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
