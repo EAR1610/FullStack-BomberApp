@@ -115,10 +115,6 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
                 <InputIcon className="pi pi-search" />
                 <Button label="Crear nueva herramienta" icon="pi pi-check" loading={loading} onClick={() => newTool()} className='' />
                 <Button label={viewActiveTools ? 'Ver herramientas inactivas' : 'Ver herramientas activas'} icon="pi pi-eye" loading={loading} onClick={() => viewActiveOrInactiveTools()} className='ml-2' severity={viewActiveTools ? 'danger' : 'success'} />
-              <Dialog header="Header" visible={visible} onHide={() => {if (!visible) return; setVisible(false); }}
-                style={{ width: '50vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>                  
-                <Tool tool={selectedTool} setVisible={setVisible}/>
-            </Dialog>
           </IconField>
       </div>
     );
@@ -132,7 +128,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
   const viewActiveOrInactiveTools = () => setViewActiveTools(!viewActiveTools);
 
   const editTool = (rowData:any) => {
-    setSelectedTool(rowData);
+    setSelectedTool(rowData.id);
     setVisible(true);
   };
 
@@ -142,7 +138,7 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
   };
 
   const showTool = (rowData:any) => {
-    setSelectedTool(rowData);
+    setSelectedTool(rowData.id);
     setVisibleTool(true);
   };
 
@@ -229,11 +225,11 @@ const TableTools = ({ data, viewActiveTools, setViewActiveTools, isChangedTool, 
       </DataTable>
       <Dialog header="Gestión de herramientas" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <Tool tool={selectedTool} setVisible={setVisible} isChangedTool={isChangedTool} setIsChangedTool={setIsChangedTool} />
+        <Tool IdTool={selectedTool} setVisible={setVisible} isChangedTool={isChangedTool} setIsChangedTool={setIsChangedTool} />
       </Dialog>
       <Dialog header="Información de la herramienta" visible={visibleTool} onHide={() => setVisibleTool(false)}
         style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <ViewTool tool={selectedTool} setVisible={setVisible} />
+        <ViewTool Idtool={selectedTool} setVisible={setVisible} />
       </Dialog>
     </div>
   )

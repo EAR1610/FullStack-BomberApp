@@ -5,8 +5,9 @@ import { AuthContextProps } from "../../interface/Auth"
 import { Toast } from "primereact/toast"
 import { Dropdown } from "primereact/dropdown"
 import { InputTextarea } from "primereact/inputtextarea"
+import { handleErrorResponse } from "../../helpers/functions"
 
-const ViewVehicle = ({ vehicle, setVisible }:any) => {
+const ViewVehicle = ({ IdVehicle, setVisible }:any) => {
 
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
@@ -16,6 +17,8 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
   const [plateNumber, setPlateNumber] = useState('');
   const [remarks, setRemarks] = useState('');
   const [dateOfPurchase, setDateOfPurchase] = useState('');
+  const [errorMessages, setErrorMessages] = useState('');
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedVehicleType, setSelectedVehicleType] = useState(null);
   const [selectedOriginType, setselectedOriginType] = useState(null);
   const [vehicleTypes, setVehicleTypes] = useState([]);
@@ -30,6 +33,19 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
   const toast = useRef(null);
 
   useEffect(() => {
+
+    const getVehicleById = async () => {
+      try {
+        const response = await apiRequestAuth.get(`/vehicle/${IdVehicle}`, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`,
+          }
+        })
+        if (response) setSelectedVehicle(response.data);
+      } catch (error) {
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+      }
+    }
     const getVehicleType = async () => {
       try {
         const response = await apiRequestAuth.get("/vehicle-type", {
@@ -56,6 +72,7 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
       }
     }
 
+    getVehicleById();
     getVehicleType();
     getOriginType();
   }, []);
@@ -65,24 +82,24 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
     const getVehicle = async () => {
       const formattedDate = getFormattedDate();
       setDateOfPurchase(formattedDate);      
-      if( vehicle ) {
-        setBrand(vehicle.brand)
-        setModel(vehicle.model)
-        setLine(vehicle.line)
-        setVehicleNumber(vehicle.vehicleNumber)
-        setGasolineType(vehicle.gasolineType)
-        setPlateNumber(vehicle.plateNumber)
-        setRemarks(vehicle.remarks)
-        setDateOfPurchase(vehicle.dateOfPurchase)
-        setStatus(vehicle.status)
+      if( selectedVehicle ) {
+        setBrand(selectedVehicle.brand)
+        setModel(selectedVehicle.model)
+        setLine(selectedVehicle.line)
+        setVehicleNumber(selectedVehicle.vehicleNumber)
+        setGasolineType(selectedVehicle.gasolineType)
+        setPlateNumber(selectedVehicle.plateNumber)
+        setRemarks(selectedVehicle.remarks)
+        setDateOfPurchase(selectedVehicle.dateOfPurchase)
+        setStatus(selectedVehicle.status)
 
         setSelectedVehicleType(() => {
-          const vehicleType = vehicleTypes.find((type) => type.id === vehicle.vehicleTypeId);
+          const vehicleType = vehicleTypes.find((type) => type.id === selectedVehicle.vehicleTypeId);
           return vehicleType;
         })
 
         setselectedOriginType(() => {
-          const originType = originTypes.find((type) => type.id === vehicle.originTypeId);
+          const originType = originTypes.find((type) => type.id === selectedVehicle.originTypeId);
           return originType;
         })
         
@@ -101,6 +118,8 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
@@ -256,16 +275,16 @@ const ViewVehicle = ({ vehicle, setVisible }:any) => {
                   Tipo de origen
                 </label>
                 <div className="relative">
-                <Dropdown
-                  value={selectedOriginType}
-                  options={originTypes}
-                  onChange={(e) => setselectedOriginType(e.value)}
-                  optionLabel="name"  
-                  optionValue="id"
-                  placeholder="Seleccione el tipo de origen"
-                  className="w-full"
-                  disabled
-                />
+                  <Dropdown
+                    value={selectedOriginType}
+                    options={originTypes}
+                    onChange={(e) => setselectedOriginType(e.value)}
+                    optionLabel="name"  
+                    optionValue="id"
+                    placeholder="Seleccione el tipo de origen"
+                    className="w-full"
+                    disabled
+                  />
                 </div>
               </div>              
             </form>

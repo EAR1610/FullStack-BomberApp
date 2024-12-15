@@ -8,7 +8,7 @@ import { createLog, handleErrorResponse } from "../../helpers/functions"
 import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 import { InputTextarea } from "primereact/inputtextarea"
 
-const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:any) => {
+const Vehicle = ({ IdVehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:any) => {
 
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
@@ -19,6 +19,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
   const [remarks, setRemarks] = useState('');
   const [dateOfPurchase, setDateOfPurchase] = useState('');
   const [selectedVehicleType, setSelectedVehicleType] = useState(null);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [selectedOriginType, setselectedOriginType] = useState(null);
   const [vehicleTypes, setVehicleTypes] = useState([]);
   const [originTypes, setOriginTypes] = useState([]);
@@ -35,6 +36,19 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
   const toast = useRef(null);
 
   useEffect(() => {
+
+    const getVehicleById = async () => {
+      try {
+        const response = await apiRequestAuth.get(`/vehicle/${IdVehicle}`, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`,
+          }
+        });
+        if(response) setSelectedVehicle(response.data);
+      } catch (error) {
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+      }
+    }
     const getVehicleType = async () => {
       try {
         const response = await apiRequestAuth.get("/vehicle-type", {
@@ -44,7 +58,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
         });
         if (response) setVehicleTypes(response.data);
       } catch (error) {
-        console.log(error);
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }
     }
 
@@ -57,10 +71,11 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
         });
         if (response) setOriginTypes(response.data);
       } catch (error) {
-        console.log(error);
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }
     }
 
+    getVehicleById();
     getVehicleType();
     getOriginType();
   }, []);
@@ -70,22 +85,22 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
     const getVehicle = async () => {
       const formattedDate = getFormattedDate();
         setDateOfPurchase(formattedDate);
-      if( vehicle ) {
-        setBrand(vehicle.brand)
-        setModel(vehicle.model)
-        setLine(vehicle.line)
-        setVehicleNumber(vehicle.vehicleNumber)
-        setGasolineType(vehicle.gasolineType)
-        setPlateNumber(vehicle.plateNumber)
-        setRemarks(vehicle.remarks)
-        setDateOfPurchase(vehicle.dateOfPurchase)
-        setStatus(vehicle.status)
+      if( selectedVehicle ) {
+        setBrand(selectedVehicle.brand)
+        setModel(selectedVehicle.model)
+        setLine(selectedVehicle.line)
+        setVehicleNumber(selectedVehicle.vehicleNumber)
+        setGasolineType(selectedVehicle.gasolineType)
+        setPlateNumber(selectedVehicle.plateNumber)
+        setRemarks(selectedVehicle.remarks)
+        setDateOfPurchase(selectedVehicle.dateOfPurchase)
+        setStatus(selectedVehicle.status)
         setSelectedVehicleType(() => {
-          const vehicleType = vehicleTypes.find((type) => type.id === vehicle.vehicleTypeId);
+          const vehicleType = vehicleTypes.find((type) => type.id === selectedVehicle.vehicleTypeId);
           return vehicleType;
         })
         setselectedOriginType(() => {
-          const originType = originTypes.find((type) => type.id === vehicle.originTypeId);
+          const originType = originTypes.find((type) => type.id === selectedVehicle.originTypeId);
           return originType;
         })
       }      
@@ -138,8 +153,8 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
     }
 
     try {
-      if ( vehicle ) {
-        await apiRequestAuth.put(`/vehicle/${vehicle.id}`, formData, {
+      if ( selectedVehicle ) {
+        await apiRequestAuth.put(`/vehicle/${selectedVehicle.id}`, formData, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`,
           },
@@ -335,7 +350,7 @@ const Vehicle = ({ vehicle, setVisible, isChangedVehicle, setIsChangedVehicle }:
               <div className="mb-5">
                 <input
                   type="submit"
-                  value={`${ vehicle ? 'Actualizar registro' : 'Crear registro'}`}
+                  value={`${ selectedVehicle ? 'Actualizar registro' : 'Crear registro'}`}
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                 />
               </div>

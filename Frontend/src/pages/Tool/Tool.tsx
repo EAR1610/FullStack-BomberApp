@@ -8,13 +8,14 @@ import { createLog, handleErrorResponse } from "../../helpers/functions"
 import { ConnectionStatus, useInternetConnectionStatus } from "../../hooks/useInternetConnectionStatus"
 import { useNavigate } from "react-router-dom"
 
-const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
+const Tool = ({ IdTool, setVisible, isChangedTool, setIsChangedTool } :any) => {
 
     const [name, setName] = useState('')
     const [brand, setBrand] = useState('')
     const [model, setModel] = useState('')
     const [serialNumber, setSerialNumber] = useState('')
     const [dateOfPurchase, setDateOfPurchase] = useState('')
+    const [selectedTool, setselectedTool] = useState(null)
     const [status, setStatus] = useState('active')
     const [error, setError] = useState("");
     const [selectedToolType, setSelectedToolType] = useState(null);
@@ -37,6 +38,19 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+
+    const getToolById = async () => {
+      try {
+        const response = await apiRequestAuth.get(`/tool/${IdTool}`, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        });
+        if (response) setselectedTool(response.data);
+      } catch (error) {
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+      }
+    }
     const getToolType = async () => {
       try {
         const response = await apiRequestAuth.get("/tool-type", {
@@ -97,6 +111,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
       }
     }
 
+    getToolById();
     getEquipmentType();
     getToolType();
     getOriginTool();
@@ -107,26 +122,26 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
     const getTool = async () => {
       const formattedDate = getFormattedDate();
       setDateOfPurchase(formattedDate);
-      if(tool){
-        setName(tool.name)
-        setBrand(tool.brand)
-        setModel(tool.model)
-        setSerialNumber(tool.serialNumber)
-        setStatus(tool.status)
+      if(selectedTool){
+        setName(selectedTool.name)
+        setBrand(selectedTool.brand)
+        setModel(selectedTool.model)
+        setSerialNumber(selectedTool.serialNumber)
+        setStatus(selectedTool.status)
         setSelectedToolType( () => {
-          const toolType = toolTypes.find((type) => type.id === tool.toolTypeId);
+          const toolType = toolTypes.find((type) => type.id === selectedTool.toolTypeId);
           return toolType;
         });
         setSelectedOriginTool( () => {
-          const originTool = originTools.find((type) => type.id === tool.originTypeId);
+          const originTool = originTools.find((type) => type.id === selectedTool.originTypeId);
           return originTool;
         });
         setSelectedEquipmentType( () => {
-          const equipmentType = equipmentTypes.find((type) => type.id === tool.equipmentTypeId);
+          const equipmentType = equipmentTypes.find((type) => type.id === selectedTool.equipmentTypeId);
           return equipmentType;
         });
         setSelectedEmergencyType( () => {
-          const emergencyType = emergencyTypes.find((type) => type.id === tool.emergencyTypeId);
+          const emergencyType = emergencyTypes.find((type) => type.id === selectedTool.emergencyTypeId);
           return emergencyType;
         });
       }      
@@ -157,7 +172,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
         
         const formData = new FormData();
     
-        if(tool){
+        if(selectedTool){
     
           if ( 
             !name || !brand || !model  || !serialNumber || !dateOfPurchase
@@ -200,8 +215,8 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
         }  
     
         try {          
-          if (tool) {
-            await apiRequestAuth.put(`/tool/${tool.id}`, formData, {
+          if (selectedTool) {
+            await apiRequestAuth.put(`/tool/${IdTool}`, formData, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${currentToken?.token}`
@@ -217,7 +232,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
             });
             showAlert('info', 'Info', 'Registro creado!');
           }
-          await createLog(userId, 'ACTUALIZAR', 'HERRAMIENTA', `Se ha ${tool ? 'actualizado' : 'creado'} la herramienta: ${name}`, currentToken?.token);
+          await createLog(userId, 'ACTUALIZAR', 'HERRAMIENTA', `Se ha ${IdTool ? 'actualizado' : 'creado'} la herramienta: ${name}`, currentToken?.token);
           setIsChangedTool(!isChangedTool);
 
           setTimeout(() => {
@@ -384,7 +399,7 @@ const Tool = ({ tool, setVisible, isChangedTool, setIsChangedTool }:any) => {
                 <div className="mb-5">
                   <input
                     type="submit"
-                    value={`${ tool ? 'Actualizar Herramienta' : 'Crear herramienta'}`}
+                    value={`${ IdTool ? 'Actualizar Herramienta' : 'Crear herramienta'}`}
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>

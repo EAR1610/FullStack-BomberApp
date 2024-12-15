@@ -1,14 +1,18 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { apiRequestAuth } from "../../lib/apiRequest"
 import { AuthContext } from "../../context/AuthContext"
 import { AuthContextProps } from "../../interface/Auth"
+import { handleErrorResponse } from "../../helpers/functions"
+import { Toast } from "primereact/toast"
 
-const ViewTool = ({ tool }:any) => {
+const ViewTool = ({ Idtool }:any) => {
 
   const [name, setName] = useState('')
   const [brand, setBrand] = useState('')
   const [model, setModel] = useState('')
+  const [errorMessages, setErrorMessages] = useState<string>('');
   const [serialNumber, setSerialNumber] = useState('')
+  const [selectedTool, setSelectedTool] = useState(null);
   const [selectedToolType, setSelectedToolType] = useState(null);
   const [selectedOriginTool, setSelectedOriginTool] = useState(null);
   const [selectedEquipmentType, setSelectedEquipmentType] = useState(null);
@@ -17,69 +21,83 @@ const ViewTool = ({ tool }:any) => {
   const authContext = useContext<AuthContextProps | undefined>(AuthContext);
   if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
   const { currentToken } = authContext;
+  const toast = useRef(null);
 
   useEffect(() => {
+    const getToolById = async () => {
+      try {
+        const response = await apiRequestAuth.get(`/tool/${Idtool}`, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`
+          }
+        })
+        if (response) setSelectedTool(response.data);
+      } catch (error) {
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
+      }
+    }
     const getToolType = async () => {
       try {
-        const response = await apiRequestAuth.get(`/tool-type/${tool.toolTypeId}`, {
+        const response = await apiRequestAuth.get(`/tool-type/${selectedTool.toolTypeId}`, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`
           }
         });
         setSelectedToolType(response.data);
       } catch (error) {
-        console.log(error);
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }
     }
 
     const getOriginTool = async () => {
       try {
-        const response = await apiRequestAuth.get(`/origin-type/${tool.originTypeId}`, {
+        const response = await apiRequestAuth.get(`/origin-type/${selectedTool.originTypeId}`, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`
           }
         });
         setSelectedOriginTool(response.data);
       } catch (error) {
-        console.log(error);
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }
     }
 
     const getEquipmentType = async () => {
       try {
-        const response = await apiRequestAuth.get(`/equipment-type/${tool.equipmentTypeId}`, {
+        const response = await apiRequestAuth.get(`/equipment-type/${selectedTool.equipmentTypeId}`, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`
           }
         });
         setSelectedEquipmentType(response.data);
       } catch (error) {
-        console.log(error);
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }
     }
     
     const getTool = async () => {
-      if(tool){
-        setName(tool.name)
-        setBrand(tool.brand)
-        setModel(tool.model)
-        setSerialNumber(tool.serialNumber)
+      if(selectedTool){
+        setName(selectedTool.name)
+        setBrand(selectedTool.brand)
+        setModel(selectedTool.model)
+        setSerialNumber(selectedTool.serialNumber)
       }      
     }
 
     const getEmergencyType = async () => {
       try {
-        const response = await apiRequestAuth.get(`/emergency-type/${tool.emergencyTypeId}`, {
+        const response = await apiRequestAuth.get(`/emergency-type/${selectedTool.emergencyTypeId}`, {
           headers: {
             Authorization: `Bearer ${currentToken?.token}`
           }
         });
         setSelectedEmergencyType(response.data);
       } catch (error) {
-        console.log(error);
+        showAlert('error', 'Error', handleErrorResponse(error, setErrorMessages));
       }
     }
 
+    getToolById();
     getTool();
     getToolType();
     getOriginTool();
@@ -87,8 +105,11 @@ const ViewTool = ({ tool }:any) => {
     getEmergencyType();
   }, []);
 
+  const showAlert = (severity:string, summary:string, detail:string) => toast.current.show({ severity, summary, detail });
+
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark m-2">
+      <Toast ref={toast} />
         <div className="flex flex-wrap items-center">            
           <div className='w-full border-stroke dark:border-strokedark'>
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">

@@ -103,10 +103,8 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
 
     const viewActiveOrInactiveVehicles = () => setViewActiveVehicles(!viewActiveVehicles)
 
-    const editVehicles = (vehicleType: any) => {
-      setSelectedVehicle(vehicleType);
-      console.log(selectedVehicle);
-      console.log(vehicleType);
+    const editVehicles = (vehicle: any) => {
+      setSelectedVehicle(vehicle.id);
       setVisible(true);
     }
 
@@ -116,8 +114,8 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       openDialog();
     };
     
-  const showVehicles = (vehicleType: any) => {
-    setSelectedVehicle(vehicleType);
+  const showVehicles = (vehicle: any) => {
+    setSelectedVehicle(vehicle.id);
     setVisibleVehicle(true);
   }
 
@@ -231,11 +229,11 @@ const TableVehicles = ({ data, viewActiveVehicles, setViewActiveVehicles, loadin
       </DataTable>
       <Dialog header="Gestión de unidades" visible={visible} onHide={() => setVisible(false)}
         style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <Vehicle vehicle={selectedVehicle} setVisible={setVisible} isChangedVehicle={isChangedVehicle} setIsChangedVehicle={setIsChangedVehicle} />
+        <Vehicle IdVehicle={selectedVehicle} setVisible={setVisible} isChangedVehicle={isChangedVehicle} setIsChangedVehicle={setIsChangedVehicle} />
       </Dialog>
       <Dialog header="Información de la unidad" visible={visibleVehicle} onHide={() => setVisibleVehicle(false)}
         style={{ width: '75vw' }} breakpoints={{ '960px': '75vw', '641px': '100vw' }}>
-        <ViewVehicle vehicle={selectedVehicle} />
+        <ViewVehicle IdVehicle={selectedVehicle} />
       </Dialog>
 
       <Dialog
