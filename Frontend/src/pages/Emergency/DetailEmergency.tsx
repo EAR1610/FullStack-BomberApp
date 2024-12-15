@@ -11,6 +11,7 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
     const [observation, setObservation] = useState('');
     const [duration, setDuration] = useState(0);
     const [isUpdated, setIsUpdated] = useState(false);
+    const [detailEmergencyData, setdetailEmergencyData] = useState(null);
 
     const authContext = useContext<AuthContextProps | undefined>(AuthContext);
     if (!authContext) throw new Error("useContext(AuthContext) must be used within an AuthProvider");
@@ -31,19 +32,25 @@ const DetailEmergency = ( { idEmergency, setViewDetailEmergency, statusEmergency
     };
 
     useEffect(() => {
-        const getDetailEmergency = async () => {
-            const response = await apiRequestAuth.get(`detail-emergency/${idEmergency}`, {
-                headers: {
-                    Authorization: `Bearer ${currentToken?.token}`
-                }
-            });
-            setObservation(response.data[0].observation);
-            setDuration(response.data[0].duration);
-            if( response.data[0].duration > 0 ) setIsUpdated(true);
-        }
-
-        getDetailEmergency();
-    }, []);
+      const getDetailEmergency = async () => {
+        const response = await apiRequestAuth.get(`detail-emergency/${idEmergency}`, {
+          headers: {
+            Authorization: `Bearer ${currentToken?.token}`,
+          },
+        });
+        if (response) setdetailEmergencyData(response.data[0]);
+      };
+      getDetailEmergency();
+    }, [idEmergency, currentToken]);
+    
+    useEffect(() => {
+      if (detailEmergencyData) {
+        setObservation(detailEmergencyData.observation || '');
+        setDuration(detailEmergencyData.duration || 0);
+        if (detailEmergencyData.duration > 0) setIsUpdated(true);
+      }
+    }, [detailEmergencyData]);
+    
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

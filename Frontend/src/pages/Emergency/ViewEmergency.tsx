@@ -107,11 +107,21 @@ const ViewEmergency = ({ emergency, setViewEmergency, setChangeStatusEmergency, 
         return;
       }
 
-      if( emergency.status === selectedStatus ) {
+      if ( emergency.status === selectedStatus ) {
         showAlert('info', 'Info', 'La emergencia ya se encuentra en este estado');
         setTimeout(() => {
           setViewEmergency(false);          
         }, 1500);
+        return;
+      }
+
+      if ( selectedStatus === 'Cancelada' && !reasonStatusEmergency.trim() ) {
+        showAlert('error', 'Error', 'Debe especificar el motivo para cancelar la emergencia');
+        return;
+      }
+
+      if ( selectedStatus === 'Rechazada' && !reasonStatusEmergency.trim() ) {
+        showAlert('error', 'Error', 'Debe especificar el motivo para rechazar la emergencia');
         return;
       }
       
